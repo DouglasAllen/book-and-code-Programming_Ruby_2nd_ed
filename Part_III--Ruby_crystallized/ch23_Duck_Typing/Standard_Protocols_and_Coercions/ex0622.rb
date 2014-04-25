@@ -1,4 +1,5 @@
 # Sample code from Programing Ruby, page 357
+
 class OneTwo
   def to_proc
     proc { "one-two" }
@@ -9,4 +10,4 @@ def silly
   yield
 end
 ot = OneTwo.new
-puts silly(&ot)
+silly(&ot)

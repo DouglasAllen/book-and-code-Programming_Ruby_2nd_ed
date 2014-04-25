@@ -5,4 +5,4 @@
 #return an uppercased, reversed copy of a string object 
 "This is Ruby".upcase.reverse
 #return the number of arguments to the Math “sin” method.
-Math.method(:sin).arity
+p Math.method(:sin).arity

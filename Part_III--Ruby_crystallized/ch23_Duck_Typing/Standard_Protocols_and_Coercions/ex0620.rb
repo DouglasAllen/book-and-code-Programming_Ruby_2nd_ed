@@ -1,4 +1,5 @@
 # Sample code from Programing Ruby, page 357
+
 class OneTwo
   def to_ary
     [ 1, 2 ]

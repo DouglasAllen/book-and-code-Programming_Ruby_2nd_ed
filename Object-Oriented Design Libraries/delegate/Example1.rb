@@ -20,3 +20,5 @@ end
 sizeInFeet = Feet.new(sizeInInches)
 p sizeInInches[0..3]	# =»	[10, 15, 22, 120]
 p sizeInFeet[0..3]	# =»	[0.8333333333, 1.25, 1.833333333, 10.0]
+test_none_numeric = Feet.new(["what happens now?"])
+p test_none_numeric[0]

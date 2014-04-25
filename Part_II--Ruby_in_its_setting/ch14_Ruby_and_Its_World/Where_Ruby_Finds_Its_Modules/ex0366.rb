@@ -1,2 +1,5 @@
 # Sample code from Programing Ruby, page 172
-  % ruby -e 'puts $:'
+
+system "ruby -e 'puts $:'"
+
+puts $:

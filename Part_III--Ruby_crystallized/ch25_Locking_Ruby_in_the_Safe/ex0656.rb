@@ -1,4 +1,5 @@
 # Sample code from Programing Ruby, page 379
+
   require 'cgi'
 
   cgi = CGI.new("html4")

@@ -14,8 +14,7 @@ module Fibonacci
   # 
   # If a block is given, supply successive values to the block and
   # return +nil+, otherwise return all values as an array.
-  #~ def Fibonacci.sequence(count, &block)
-  def self.sequence(count, &block)
+  def Fibonacci.sequence(count, &block)
     result, block = setup_optional_block(block)
     generate do |val|
       break if count <= 0
@@ -33,8 +32,7 @@ module Fibonacci
   # 
   # If a block is given, supply successive values to the
   # block and return +nil+, otherwise return all values as an array.
-  #~ def Fibonacci.upto(max, &block)
-  def self.upto(max, &block)
+  def Fibonacci.upto(max, &block)
     result, block = setup_optional_block(block)
     generate do |val|
       break if val > max
@@ -46,8 +44,7 @@ module Fibonacci
   private
 
   # Yield a sequence of Fibonacci numbers to a block.
-  #~ def Fibonacci.generate
-  def self.generate
+  def Fibonacci.generate
     f1, f2 = 1, 1
     loop do 
       yield f1
@@ -57,8 +54,7 @@ module Fibonacci
 
   # If a block parameer is given, use it, otherwise accumulate into an
   # array. Return the result value and the block to use.
-  #~ def Fibonacci.setup_optional_block(block)
-  def self.setup_optional_block(block)
+  def Fibonacci.setup_optional_block(block)
     if block.nil?
       [ result = [], lambda {|val| result << val } ]
     else

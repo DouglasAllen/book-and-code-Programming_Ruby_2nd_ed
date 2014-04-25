@@ -23,6 +23,7 @@ class TicketOffice < SimpleDelegator
     allow
   end
 end
+
 to = TicketOffice.new
 p to.sellTicket	        #=»	"Here is a ticket"
 p to.allowSales(false)	#=»	false

@@ -1,4 +1,5 @@
 # Sample code from Programing Ruby, page 356
+
 class File
   def File.new(file, *args)
     if file.respond_to?(:to_int)
