@@ -1,4 +1,5 @@
 # Sample code from Programing Ruby, page 406
-        Array.new
-        Array.new(2)
-        Array.new(5, "A")
+
+p Array.new
+p Array.new(2)
+p Array.new(5, "A")
