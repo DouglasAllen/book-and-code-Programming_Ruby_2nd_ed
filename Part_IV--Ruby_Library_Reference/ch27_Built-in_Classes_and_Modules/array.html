@@ -38,50 +38,47 @@ h1,h2,h3 {
 
 </style>
 
-
 <body id="top" role="document" class="file">
-
-
-<h1>Class Array &lt; Object</h1>
-
+<a href="http://ruby-doc.org/core-2.1.1/Array.html">http://ruby-doc.org/core-2.1.1/Array.html</a>
 <pre>
+<h1>Class Array &lt; Object</h1>
   Arrays are ordered, integer-indexed collections of any object. Array indexing starts at
 0, as in C or Java. A negative index is assumed to be relative to the end of the array; that
 is, an index of −1 indicates the last element of the array, −2 is the next to last element
 in the array, and so on.
-</pre>
-
 <h2>Mixes in</h2>
-
-<pre>
 Enumerable:
 
 all?, any?, collect, detect, each_with_index, entries, find, find_all,
 grep, include?, inject, map, max, member?, min, partition, reject,
 select, sort, sort_by, to_a, zip
-</pre>
 
+# former list may be old. try:
+
+Array.include? Enumerable #=> true
+Enumerable.public_instance_methods(false).sort #=>
+[:all?, :any?, :chunk, :collect, :collect_concat, :count, :cycle, :detect, :drop, 
+ :drop_while, :each_cons, :each_entry, :each_slice, :each_with_index, :each_with_object, 
+ :entries, :enum_with_index, :find, :find_all, :find_index, :first, :flat_map, :grep, 
+ :group_by, :include?, :inject, :map, :max, :max_by, :member?, :min, :min_by, :minmax, 
+ :minmax_by, :none?, :one?, :partition, :reduce, :reject, :reverse_each, :select, 
+ :slice_before, :sort, :sort_by, :take, :take_while, :to_a, :with_object, :zip]
 <h2>Class methods</h2>
-
+Array.constants #=> [:ClassMethods]
 <h3>[ ]</h3>
-<pre>
-Array[ obj* ] → an_array
+Array[ obj* ] #=> an_array
 
   Returns a new array populated with the given objects. 
 Equivalent to the operator form Array.[](. . . ).
     
-Array.[]( 1, 'a', /^A/ ) → [1, "a", /^A/]
-Array[ 1, 'a', /^A/ ]    → [1, "a", /^A/]
-[ 1, 'a', /^A/ ]         → [1, "a", /^A/]
-</pre>
-
+Array.[]( 1, 'a', /^A/ ) #=> [1, "a", /^A/]
+Array[ 1, 'a', /^A/ ]    #=> [1, "a", /^A/]
+[ 1, 'a', /^A/ ]         #=> [1, "a", /^A/]
 <h3>new</h3>
-
-<pre>
-Array.new                        → an_array
-Array.new ( size=0, obj=nil )    → an_array
-Array.new( array )               → an_array
-Array.new( size ) {| i | block } → an_array    
+Array.new                        #=> an_array
+Array.new ( size=0, obj=nil )    #=> an_array
+Array.new( array )               #=> an_array
+Array.new( size ) {| i | block } #=> an_array    
 
   Returns a new array. In the first form, the new array is empty. In the second it is created
 with size copies of obj (that is, size references to the same obj). The third form creates
@@ -90,39 +87,38 @@ the parameter). In the last form, an array of the given size is created. Each el
 this array is calculated by passing the element’s index to the given block and storing
 the return value.   
 
-Array.new         → []
-Array.new(2)      → [nil, nil]
-Array.new(5, "A") → ["A", "A", "A", "A", "A"]    
+Array.new         #=> []
+Array.new(2)      #=> [nil, nil]
+Array.new(5, "A") #=> ["A", "A", "A", "A", "A"]    
 
 only one instance of the default object is created
+
 a = Array.new(2, Hash.new)
 a[0]['cat'] = 'feline'
-a → [{"cat"=>"feline"}, {"cat"=>"feline"}]
+a #=> [{"cat"=>"feline"}, {"cat"=>"feline"}]
 a[1]['cat'] = 'Felix'
-a → [{"cat"=>"Felix"}, {"cat"=>"Felix"}]    
+a #=> [{"cat"=>"Felix"}, {"cat"=>"Felix"}]    
 
 Multiple instances
+
 a = Array.new(2) { Hash.new } 
 a[0]['cat'] = 'feline'
-a → [{"cat"=>"feline"}, {}]
+a #=> [{"cat"=>"feline"}, {}]
 a[1]['cat'] = 'Felix'
-a → [{"cat"=>"feline"}, {"cat"=>"Felix"}]    
+a #=> [{"cat"=>"feline"}, {"cat"=>"Felix"}]    
 
 squares = Array.new(5) {|i| i*i}
-squares → [0, 1, 4, 9, 16]    
+squares #=> [0, 1, 4, 9, 16]    
 
 initialized by copying
+
 copy = Array.new(squares) 
 squares[5] = 25
-squares → [0, 1, 4, 9, 16, 25]
-copy    → [0, 1, 4, 9, 16]
-</pre>
-
+squares #=> [0, 1, 4, 9, 16, 25]
+copy    #=> [0, 1, 4, 9, 16]
 <h2>Instance methods</h2>
-
 <h3>&amp;</h3>
-<pre>
-arr &amp; other_array → an_array
+arr &amp; other_array #=> an_array
 
 Set Intersection:
  
@@ -130,38 +126,29 @@ Set Intersection:
 with no duplicates. The rules for comparing elements are the same as for hash keys. If
 you need setlike behavior, see the library class Set on page 710.
 
-[ 1, 1, 3, 5 ] & [ 1, 2, 3 ] → [1, 3]
-</pre>
-
+[ 1, 1, 3, 5 ] & [ 1, 2, 3 ] #=> [1, 3]
 <h3>*</h3>
-<pre>
-arr * int → an_array
-arr * str → a_string
+arr * int #=> an_array
+arr * str #=> a_string
 
 Repetition:
  
   With an argument that responds to to_str, equivalent to arr.join(str).
 Otherwise, returns a new array built by concatenating int copies of arr.
 
-[ 1, 2, 3 ] * 3  → [1, 2, 3, 1, 2, 3, 1, 2, 3]
-[ 1, 2, 3 ] * &quot;&quot; → &quot;123&quot;
-</pre>
-
+[ 1, 2, 3 ] * 3  #=> [1, 2, 3, 1, 2, 3, 1, 2, 3]
+[ 1, 2, 3 ] * &quot;&quot; #=> &quot;123&quot;
 <h3>&#43</h3>
-<pre>
-arr + other_array → an_array
+arr + other_array #=> an_array
 
 Concatenation:
  
   Returns a new array built by concatenating the two arrays together to
 produce a third array.
 
-[ 1, 2, 3 ] + [ 4, 5 ] → [1, 2, 3, 4, 5]
-</pre>
-
+[ 1, 2, 3 ] + [ 4, 5 ] #=> [1, 2, 3, 4, 5]
 <h3>–</h3>
-<pre>
-arr - other_array → an_array
+arr - other_array #=> an_array
 
 Array Difference: 
 
@@ -169,24 +156,18 @@ Array Difference:
 any items that also appear in other_array. If you need setlike behavior, see the library
 class Set on page 710.
 
-[ 1, 1, 2, 2, 3, 3, 4, 5 ] [1, 2, 4 ] → [3, 3, 5]
-</pre>
-
+[ 1, 1, 2, 2, 3, 3, 4, 5 ] - [1, 2, 4 ] #=> [3, 3, 5]
 <h3><<</h3>
-<pre>
-arr << obj → arr
+arr << obj #=> arr
 
 Append: 
 
   Pushes the given object on to the end of this array. This expression returns
 the array itself, so several appends may be chained together. See also Array#push.
 
-[ 1, 2 ] << "c" << "d" << [ 3, 4 ] → [1, 2, "c", "d", [3, 4]]
-</pre>
-
+[ 1, 2 ] << "c" << "d" << [ 3, 4 ] #=> [1, 2, "c", "d", [3, 4]]
 <h3><=></h3>
-<pre>
-arr <=> other_array → −1, 0, +1
+arr <=> other_array #=> −1, 0, +1
 
 Comparison: 
 
@@ -198,13 +179,10 @@ are “equal” according to Array#<=> if and only if they have the same length 
 value of each element is equal to the value of the corresponding element in the other
 array.
 
-[ "a", "a", "c" ]    <=> [ "a", "b", "c" ] → -1
-[ 1, 2, 3, 4, 5, 6 ] <=> [ 1, 2 ]          → 1
-</pre>
-
+[ "a", "a", "c" ]    <=> [ "a", "b", "c" ] #=> -1
+[ 1, 2, 3, 4, 5, 6 ] <=> [ 1, 2 ]          #=> 1
 <h3>==</h3>
-<pre>
-arr == obj → true or false
+arr == obj #=> true or false
 
 Equality:
  
@@ -212,16 +190,13 @@ Equality:
 element is equal to (according to Object#==) the corresponding element in the other
 array. If obj is not an array, attempt to convert it using to_ary and return obj==arr.
 
-[ "a", "c" ]    == [ "a", "c", 7 ]   → false
-[ "a", "c", 7 ] == [ "a", "c", 7 ]   → true
-[ "a", "c", 7 ] == [ "a", "d", "f" ] → false
-</pre>
-
+[ "a", "c" ]    == [ "a", "c", 7 ]   #=> false
+[ "a", "c", 7 ] == [ "a", "c", 7 ]   #=> true
+[ "a", "c", 7 ] == [ "a", "d", "f" ] #=> false
 <h3>[ ]</h3>
-<pre>
-arr[int]           → obj or nil
-arr[start, length] → an_array or nil
-arr[range]         → an_array or nil
+arr[int]           #=> obj or nil
+arr[start, length] #=> an_array or nil
+arr[range]         #=> an_array or nil
 
 Element Reference:
  
@@ -233,25 +208,23 @@ If the start index equals the array size and a length or range parameter is give
 array is returned. Equivalent to Array#slice.
 
 a = [ "a", "b", "c", "d", "e" ]
-a[2] + a[0] + a[1] → "cab"
-a[6]               → nil
-a[1, 2]            → ["b", "c"]
-a[1..3]            → ["b", "c", "d"]
-a[4..7]            → ["e"]
-a[6..10]           → nil
-a[3, 3]            → ["c", "d", "e"]
+a[2] + a[0] + a[1] #=> "cab"
+a[6]               #=> nil
+a[1, 2]            #=> ["b", "c"]
+a[1..3]            #=> ["b", "c", "d"]
+a[4..7]            #=> ["e"]
+a[6..10]           #=> nil
+a[3, 3]            #=> ["d", "e"]
 
 special cases:
-a[5]     → nil
-a[5, 1]  → []
-a[5..10] → []
-</pre>
 
+a[5]     #=> nil
+a[5, 1]  #=> []
+a[5..10] #=> []
 <h3>[ ]=</h3>
-<pre>
-arr[int] = obj           → obj
-arr[start, length] = obj → obj
-arr[range] = obj         → obj
+arr[int] = obj           #=> obj
+arr[start, length] = obj #=> obj
+arr[range] = obj         #=> obj
 
 Element Assignment:
  
@@ -265,20 +238,17 @@ range will replace the given elements in arr with the array contents. An IndexEr
 raised if a negative index points past the beginning of the array. See also Array#push
 and Array#unshift.
 
-a       = Array.new           a → [] # a is an empty array
-a[4]    = "4";                a → [nil, nil, nil, nil, "4"]
-a[0]    = [ 1, 2, 3 ];        a → [[1, 2, 3], nil, nil, nil, "4"]
-a[0, 3] = [ 'a', 'b', 'c' ];  a → ["a", "b", "c", nil, "4"]
-a[1..2] = [ 1, 2 ];           a → ["a", 1, 2, nil, "4"]
-a[0, 2] = "?";                a → ["?", 2, nil, "4"]
-a[0..2] = "A";                a → ["A", "4"]
-a[1]    = "Z";                a → ["A", "Z"]
-a[1..1] = nil;                a → ["A"]
-</pre>
-
+a       = Array.new           a #=> [] # a is an empty array
+a[4]    = "4";                a #=> [nil, nil, nil, nil, "4"]
+a[0]    = [ 1, 2, 3 ];        a #=> [[1, 2, 3], nil, nil, nil, "4"]
+a[0, 3] = [ 'a', 'b', 'c' ];  a #=> ["a", "b", "c", nil, "4"]
+a[1..2] = [ 1, 2 ];           a #=> ["a", 1, 2, nil, "4"]
+a[0, 2] = "?";                a #=> ["?", 2, nil, "4"]
+a[0..2] = "A";                a #=> ["A", "4"]
+a[1]    = "Z";                a #=> ["A", "Z"]
+a[1..1] = nil;                a #=> ["A", nil]
 <h3>|</h3>
-<pre>
-arr | other_array → an_array
+arr | other_array #=> an_array
 
 Set Union: 
 
@@ -286,12 +256,9 @@ Set Union:
 duplicates. The rules for comparing elements are the same as for hash keys. If you
 need setlike behavior, see the library class Set on page 710.
 
-[ "a", "b", "c" ] | [ "c", "d", "a" ] → ["a", "b", "c", "d"]
-</pre>
-
+[ "a", "b", "c" ] | [ "c", "d", "a" ] #=> ["a", "b", "c", "d"]
 <h3>assoc</h3>
-<pre>
-arr.assoc( obj ) → an_array or nil
+arr.assoc( obj ) #=> an_array or nil
 
   Searches through an array whose elements are also arrays comparing obj with the
 first element of each contained array using obj.== . Returns the first contained array
@@ -302,13 +269,10 @@ s1 = [ "colors", "red", "blue", "green" ]
 s2 = [ "letters", "a", "b", "c" ]
 s3 = "foo"
 a  = [ s1, s2, s3 ]
-a.assoc("letters") → ["letters", "a", "b", "c"]
-a.assoc("foo")     → nil
-</pre>
-
+a.assoc("letters") #=> ["letters", "a", "b", "c"]
+a.assoc("foo")     #=> nil
 <h3>at</h3>
-<pre>
-arr.at( int ) → obj or nil
+arr.at( int ) #=> obj or nil
 
   Returns the element at index int. 
 A negative index counts from the end of arr. 
@@ -317,153 +281,124 @@ See also Array#[].
 Array#at is slightly faster than Array#[], as it does not accept ranges, and so on.
 
 a = [ "a", "b", "c", "d", "e" ]
-a.at(0) → "a"
-a.at(1) → "e"
-</pre>
-
+a.at(0) #=> "a"
+a.at(1) #=> "e"
 <h3>clear</h3>
-<pre>
-arr.clear → arr
+arr.clear #=> arr
 
   Removes all elements from arr.
   
 a = [ "a", "b", "c", "d", "e" ]
-a.clear → []
-</pre>
-
-<h3>collect!</h3>
-<pre>
-arr.collect! {| obj | block } → arr
+a.clear #=> []
+<h3>collect</h3>
+arr.collect {| obj | block } #=> arr
 
   Invokes block once for each element of arr, replacing the element with the value
 returned by block. See also Enumerable#collect.
 
 a = [ "a", "b", "c", "d" ]
-a.collect! {|x| x + "!" } → ["a!", "b!", "c!", "d!"]
-a                         → ["a!", "b!", "c!", "d!"]
-</pre>
+a.collect {|x| x + "!" } #=> ["a!", "b!", "c!", "d!"]
+a                        #=> [ "a", "b", "c", "d" ]
+<h3>collect!</h3>
+arr.collect! {| obj | block } #=> arr
 
+  Invokes block once for each element of arr, replacing the element with the value
+returned by block. See also Enumerable#collect.
+
+a = [ "a", "b", "c", "d" ]
+a.collect! {|x| x + "!" } #=> ["a!", "b!", "c!", "d!"]
+a                         #=> ["a!", "b!", "c!", "d!"]
 <h3>compact</h3>
-<pre>
-arr.compact → an_array
+arr.compact #=> an_array
 
   Returns a copy of arr with all nil elements removed.
   
-[ "a", nil, "b", nil, "c", nil ].compact → ["a", "b", "c"]
-</pre>
-
+[ "a", nil, "b", nil, "c", nil ].compact #=> ["a", "b", "c"]
 <h3>compact!</h3>
-<pre>
-arr.compact! → arr or nil
+arr.compact! #=> arr or nil
 
   Removes nil elements from arr. 
 Returns nil if no changes were made.
   
-[ "a", nil, "b", nil, "c" ].compact! → ["a", "b", "c"]
-[ "a", "b", "c" ].compact!           → nil
-</pre>
-
+[ "a", nil, "b", nil, "c" ].compact! #=> ["a", "b", "c"]
+[ "a", "b", "c" ].compact!           #=> nil
 <h3>concat</h3>
-<pre>
-arr.concat( other_array ) → arr
+arr.concat( other_array ) #=> arr
 
   Appends the elements in other_array to arr.
   
-[ "a", "b" ].concat( ["c", "d"] ) → ["a", "b", "c", "d"]
-</pre>
-
+[ "a", "b" ].concat( ["c", "d"] ) #=> ["a", "b", "c", "d"]
 <h3>delete</h3>
-<pre>
-arr.delete( obj )           → obj or nil
-arr.delete( obj ) { block } → obj or nil
+arr.delete( obj )           #=> obj or nil
+arr.delete( obj ) { block } #=> obj or nil
 
   Deletes items from arr that are equal to obj. 
 If the item is not found, returns nil. 
 If the optional code block is given, returns the result of block if the item is not found.
 
 a = [ "a", "b", "b", "b", "c" ]
-a.delete("b")                 → "b"
-a                             → ["a", "c"]
-a.delete("z")                 → nil
-a.delete("z") { "not found" } → "not found"
-</pre>
-
+a.delete("b")                 #=> "b"
+a                             #=> ["a", "c"]
+a.delete("z")                 #=> nil
+a.delete("z") { "not found" } #=> "not found"
 <h3>delete_at</h3>
-<pre>
-arr.delete_at( index ) → obj or nil
+arr.delete_at( index ) #=> obj or nil
 
   Deletes the element at the specified index, returning that element, or nil if the index is
 out of range. See also Array#slice!.
 
 a = %w( ant bat cat dog )
-a.delete_at(2)  → "cat"
-a               → ["ant", "bat", "dog"]
-a.delete_at(99) → nil
-</pre>
-
+a.delete_at(2)  #=> "cat"
+a               #=> ["ant", "bat", "dog"]
+a.delete_at(99) #=> nil
 <h3>delete_if</h3>
-<pre>
-arr.delete_if {| item| block } → arr
+arr.delete_if {| item| block } #=> arr
 
   Deletes every element of arr for which block evaluates to true.
   
 a = [ "a", "b", "c" ]
-a.delete_if {|x| x >= "b" } → ["a"]
-</pre>
-
+a.delete_if {|x| x >= "b" } #=> ["a"]
 <h3>each</h3>
-<pre>
-arr.each {| item| block } → arr
+arr.each {| item| block } #=> arr
 
   Calls block once for each element in arr, passing that element as a parameter.
   
 a = [ "a", "b", "c" ]
 a.each {|x| print x, " -- "}
-produces:
-a -- b -- c --
-</pre>
 
+produces:
+a -- b -- c -- ["a", "b", "c"]
 <h3>each_index</h3>
-<pre>
-arr.each_index {| index | block } → arr
+arr.each_index {| index | block } #=> arr
 
   Same as Array#each but passes the index of the element instead of the element itself.
   
 a = [ "a", "b", "c" ]
 a.each_index {|x| print x, " -- "}
+
 produces:
-0 -- 1 -- 2 --
-
-</pre>
-
+0 -- 1 -- 2 -- ["a", "b", "c"]
 <h3>empty?</h3>
-<pre>
-arr.empty? → true or false
+arr.empty? #=> true or false
 
   Returns true if arr array contains no elements.
   
-[].empty?          → true
-[ 1, 2, 3 ].empty? → false
-</pre>
-
+[].empty?          #=> true
+[ 1, 2, 3 ].empty? #=> false
 <h3>eql?</h3>
-<pre>
-arr.eql?( other ) → true or false
+arr.eql?( other ) #=> true or false
 
   Returns true if arr and other are the same object or if other is an object of class Array
 with the same length and content as arr. Elements in the arrays are compared using
 Object#eql?. See also Array#<=>. 
 
-[ "a", "b", "c" ].eql?(["a", "b", "c"]) → true
-[ "a", "b", "c" ].eql?(["a", "b"])      → false
-[ "a", "b", "c" ].eql?(["b", "c", "d"]) → false
-</pre>
-
+[ "a", "b", "c" ].eql?(["a", "b", "c"]) #=> true
+[ "a", "b", "c" ].eql?(["a", "b"])      #=> false
+[ "a", "b", "c" ].eql?(["b", "c", "d"]) #=> false
 <h3>fetch</h3>
-<pre>
-arr.fetch( index )                → obj
-arr.fetch( index, default )       → obj
-arr.fetch( index ) {| i | block } → obj
+arr.fetch( index )                #=> obj
+arr.fetch( index, default )       #=> obj
+arr.fetch( index ) {| i | block } #=> obj
 
   Tries to return the element at position index. 
 If the index lies outside the array, the first form throws an IndexError exception, 
@@ -472,22 +407,19 @@ passing in the index.
 Negative values of index count from the end of the array.
 
 a = [ 11, 22, 33, 44 ]
-a.fetch(1)            → 22
-a.fetch(3)            → 44
-a.fetch(3,'cat')      → 44
-a.fetch(3) {|i| i*i } → 44
-a.fetch(4,'cat')      → "cat"
-a.fetch(4) {|i| i*i } → 16
-</pre>
-
+a.fetch(1)            #=> 22
+a.fetch(3)            #=> 44
+a.fetch(3,'cat')      #=> 44
+a.fetch(3) {|i| i*i } #=> 44
+a.fetch(4,'cat')      #=> "cat"
+a.fetch(4) {|i| i*i } #=> 16
 <h3>fill</h3>
-<pre>
-arr.fill( obj )                               → arr
-arr.fill( obj, start h , length i )           → arr
-arr.fill( obj, range )                        → arr
-arr.fill {| i | block }                       → arr
-arr.fill( start h , length i ) {| i | block } → arr
-arr.fill( range ) {| i | block }              → arr
+arr.fill( obj )                               #=> arr
+arr.fill( obj, start h , length i )           #=> arr
+arr.fill( obj, range )                        #=> arr
+arr.fill {| i | block }                       #=> arr
+arr.fill( start h , length i ) {| i | block } #=> arr
+arr.fill( range ) {| i | block }              #=> arr
 
   The first three forms set the selected elements of arr (which may be the entire array) to obj. 
 A start of nil is equivalent to zero. A length of nil is equivalent to arr.length.
@@ -495,158 +427,122 @@ The last three forms fill the array with the value of the block.
 The block is passed the absolute index of each element to be filled.
 
 a = [ "a", "b", "c", "d" ]
-a.fill("x")              → ["x", "x", "x", "x"]
-a.fill("z", 2, 2)        → ["x", "x", "z", "z"]
-a.fill("y", 0..1)        → ["y", "y", "z", "z"]
+a.fill("x")              #=> ["x", "x", "x", "x"]
+a.fill("z", 2, 2)        #=> ["x", "x", "z", "z"]
+a.fill("y", 0..1)        #=> ["y", "y", "z", "z"]
 
-a.fill {|i| i*i}         → [0, 1, 4, 9]
-a.fill(1, 2) {|i| i*i}   → ["a", 1, 4, "d"]
-a.fill(1..2) {|i| i+100} → ["a", 101, 102, "d"]
-</pre>
-
+a.fill {|i| i*i}         #=> [0, 1, 4, 9]
+a.fill(1, 2) {|i| i/2}   #=> [0, 0, 1, 9]
+a.fill(1..2) {|i| i+100} #=> [0, 101, 102, 9]
 <h3>first</h3>
-<pre>
-arr.first          → obj or nil
-arr.first( count ) → an_array
+arr.first          #=> obj or nil
+arr.first( count ) #=> an_array
 
   Returns the first element, or the first count elements, of arr. 
 If the array is empty, the first form returns nil, and the second returns an empty array.
 
 a = [ "q", "r", "s", "t" ]
-a.first    → "q"
-a.first(1) → ["q"]
-a.first(3) → ["q", "r", "s"]
-</pre>
-
+a.first    #=> "q"
+a.first(1) #=> ["q"]
+a.first(3) #=> ["q", "r", "s"]
 <h3>flatten</h3>
-<pre>
-arr.flatten → an_array
+arr.flatten #=> an_array
 
   Returns a new array that is a one-dimensional flattening of this array (recursively). 
 That is, for every element that is an array, extract its elements into the new array.
 
-s = [ 1, 2, 3 ]         → [1, 2, 3]
-t = [ 4, 5, 6, [7, 8] ] → [4, 5, 6, [7, 8]]
-a = [ s, t, 9, 10 ]     → [[1, 2, 3], [4, 5, 6, [7, 8]], 9, 10]
-a.flatten               → [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-</pre>
-
+s = [ 1, 2, 3 ]         #=> [1, 2, 3]
+t = [ 4, 5, 6, [7, 8] ] #=> [4, 5, 6, [7, 8]]
+a = [ s, t, 9, 10 ]     #=> [[1, 2, 3], [4, 5, 6, [7, 8]], 9, 10]
+a.flatten               #=> [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+a                       #=> [[1, 2, 3], [4, 5, 6, [7, 8]], 9, 10]
 <h3>flatten!</h3>
-<pre>
-arr.flatten! → arr or nil
+arr.flatten! #=> arr or nil
 
   Same as Array#flatten but modifies the receiver in place. 
 Returns nil if no modifications were made (i.e., arr contains no subarrays).
 
 a = [ 1, 2, [3, [4, 5] ] ]
-a.flatten! → [1, 2, 3, 4, 5]
-a.flatten! → nil
-a          → [1, 2, 3, 4, 5]
-</pre>
-
+a.flatten! #=> [1, 2, 3, 4, 5]
+a.flatten! #=> nil
+a          #=> [1, 2, 3, 4, 5]
 <h3>include?</h3>
-<pre>
-arr.include?( obj ) → true or false
+arr.include?( obj ) #=> true or false
 
   Returns true if the given object is present in arr (that is, if any object == obj), 
 false otherwise.
 
 a = [ "a", "b", "c" ]
-a.include?("b") → true
-a.include?("z") → false
-</pre>
-
+a.include?("b") #=> true
+a.include?("z") #=> false
 <h3>index</h3>
-<pre>
-arr.index( obj ) → int or nil
+arr.index( obj ) #=> int or nil
 
   Returns the index of the first object in arr that is == to obj. 
 Returns nil if no match is found.
 
 a = [ "a", "b", "c" ]
-a.index("b") → 1
-a.index("z") → nil
-</pre>
-
+a.index("b") #=> 1
+a.index("z") #=> nil
 <h3>indexes</h3>
-<pre>
-arr.indexes( i1, i2, ... iN ) → an_array
+arr.indexes( i1, i2, ... iN ) #=> an_array
 
 Deprecated; use Array#values_at.
-</pre>
-
 <h3>indices</h3>
-<pre>
-arr.indices( i1, i2, ... iN ) → an_array
+arr.indices( i1, i2, ... iN ) #=> an_array
 
 Deprecated; use Array#values_at.
-</pre>
-
 <h3>insert</h3>
-<pre>
-arr.insert( index, obj+ ) → arr
+arr.insert( index, obj+ ) #=> arr
 
   If index is not negative, inserts the given values before the element with the given index.
 If index is −1, appends the values to arr. 
 Otherwise inserts the values after the element with the given index.
 
 a = %w{ a b c d }
-a.insert(2, 99)      → ["a", "b", 99, "c", "d"]
-a.insert(2, 1, 2, 3) → ["a", "b", 99, "c", 1, 2, 3, "d"]
-a.insert(1, "e")     → ["a", "b", 99, "c", 1, 2, 3, "d", "e"]
-</pre>
-
+a.insert(2, 99)      #=> ["a", "b", 99, "c", "d"]
+a.insert(2, 1, 2, 3) #=> ["a", "b", 99, "c", 1, 2, 3, "d"]
+a.insert(1, "e")     #=> ["a", "b", 99, "c", 1, 2, 3, "d", "e"]
 <h3>join</h3>
-<pre>
-arr.join( separator=$, ) → str
+arr.join( separator=$, ) #=> str
 
   Returns a string created by concatenating each element of the array to a string, 
 separating each by separator.
 
-[ "a", "b", "c" ].join     → "abc"
-[ "a", "b", "c" ].join("") → "abc"
-</pre>
-
+[ "a", "b", "c" ].join      #=> "abc"
+[ "a", "b", "c" ].join(",") #=> "a,b,c"
 <h3>last</h3>
-<pre>
-arr.last          → obj or nil
-arr.last( count ) → an_array
+arr.last          #=> obj or nil
+arr.last( count ) #=> an_array
 
   Returns the last element, or last count elements, of arr. 
 If the array is empty, the first form returns nil, the second an empty array.
 
-[ "w", "x", "y", "z" ].last    → "z"
-[ "w", "x", "y", "z" ].last(1) → ["z"]
-[ "w", "x", "y", "z" ].last(3) → ["x", "y", "z"]
-</pre>
-
+[ "w", "x", "y", "z" ].last    #=> "z"
+[ "w", "x", "y", "z" ].last(1) #=> ["z"]
+[ "w", "x", "y", "z" ].last(3) #=> ["x", "y", "z"]
 <h3>length</h3>
-<pre>
-arr.length → int
+arr.length #=> int
 
-Returns the number of elements in arr. See also Array#nitems.
-[ 1, nil, 3, nil, 5 ].length → 5
-</pre>
+  Returns the number of elements in arr. See also Array#nitems.
 
+[ 1, nil, 3, nil, 5 ].length #=> 5
 <h3>map!</h3>
-<pre>
-arr.map! {| obj | block } → arr
+arr.map! {| obj | block } #=> arr
 
   Synonym for Array#collect!.
-</pre>
-
+  
+a = [ "a", "b", "c", "d" ]
+a.map! {|x| x + "!" } #=> ["a!", "b!", "c!", "d!"]
+a                     #=> ["a!", "b!", "c!", "d!"]
 <h3>nitems</h3>
-<pre>
-arr.nitems → int
+arr.nitems #=> int
 
   Returns the number of non-nil elements in arr. See also Array#length.
   
-[ 1, nil, 3, nil, 5 ].nitems → 3
-</pre>
-
+[ 1, nil, 3, nil, 5 ].nitems #=> 3
 <h3>pack</h3>
-<pre>
-arr.pack ( template ) → binary_string
+arr.pack ( template ) #=> binary_string
 
   Packs the contents of arr into a binary sequence according to the directives in template
 (see Table 27.1 on the page before). Directives A, a, and Z may be followed by a count,
@@ -660,9 +556,9 @@ are also ignored. See also String#unpack on page 602.
 
 a = [ "a", "b", "c" ]
 n = [ 65, 66, 67 ]
-a.pack("A3A3A3") → "a b c "
-a.pack("a3a3a3") → "a\000\000b\000\000c\000\000"
-n.pack("ccc")    → "ABC"
+a.pack("A3A3A3") #=> "a b c "
+a.pack("a3a3a3") #=> "a\000\000b\000\000c\000\000"
+n.pack("ccc")    #=> "ABC"
 
 Table 27.1. Template characters for Array#pack
 Directive Meaning
@@ -714,154 +610,123 @@ The octets of a BER-compressed integer represent an unsigned integer in base 128
 most significant digit first, with as few digits as possible. 
 Bit eight (the high bit) is set on each byte except the last (Self-Describing
 Binary Data Representation, MacLeod)
-</pre>
-
 <h3>pop</h3>
-<pre>
-arr.pop → obj or nil
+arr.pop #=> obj or nil
 
   Removes the last element from arr and returns it or returns nil if the array is empty.
+  
 a = [ "a", "m", "z" ]
-a.pop → "z"
-a     → ["a", "m"]
-</pre>
-
+a.pop #=> "z"
+a     #=> ["a", "m"]
 <h3>push</h3>
-<pre>
-arr.push( obj* ) → arr
+arr.push( obj* ) #=> arr
 
   Appends the given argument(s) to arr.
+  
 a = [ "a", "b", "c" ]
-a.push("d", "e", "f") → ["a", "b", "c", "d", "e", "f"]
-</pre>
-
+a.push("d", "e", "f") #=> ["a", "b", "c", "d", "e", "f"]
 <h3>rassoc</h3>
-<pre>
-arr.rassoc( key ) → an_array or nil
+arr.rassoc( key ) #=> an_array or nil
 
   Searches through the array whose elements are also arrays. 
 Compares key with the second element of each contained array using ==. 
 Returns the first contained array that matches. See also Array#assoc.
 
 a = [ [ 1, "one"], [2, "two"], [3, "three"], ["ii", "two"] ]
-a.rassoc("two")  → [2, "two"]
-a.rassoc("four") → nil
-</pre>
-
+a.rassoc("two")  #=> [2, "two"]
+a.rassoc("four") #=> nil
 <h3>reject!</h3>
-<pre>
-arr.reject! { block } item → arr or nil
+arr.reject! { block } item #=> arr or nil
 
   Equivalent to Array#delete_if, but returns nil if no changes were made. 
 Also see Enumerable#reject.
-</pre>
 
+a = [ "a", "b", "c" ]
+a.reject! {|x| x >= "b" } #=> ["a"]
+a.reject! {|x| x >= "b" } #=> nil
 <h3>replace</h3>
-<pre>
-arr.replace( other_array ) → arr
+arr.replace( other_array ) #=> arr
 
   Replaces the contents of arr with the contents of other_array, 
 truncating or expanding if necessary.
 
 a = [ "a", "b", "c", "d", "e" ]
-a.replace([ "x", "y", "z" ]) → ["x", "y", "z"]
-a                            → ["x", "y", "z"]
-</pre>
-
+a.replace([ "x", "y", "z" ]) #=> ["x", "y", "z"]
+a                            #=> ["x", "y", "z"]
 <h3>reverse</h3>
-<pre>
-arr.reverse → an_array
+arr.reverse #=> an_array
 
   Returns a new array using arr’s elements in reverse order.
   
-[ "a", "b", "c" ].reverse → ["c", "b", "a"]
-[ 1 ].reverse             → [1]
-</pre>
-
+[ "a", "b", "c" ].reverse #=> ["c", "b", "a"]
+[ 1 ].reverse             #=> [1]
 <h3>reverse!</h3>
-<pre>
-arr.reverse! → arr
+arr.reverse! #=> arr
 
   Reverses arr in place.
   
 a = [ "a", "b", "c" ]
-a.reverse!     → ["c", "b", "a"]
-a              → ["c", "b", "a"]
-[ 1 ].reverse! → [1]
-</pre>
-
+a.reverse!     #=> ["c", "b", "a"]
+a              #=> ["c", "b", "a"]
+[ 1 ].reverse! #=> [1]
 <h3>reverse_each</h3>
-<pre>
-arr.reverse_each {| item| block } → arr
+arr.reverse_each {| item| block } #=> arr
 
   Same as Array#each, but traverses arr in reverse order.
   
 a = [ "a", "b", "c" ]
 a.reverse_each {|x| print x, " " }
-produces:
-c b a
-</pre>
 
+produces:
+c b a ["a", "b", "c"]
 <h3>rindex</h3>
-<pre>
-arr.rindex( obj ) → int or nil
+arr.rindex( obj ) #=> int or nil
 
   Returns the index of the last object in arr such that the object == obj. 
 Returns nil if no match is found.
 
 a = [ "a", "b", "b", "b", "c" ]
-a.rindex("b") → 3
-a.rindex("z") → nil
-</pre>
-
+a.rindex("b") #=> 3
+a.rindex("z") #=> nil
 <h3>shift</h3>
-<pre>
-arr.shift → obj or nil
+arr.shift #=> obj or nil
 
   Returns the first element of arr and removes it 
 (shifting all other elements down by one). 
 Returns nil if the array is empty.
-args = [ "m", "q", "filename" ]
-args.shift → "m"
-args       → ["q", "filename"]
-</pre>
 
+args = [ "m", "q", "filename" ]
+args.shift #=> "m"
+args       #=> ["q", "filename"]
 <h3>size</h3>
-<pre>
-arr.size → int
+arr.size #=> int
 
   Synonym for Array#length.
-</pre>
-
 <h3>slice</h3>
-<pre>
-arr.slice( int )           → obj
-arr.slice( start, length ) → an_array
-arr.slice( range )         → an_array
+arr.slice( int )           #=> obj
+arr.slice( start, length ) #=> an_array
+arr.slice( range )         #=> an_array
 
   Synonym for Array#[ ].
   
 a = [ "a", "b", "c", "d", "e" ]
-a.slice(2) + a.slice(0) + a.slice(1) → "cab"
-a.slice(6)                           → nil
-a.slice(1, 2)                        → ["b", "c"]
-a.slice(1..3)                        → ["b", "c", "d"]
-a.slice(4..7)                        → ["e"]
-a.slice(6..10)                       → nil
-a.slice(3, 3)                        → ["c", "d", "e"]
+a.slice(2) + a.slice(0) + a.slice(1) #=> "cab"
+a.slice(6)                           #=> nil
+a.slice(1, 2)                        #=> ["b", "c"]
+a.slice(1..3)                        #=> ["b", "c", "d"]
+a.slice(4..7)                        #=> ["e"]
+a.slice(6..10)                       #=> nil
+a.slice(3, 3)                        #=> ["c", "d", "e"]
 
 special cases:
 
-a.slice(5)     → nil
-a.slice(5, 1)  → []
-a.slice(5..10) → []
-</pre>
-
+a.slice(5)     #=> nil
+a.slice(5, 1)  #=> []
+a.slice(5..10) #=> []
 <h3>slice!</h3>
-<pre>
-arr.slice!( int )           → obj or nil
-arr.slice!( start, length ) → an_array or nil
-arr.slice!( range )         → an_array or nil
+arr.slice!( int )           #=> obj or nil
+arr.slice!( start, length ) #=> an_array or nil
+arr.slice!( range )         #=> an_array or nil
 
   Deletes the element(s) given by an index (optionally with a length) or by a range.
 Returns the deleted object, subarray, or nil if the index is out of range.
@@ -874,119 +739,111 @@ def slice!(*args)
 end
 
 a = [ "a", "b", "c" ]
-a.slice!(1)   → "b"
-a             → ["a", "c"]
-a.slice!(1)   → "c"
-a             → ["a"]
-a.slice!(100) → nil
-a             → ["a"]
-</pre>
-
+a.slice!(1)   #=> "b"
+a             #=> ["a", "c"]
+a.slice!(1)   #=> "c"
+a             #=> ["a"]
+a.slice!(100) #=> nil
+a             #=> ["a"]
 <h3>sort</h3>
-<pre>
-arr.sort                  → an_array
-arr.sort {| a,b | block } → an_array
+arr.sort                  #=> an_array
+arr.sort {| a,b | block } #=> an_array
 
   Returns a new array created by sorting arr. Comparisons for the sort will be done using
 the <=> operator or using an optional code block. The block implements a comparison
 between a and b, returning −1, 0, or +1. See also Enumerable#sort_by.
 
 a = [ "d", "a", "e", "c", "b" ]
-a.sort                  → ["a", "b", "c", "d", "e"]
-a.sort {|x,y| y <=> x } → ["e", "d", "c", "b", "a"]
-</pre>
-
+a.sort                  #=> ["a", "b", "c", "d", "e"]
+a.sort {|x,y| y <=> x } #=> ["e", "d", "c", "b", "a"]
+a                       #=> ["d", "a", "e", "c", "b"]
 <h3>sort!</h3>
-<pre>
-arr.sort!                  → arr
-arr.sort! {| a,b | block } → arr
+arr.sort!                  #=> arr
+arr.sort! {| a,b | block } #=> arr
 
   Sorts arr in place (see Array#sort). arr is effectively frozenwhile a sort is in progress.
+  
 a = [ "d", "a", "e", "c", "b" ]
-a.sort! → ["a", "b", "c", "d", "e"]
-a       → ["a", "b", "c", "d", "e"]
-</pre>
-
+a.sort! #=> ["a", "b", "c", "d", "e"]
+a       #=> ["a", "b", "c", "d", "e"]
 <h3>to_a</h3>
-<pre>
-arr.to_a            → arr
-array_subclass.to_a → array
+arr.to_a            #=> arr
+array_subclass.to_a #=> array
 
   If arr is an array, returns arr. If arr is a subclass of Array, invokes to_ary, and uses
 the result to create a new array object
-</pre>
 
+arg = [ "a", "e", "i", "o" ]
+arg.object_id
+arg2 = arg.to_a
+arg2.object_id
+
+class MyArray < Array ; end
+ma = MyArray.new arg
+ma.object_id
+ma2 = ma.to_a
+ma2.object_id
+ma2                     #=> ["a", "e", "i", "o"]
 <h3>to_ary</h3>
-<pre>
-arr.to_ary → arr
+arr.to_ary #=> arr
 
   Returns arr.
-</pre>
 
+arg = [ "a", "e", "i", "o" ]
+arg.object_id
+arg2 = arg.to_ary 
+arg2.object_id 
+arg2 #=> ["a", "e", "i", "o"]
 <h3>to_s</h3>
-<pre>
-arr.to_s → str
+arr.to_s #=> str
 
   Returns arr.join.
   
-[ "a", "e", "i", "o" ].to_s → "aeio"
-</pre>
-
+[ "a", "e", "i", "o" ].to_s #=> "[\"a\", \"e\", \"i\", \"o\"]"
 <h3>transpose</h3>
-<pre>
-arr.transpose → an_array
+arr.transpose #=> an_array
 
   Assumes that arr is an array of arrays and transposes the rows and columns.
   
 a = [[1,2], [3,4], [5,6]]
-a.transpose → [[1, 3, 5], [2, 4, 6]]
-</pre>
-
+a.transpose #=> [[1, 3, 5], [2, 4, 6]]
 <h3>uniq</h3>
-<pre>
-arr.uniq → an_array
+arr.uniq #=> an_array
 
   Returns a new array by removing duplicate values in arr, where duplicates are detected
 by comparing using eql?.
 
 a = [ "a", "a", "b", "b", "c" ]
-a.uniq → ["a", "b", "c"]
-</pre>
-
+a.uniq #=> ["a", "b", "c"]
 <h3>uniq!</h3>
-<pre>
-arr.uniq! → arr or nil
+arr.uniq! #=> arr or nil
 
   Same as Array#uniq, but modifies the receiver in place. Returns nil if no changes are
 made (that is, no duplicates are found).
 
 a = [ "a", "a", "b", "b", "c" ]
-a.uniq! → ["a", "b", "c"]
+a.uniq! #=> ["a", "b", "c"]
 b = [ "a", "b", "c" ]
-b.uniq! → nil
-</pre>
-
+b.uniq! #=> nil
 <h3>unshift</h3>
-<pre>
-arr.unshift( obj+ ) → arr
+arr.unshift( obj+ ) #=> arr
 
   Prepends object(s) to arr.
   
 a = [ "b", "c", "d" ]
-a.unshift("a")  → ["a", "b", "c", "d"]
-a.unshift(1, 2) → [1, 2, "a", "b", "c", "d"]
-</pre>
-
+a.unshift("a")  #=> ["a", "b", "c", "d"]
+a.unshift(1, 2) #=> [1, 2, "a", "b", "c", "d"]
 <h3>values_at</h3>
-<pre>
-arr.values_at( selector* ) → an_array
+arr.values_at( selector* ) #=> an_array
 
   Returns an array containing the elements in arr corresponding to the given selector(s).
 The selectors may be either integer indices or ranges.
 
 a = %w{ a b c d e f }
-a.values_at(1, 3, 5)     → ["b", "d", "f"]
-a.values_at(1, 3, 5, 7)  → ["b", "d", "f", nil]
-a.values_at(1, 3, 5, 7)  → ["f", "d", "b", nil]
-a.values_at(1..3, 2...5) → ["b", "c", "d", "c", "d", "e"]
+a.values_at(1, 3, 5)     #=> ["b", "d", "f"]
+a.values_at(1, 3, 5, 7)  #=> ["b", "d", "f", nil]
+a.values_at(1, 3, 5, 7)  #=> ["f", "d", "b", nil]
+a.values_at(1..3, 2...5) #=> ["b", "c", "d", "c", "d", "e"]
 </pre>
+</body>
+</html>

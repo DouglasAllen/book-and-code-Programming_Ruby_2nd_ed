@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>argument_error - RDoc Documentation</title>
+
+<style media="screen" type="text/css">
+
+/* @group Source Code */
+
+pre {
+  margin: 0.5em 0;
+  border: 1px dashed #999;
+  padding: 0.5em;
+  background: #262626;
+  color: #80ffff;
+  overflow: auto;
+}
+h1,h2,h3 {
+  margin: 0.5em 0;
+  border: 1px dashed #999;
+  padding: 0.5em;
+  background: #262626;
+  color: #80ff00;
+  overflow: auto;
+}
+.ruby-constant   { color: #7fffd4; background: transparent; }
+.ruby-keyword    { color: #00ffff; background: transparent; }
+.ruby-ivar       { color: #eedd82; background: transparent; }
+.ruby-operator   { color: #00ffee; background: transparent; }
+.ruby-identifier { color: #ffdead; background: transparent; }
+.ruby-node       { color: #ffa07a; background: transparent; }
+.ruby-comment    { color: #dc0000; background: transparent; }
+.ruby-regexp     { color: #ffa07a; background: transparent; }
+.ruby-value      { color: #7fffd4; background: transparent; }
+
+</style>
+
+<body id="top" role="document" class="file">
+<a href="http://ruby-doc.org/core-2.1.1/ArgumentError.html">http://ruby-doc.org/core-2.1.1/ArgumentError.html</a>
+<pre>
+<h1>Class ArgumentError < StandardError</h1>
+
+  Raised when the arguments are wrong and there isn't a more specific Exception class.
+
+Ex: passing the wrong number of arguments
+
+[1, 2, 3].first(4, 5)
+raises the exception:
+
+ArgumentError: wrong number of arguments (2 for 1)
+Ex: passing an argument that is not acceptable:
+
+[1, 2, 3].first(-4)
+raises the exception:
+
+ArgumentError: negative array size
+
+</pre>
+</body>
+</html>
