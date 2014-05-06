@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>binding - RDoc Documentation</title>
+
+<style media="screen" type="text/css">
+
+/* @group Source Code */
+
+pre {
+  margin: 0.5em 0;
+  border: 1px dashed #999;
+  padding: 0.5em;
+  background: #262626;
+  color: #80ffff;
+  overflow: auto;
+}
+h1,h2,h3 {
+  margin: 0.5em 0;
+  border: 1px dashed #999;
+  padding: 0.5em;
+  background: #262626;
+  color: #80ff00;
+  overflow: auto;
+}
+.ruby-constant   { color: #7fffd4; background: transparent; }
+.ruby-keyword    { color: #00ffff; background: transparent; }
+.ruby-ivar       { color: #eedd82; background: transparent; }
+.ruby-operator   { color: #00ffee; background: transparent; }
+.ruby-identifier { color: #ffdead; background: transparent; }
+.ruby-node       { color: #ffa07a; background: transparent; }
+.ruby-comment    { color: #dc0000; background: transparent; }
+.ruby-regexp     { color: #ffa07a; background: transparent; }
+.ruby-value      { color: #7fffd4; background: transparent; }
+
+</style>
+
+<body id="top" role="document" class="file">
+<a href="http://ruby-doc.org/core-2.1.1/Binding.html">http://ruby-doc.org/core-2.1.1/Binding.html</a>
+<pre>
+<h1>Class Binding < Object</h1>
+  Objects of class Binding encapsulate the execution context at some particular
+place in the code and retain this context for future use. The variables, 
+methods, value of self, and possibly an iterator block that can be accessed in
+this context are all retained. Binding objects can be created using 
+Kernel#binding, and are made available to the callback of 
+Kernel#set_trace_func.
+
+  These binding objects can be passed as the second argument of the 
+Kernel#eval method, establishing an environment for the evaluation.
+
+class Demo
+  def initialize(n)
+    @secret = n
+  end
+  def get_binding
+    return binding()
+  end
+end
+
+k1 = Demo.new(99)
+b1 = k1.get_binding
+k2 = Demo.new(-3)
+b2 = k2.get_binding
+
+eval("@secret", b1)   #=> 99
+eval("@secret", b2)   #=> -3
+eval("@secret")       #=> nil
+
+Binding objects have no class-specific methods.
+
+<h2>Public Instance Methods</h2>
+<h3>eval( )</h3>
+eval(string [, filename [,lineno]]) → obj
+
+  Evaluates the Ruby expression(s) in string, in the binding’s context. If the optional
+filename and lineno parameters are present, they will be used when reporting syntax errors.
+
+def get_binding(param)
+  return binding
+end
+b = get_binding("hello")
+b.eval("param")   #=> "hello"
+<h3>local_variable_defined?( )</h3>
+local_variable_defined?(symbol) → obj
+
+  Returns a true if a local variable symbol exists.
+
+def foo
+  a = 1
+  binding.local_variable_defined?(:a) #=> true
+  binding.local_variable_defined?(:b) #=> false
+end
+
+This method is short version of the following code.
+
+binding.eval("defined?(#{symbol}) == 'local-variable'")
+<h3>local_variable_get( )</h3>
+local_variable_get(symbol) → obj
+
+  Returns a value of local variable symbol.
+
+def foo
+  a = 1
+  binding.local_variable_get(:a) #=> 1
+  binding.local_variable_get(:b) #=> NameError
+end
+
+This method is short version of the following code.
+
+binding.eval("#{symbol}")
+<h3>local_variable_set( )</h3>
+local_variable_set(symbol, obj) → obj
+Set local variable named symbol as obj.
+
+def foo
+  a = 1
+  b = binding
+  b.local_variable_set(:a, 2) # set existing local variable `a'
+  b.local_variable_set(:b, 3) # create new local variable `b'
+                              # `b' exists only in binding.
+  b.local_variable_get(:a) #=> 2
+  b.local_variable_get(:b) #=> 3
+  p a #=> 2
+  p b #=> NameError
+end
+
+This method is a similar behavior of the following code
+
+binding.eval("#{symbol} = #{obj}")
+if obj can be dumped in Ruby code.
+</pre>
+</body>
+</html>

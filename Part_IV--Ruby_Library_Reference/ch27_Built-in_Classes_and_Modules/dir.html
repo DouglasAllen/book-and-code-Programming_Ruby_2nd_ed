@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>dir - RDoc Documentation</title>
+
+<style media="screen" type="text/css">
+
+/* @group Source Code */
+
+pre {
+  margin: 0.5em 0;
+  border: 1px dashed #999;
+  padding: 0.5em;
+  background: #262626;
+  color: #80ffff;
+  overflow: auto;
+}
+h1,h2,h3 {
+  margin: 0.5em 0;
+  border: 1px dashed #999;
+  padding: 0.5em;
+  background: #262626;
+  color: #80ff00;
+  overflow: auto;
+}
+
+</style>
+
+<body id="top" role="document" class="file">
+<a href=""></a>
+<pre>
+<h1>Class Dir < Object</h1>
+
+  Objects of class Dir are directory streams representing directories in the underlying file
+system. They provide a variety of ways to list directories and their contents.
+See also File.
+
+  The directory used in these examples contains the two regular files (config.h and main.rb),
+the parent directory (..), and the directory itself (.).
+<h2>Public Class Methods</h2>
+<h3>Dir[ ]</h3>
+Dir[ array ] → array
+Dir[ string [, string ...] ] → array
+
+  Equivalent to calling Dir.glob(array,0) and Dir.glob([string,...],0).
+  
+\
+  Escapes the next metacharacter.
+
+  Note that this means you cannot use backslash on windows as part of a glob, i.e. 
+Dir["c:\foo*"] will not work, use Dir["c:/foo*"] instead.
+
+Examples:
+
+Dir["config.?"]                     #=> ["config.h"]
+Dir.glob("config.?")                #=> ["config.h"]
+Dir.glob("*.[a-z][a-z]")            #=> ["main.rb"]
+Dir.glob("*.[^r]*")                 #=> ["config.h"]
+Dir.glob("*.{rb,h}")                #=> ["main.rb", "config.h"]
+Dir.glob("*")                       #=> ["config.h", "main.rb"]
+Dir.glob("*", File::FNM_DOTMATCH)   #=> [".", "..", "config.h", "main.rb"]
+
+rbfiles = File.join("**", "*.rb")
+Dir.glob(rbfiles)                   #=> ["main.rb",
+                                    #    "lib/song.rb",
+                                    #    "lib/song/karaoke.rb"]
+libdirs = File.join("**", "lib")
+Dir.glob(libdirs)                   #=> ["lib"]
+
+librbfiles = File.join("**", "lib", "**", "*.rb")
+Dir.glob(librbfiles)                #=> ["lib/song.rb",
+                                    #    "lib/song/karaoke.rb"]
+
+librbfiles = File.join("**", "lib", "*.rb")
+Dir.glob(librbfiles)                #=> ["lib/song.rb"]
+<h3>chdir( )</h3>
+chdir( [ string] ) → 0
+chdir( [ string] ) {| path | block } → anObject
+
+  Changes the current working directory of the process to the given string.
+When called without an argument, changes the directory to the value of the environment
+variable HOME, or LOGDIR. SystemCallError (probably Errno::ENOENT) if the target directory
+does not exist.
+
+  If a block is given, it is passed the name of the new current directory, and the block is
+executed with that as the current directory. The original working directory is restored when
+the block exits. The return value of chdir is the value of the block. chdir blocks can be
+nested, but in a multi-threaded program an error will be raised if a thread attempts to open
+a chdir block while another thread has one open.
+
+Dir.chdir("/var/spool/mail")
+puts Dir.pwd
+Dir.chdir("/tmp") do
+  puts Dir.pwd
+  Dir.chdir("/usr") do
+    puts Dir.pwd
+  end
+  puts Dir.pwd
+end
+puts Dir.pwd
+produces:
+
+/var/spool/mail
+/tmp
+/usr
+/tmp
+/var/spool/mail
+<h3>chroot( )</h3>
+chroot( string ) → 0
+
+  Changes this process’s idea of the file system root. Only a privileged process may make
+this call. Not available on all platforms. On Unix systems, see chroot(2) for more 
+information.
+<h3>delete( )</h3>
+delete( string ) → 0
+
+Deletes the named directory. Raises a subclass of SystemCallError if the directory isn’t empty.
+<h3>entries( )</h3>
+entries( dirname ) → array
+entries( dirname, encoding: enc ) → array
+
+  Returns an array containing all of the filenames in the given directory. Will raise a
+SystemCallError if the named directory doesn’t exist.
+
+  The optional enc argument specifies the encoding of the directory. If not specified, 
+the filesystem encoding is used.
+
+Dir.entries("testdir")   #=> [".", "..", "config.h", "main.rb"]
+<h3>exist?( )</h3>
+exist?(file_name) → true or false
+exists?(file_name) → true or false
+
+  Returns true if the named file is a directory, false otherwise.
+<h3>exists?( )</h3>
+exists?(p1)
+
+  Dir.exists? is a deprecated name, use Dir.exist? instead
+<h3>foreach(</h3>
+foreach( dirname ) {| filename | block } → nil
+foreach( dirname, encoding: enc ) {| filename | block } → nil
+foreach( dirname ) → an_enumerator
+foreach( dirname, encoding: enc ) → an_enumerator
+
+  Calls the block once for each entry in the named directory, passing the filename of each
+entry as a parameter to the block.
+
+  If no block is given, an enumerator is returned instead.
+
+Dir.foreach("testdir") {|x| puts "Got #{x}" }
+produces:
+
+Got .
+Got ..
+Got config.h
+Got main.rb
+<h3>getwd</h3>
+getwd → string
+
+  Returns the path to the current working directory of this process as a string.
+
+Dir.chdir("/tmp")   #=> 0
+Dir.getwd           #=> "/tmp"
+<h3>glob( )</h3>
+glob( pattern, [flags] ) → matches
+glob( pattern, [flags] ) { |filename| block } → nil
+
+  Expands pattern, which is an Array of patterns or a pattern String, and returns the results
+as matches or as arguments given to the block.
+
+  Note that this pattern is not a regexp, it’s closer to a shell glob. See File.
+fnmatch for the meaning of the flags parameter. Note that case sensitivity depends on your
+system (so File::FNM_CASEFOLD is ignored), as does the order in which the results are
+returned.
+
+*
+  Matches any file. Can be restricted by other values in the glob. Equivalent to / .* /x in
+regexp.
+
+*
+  Matches all files
+
+c*
+  Matches all files beginning with c
+
+*c
+  Matches all files ending with c
+
+*c*
+  Match all files that have c in them (including at the beginning or end).
+
+  Note, this will not match Unix-like hidden files (dotfiles). In order to include those in the
+match results, you must use the File::FNM_DOTMATCH flag or something like "{*,.*}".
+
+**
+  Matches directories recursively.
+
+?
+  Matches any one character. Equivalent to /.{1}/ in regexp.
+
+[set]
+  Matches any one character in set. Behaves exactly like character sets in Regexp, including
+set negation ([^a-z]).
+
+{p,q}
+  Matches either literal p or literal q. Equivalent to pattern alternation in regexp.
+
+  Matching literals may be more than one character in length. More than two literals may be
+specified.
+
+\
+  Escapes the next metacharacter.
+
+  Note that this means you cannot use backslash on windows as part of a glob, i.e. 
+Dir["c:\foo*"] will not work, use Dir["c:/foo*"] instead.
+
+Examples:
+
+Dir["config.?"]                     #=> ["config.h"]
+Dir.glob("config.?")                #=> ["config.h"]
+Dir.glob("*.[a-z][a-z]")            #=> ["main.rb"]
+Dir.glob("*.[^r]*")                 #=> ["config.h"]
+Dir.glob("*.{rb,h}")                #=> ["main.rb", "config.h"]
+Dir.glob("*")                       #=> ["config.h", "main.rb"]
+Dir.glob("*", File::FNM_DOTMATCH)   #=> [".", "..", "config.h", "main.rb"]
+
+rbfiles = File.join("**", "*.rb")
+Dir.glob(rbfiles)                   #=> ["main.rb",
+                                    #    "lib/song.rb",
+                                    #    "lib/song/karaoke.rb"]
+libdirs = File.join("**", "lib")
+Dir.glob(libdirs)                   #=> ["lib"]
+
+librbfiles = File.join("**", "lib", "**", "*.rb")
+Dir.glob(librbfiles)                #=> ["lib/song.rb",
+                                    #    "lib/song/karaoke.rb"]
+
+librbfiles = File.join("**", "lib", "*.rb")
+Dir.glob(librbfiles)                #=> ["lib/song.rb"]
+<h3>home( )</h3>
+home() → "/home/me"
+home("root") → "/root"
+
+  Returns the home directory of the current user or the named user if given.
+<h3>mkdir( )</h3>
+mkdir( string [, integer] ) → 0
+
+  Makes a new directory named by string, with permissions specified by the optional parameter
+anInteger. The permissions may be modified by the value of File::umask, and are ignored on 
+NT. Raises a SystemCallError if the directory cannot be created. See also the discussion of 
+permissions in the class documentation for File.
+
+Dir.mkdir(File.join(Dir.home, ".foo"), 0700) #=> 0
+<h3>new( )</h3>
+new( string ) → aDir
+new( string, encoding: enc ) → aDir
+
+  Returns a new directory object for the named directory.
+
+  The optional enc argument specifies the encoding of the directory. If not specified, the 
+filesystem encoding is used.
+<h3>open( )</h3>
+open( string ) → aDir
+open( string, encoding: enc ) → aDir
+open( string ) {| aDir | block } → anObject
+open( string, encoding: enc ) {| aDir | block } → anObject
+
+  The optional enc argument specifies the encoding of the directory. If not specified, the 
+filesystem encoding is used.
+
+  With no block, open is a synonym for Dir::new. If a block is present, it is passed aDir 
+as a parameter. The directory is closed at the end of the block, and Dir::open returns the 
+value of the block.
+<h3>pwd</h3>
+pwd → string
+
+  Returns the path to the current working directory of this process as a string.
+
+Dir.chdir("/tmp")   #=> 0
+Dir.getwd           #=> "/tmp"
+<h3>rmdir( )</h3>
+rmdir( string ) → 0 
+
+  Deletes the named directory. Raises a subclass of SystemCallError if the directory isn’t 
+empty.
+<h3>unlink( )</h3>
+unlink( string ) → 0
+
+  Deletes the named directory. Raises a subclass of SystemCallError if the directory isn’t 
+empty.
+<h2>Public Instance Methods</h2>
+<h3>close</h3>
+close → nil
+
+  Closes the directory stream. Any further attempts to access dir will raise an IOError.
+
+d = Dir.new("testdir")
+d.close   #=> nil
+<h3>each</h3>
+each { |filename| block } → dir
+each → an_enumerator
+
+  Calls the block once for each entry in this directory, passing the filename of each entry 
+as a parameter to the block.
+
+  If no block is given, an enumerator is returned instead.
+
+d = Dir.new("testdir")
+d.each  {|x| puts "Got #{x}" }
+produces:
+
+Got .
+Got ..
+Got config.h
+Got main.rb
+<h3>inspect</h3>
+inspect → string
+
+  Return a string describing this Dir object.
+<h3>path</h3>
+path → string or nil
+
+  Returns the path parameter passed to dir’s constructor.
+
+d = Dir.new("..")
+d.path   #=> ".."
+<h3>pos</h3>
+pos → integer
+
+  Returns the current position in dir. See also Dir#seek.
+
+d = Dir.new("testdir")
+d.tell   #=> 0
+d.read   #=> "."
+d.tell   #=> 12
+<h3>pos =</h3>
+pos = integer → integer
+
+  Synonym for Dir#seek, but returns the position parameter.
+
+d = Dir.new("testdir")   #=> #<Dir:0x401b3c40>
+d.read                   #=> "."
+i = d.pos                #=> 12
+d.read                   #=> ".."
+d.pos = i                #=> 12
+d.read                   #=> ".."
+<h3>read</h3>
+read → string or nil
+
+  Reads the next entry from dir and returns it as a string. Returns nil at the end of the stream.
+
+d = Dir.new("testdir")
+d.read   #=> "."
+d.read   #=> ".."
+d.read   #=> "config.h"
+<h3>rewind</h3>
+rewind → dir
+
+  Repositions dir to the first entry.
+
+d = Dir.new("testdir")
+d.read     #=> "."
+d.rewind   #=> #<Dir:0x401b3fb0>
+d.read     #=> "."
+<h3>seek( )</h3>
+seek( integer ) → dir
+
+  Seeks to a particular location in dir. integer must be a value returned by Dir#tell.
+
+d = Dir.new("testdir")   #=> #<Dir:0x401b3c40>
+d.read                   #=> "."
+i = d.tell               #=> 12
+d.read                   #=> ".."
+d.seek(i)                #=> #<Dir:0x401b3c40>
+d.read                   #=> ".."
+<h3>tell</h3>
+tell → integer 
+
+  Returns the current position in dir. See also Dir#seek.
+
+d = Dir.new("testdir")
+d.tell   #=> 0
+d.read   #=> "."
+d.tell   #=> 12
+<h3>to_path</h3>
+to_path → string or nil
+
+  Returns the path parameter passed to dir’s constructor.
+
+d = Dir.new("..")
+d.path   #=> ".."
+</pre>
+</body>
+</html>

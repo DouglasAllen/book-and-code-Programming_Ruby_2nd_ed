@@ -1,2 +1,2 @@
 # Sample code from Programing Ruby, page 419
-        [ "a", "e", "i", "o" ].to_s
+puts [ "a", "e", "i", "o" ].to_s.inspect           #=> "[\"a\", \"e\", \"i\", \"o\"]"

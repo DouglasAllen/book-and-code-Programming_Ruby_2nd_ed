@@ -1,3 +1,3 @@
 # Sample code from Programing Ruby, page 411
-        [].empty?
-        [ 1, 2, 3 ].empty?
+puts [].empty?.inspect                             #=> true
+puts [ 1, 2, 3 ].empty?.inspect                    #=> false

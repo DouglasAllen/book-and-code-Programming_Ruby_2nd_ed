@@ -1,4 +1,5 @@
 # Sample code from Programing Ruby, page 427
+require 'continuation'
     def strange
       callcc {|continuation| return continuation}
       print "Back in method, "

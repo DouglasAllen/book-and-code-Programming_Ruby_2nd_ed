@@ -1,3 +1,3 @@
 # Sample code from Programing Ruby, page 416
-        [ "a", "b", "c" ].reverse
-        [ 1 ].reverse
+puts [ "a", "b", "c" ].reverse.inspect             #=> ["c", "b", "a"]
+puts [ 1 ].reverse.inspect                         #=> [1]

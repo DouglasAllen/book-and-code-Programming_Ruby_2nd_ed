@@ -1,2 +1,2 @@
 # Sample code from Programing Ruby, page 410
-         [ "a", "b" ].concat( ["c", "d"] )
+puts [ "a", "b" ].concat( ["c", "d"] ).inspect     #=> ["a", "b", "c", "d"]
