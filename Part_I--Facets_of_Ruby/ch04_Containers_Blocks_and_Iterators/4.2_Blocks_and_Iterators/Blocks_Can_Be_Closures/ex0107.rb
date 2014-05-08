@@ -1,4 +1,5 @@
 # Sample code from Programing Ruby, page 53
+
 class Button
   def initialize(label)
   end

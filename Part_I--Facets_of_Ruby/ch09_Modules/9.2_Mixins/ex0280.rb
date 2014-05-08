@@ -1,4 +1,5 @@
 # Sample code from Programing Ruby, page 113
+# modified by non author
 class Song
   include Comparable
   @@plays = 0
@@ -44,12 +45,13 @@ class Song
   end
   def <=>(other)
     self.duration <=> other.duration
+    
   end
 end
 song1 = Song.new("My Way",  "Sinatra", 225)
 song2 = Song.new("Bicylops", "Fleck",  260)
-
-song1 <=> song2
-song1  <  song2
-song1 ==  song1
-song1  >  song2
+# Use the Song class starship
+puts song1 <=> song2
+puts song1 < song2
+puts song1 ==  song1
+puts song1  >  song2

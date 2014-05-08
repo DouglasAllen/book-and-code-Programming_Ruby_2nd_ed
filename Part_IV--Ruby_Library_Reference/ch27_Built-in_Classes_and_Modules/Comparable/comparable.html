@@ -32,7 +32,7 @@ h1,h2,h3 {
 <body id="top" role="document" class="file">
 <a href=""></a>
 <pre>
-<h1>Class Comparable</h1>
+<h1>Module Comparable</h1>
   The Comparable mixin is used by classes whose objects may be ordered.
 The class must define the <=> operator, which compares the receiver against another object,
 returning -1, 0, or +1 depending on whether the receiver is less than, equal to,
@@ -60,10 +60,10 @@ s3 = SizeMatters.new("XXX")
 s4 = SizeMatters.new("WWWW")
 s5 = SizeMatters.new("VVVVV")
 
-s1 < s2                       #=> true
-s4.between?(s1, s3)           #=> false
-s4.between?(s3, s5)           #=> true
-[ s3, s2, s5, s4, s1 ].sort   #=> [Z, YY, XXX, WWWW, VVVVV]
+puts (s1 < s2).inspect                             #=> true
+puts s4.between?(s1, s3).inspect                   #=> false
+puts s4.between?(s3, s5).inspect                   #=> true
+puts [ s3, s2, s5, s4, s1 ].sort.inspect           #=> [Z, YY, XXX, WWWW, VVVVV]
 <h2>Public Instance Methods</h2>
 <h3><</h3>
 obj < other → true or false
@@ -96,10 +96,10 @@ between?(min, max) → true or false
   Returns false if obj <=> min is less than zero or if anObject <=> max is greater than zero,
 true otherwise.
 
-3.between?(1, 5)               #=> true
-6.between?(1, 5)               #=> false
-'cat'.between?('ant', 'dog')   #=> true
-'gnu'.between?('ant', 'dog')   #=> false
+puts 3.between?(1, 5).inspect                      #=> true
+puts 6.between?(1, 5).inspect                      #=> false
+puts 'cat'.between?('ant', 'dog').inspect          #=> true
+puts 'gnu'.between?('ant', 'dog').inspect          #=> false
 </pre>
 </body>
 </html>

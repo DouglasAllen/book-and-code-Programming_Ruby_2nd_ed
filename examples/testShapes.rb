@@ -2,13 +2,13 @@ require_relative 'rectangle'
 require_relative 'square'
 require_relative 'circle'
 
-p r1 = Rectangle.new(3, 4)
-p r2 = Rectangle.new(5, 7)
-#~ p r3 = r1 + r2
+r1 = Rectangle.new(3, 4)
+r2 = Rectangle.new(5, 7)
+p r3 = r1 + r2
 
 s1 = Square.new(6)
 s1.doubleSize()
-#~ r4 = r1 + s1;
+r4 = r1 + s1;
 c1 = Circle.new(7)
 
 

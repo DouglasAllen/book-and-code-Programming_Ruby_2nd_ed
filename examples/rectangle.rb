@@ -18,10 +18,10 @@ class Rectangle
 		@height * 2 + @width * 2
 	end
 	
-	#~ def + (anotherRectangle)
-		#~ totalArea = area() + anotherRectangle.area()
-		#~ Rectangle.new(@height, totalArea / @height)
-	#~ end
+	def + (anotherRectangle)
+		totalArea = area() + anotherRectangle.area()
+		Rectangle.new(@height, totalArea / @height)
+	end
 	
 	private	#start making private methods
 	

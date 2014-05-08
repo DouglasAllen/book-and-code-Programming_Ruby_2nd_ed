@@ -1,4 +1,5 @@
 # Sample code from Programing Ruby, page 113
+# modified by non author
 class Song
   include Comparable
   @@plays = 0
@@ -45,4 +46,7 @@ class Song
   def <=>(other)
     self.duration <=> other.duration
   end
+end
+if __FILE__ == $PROGRAM_NAME
+  puts "We're not doing anything with this file. See ex280.rb"
 end

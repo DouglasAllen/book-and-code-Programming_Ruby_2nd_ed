@@ -18,7 +18,7 @@
  s2 = CompareOnSize.new([1,2])
  s3 = CompareOnSize.new("XXX")
 
- s1 < s2
- puts s2.between?(s1, s3).inspect
- puts s3.between?(s1, s2).inspect
- puts [ s3, s2, s1 ].sort.inspect
+puts (s1 < s2).inspect           #=> true
+puts s2.between?(s1, s3).inspect #=> true
+puts s3.between?(s1, s2).inspect #=> false
+puts [ s3, s2, s1 ].sort.inspect #=> ["Z", [1, 2], "XXX"]
