@@ -41,35 +41,296 @@ h1,h2,h3 {
 <body id="top" role="document" class="file">
 <a href=""></a>
 <pre>
-<h1>Class </h1>
+<h1>module Enumerable</h1>
+The Enumerable mixin provides collection classes with several traversal and searching methods, 
+and with the ability to sort. The class must provide a method each, which yields successive 
+members of the collection. If Enumerable#max, #min, or #sort is used, the objects in the 
+collection must also implement a meaningful <=> operator, as these methods rely on an ordering 
+between members of the collection.
 
-<h2>Public Class Methods</h2>
-<h3></h3>
-
+In Files
+enum.c 
 
 <h2>Public Instance Methods</h2>
-<h3></h3>
+<h3>all?</h3>
+all? [{|obj| block } ] → true or false
+Passes each element of the collection to the given block. The method returns true if the 
+block never returns false or nil. If the block is not given, Ruby adds an implicit block of 
+{|obj| obj} (that is all? will return true only if none of the collection members are false 
+or nil.)
+
+%w{ant bear cat}.all? {|word| word.length >= 3}   #=> true
+%w{ant bear cat}.all? {|word| word.length >= 4}   #=> false
+[ nil, true, 99 ].all?                            #=> false
+
+<h3>any?</h3>
+any? [{|obj| block } ] → true or false
+Passes each element of the collection to the given block. The method returns true if the 
+block ever returns a value other than false or nil. If the block is not given, Ruby adds an 
+implicit block of {|obj| obj} (that is any? will return true if at least one of the collection 
+members is not false or nil.
+
+%w{ant bear cat}.any? {|word| word.length >= 3}   #=> true
+%w{ant bear cat}.any? {|word| word.length >= 4}   #=> true
+[ nil, true, 99 ].any?                            #=> true
+
+<h3>chunk</h3>
+chunk {|elt| ... } → an_enumerator
+chunk(initial_state) {|elt, state| ... } → an_enumerator 
+Creates an enumerator for each chunked elements. The consecutive elements which have 
+same block value are chunked.
+
+The result enumerator yields the block value and an array of chunked elements. So “each” 
+method can be called as follows.
+
+enum.chunk {|elt| key }.each {|key, ary| ... }
+enum.chunk(initial_state) {|elt, state| key }.each {|key, ary| ... }
+For example, consecutive even numbers and odd numbers can be splitted as follows.
+
+[3,1,4,1,5,9,2,6,5,3,5].chunk {|n|
+  n.even?
+}.each {|even, ary|
+  p [even, ary]
+}
+#=> [false, [3, 1]]
+#   [true, [4]]
+#   [false, [1, 5, 9]]
+#   [true, [2, 6]]
+#   [false, [5, 3, 5]]
+This method is especially useful for sorted series of elements. The following example counts 
+words for each initial letter.
+
+open("/usr/share/dict/words", "r:iso-8859-1") {|f|
+  f.chunk {|line| line.ord }.each {|ch, lines| p [ch.chr, lines.length] }
+}
+#=> ["\n", 1]
+#   ["A", 1327]
+#   ["B", 1372]
+#   ["C", 1507]
+#   ["D", 791]
+#   ...
+The following key values has special meaning:
+
+  nil and :_separator specifies that the elements are dropped.
+
+  :_alone specifies that the element should be chunked as a singleton.
+
+Other symbols which begins an underscore are reserved.
+
+nil and :_separator can be used to ignore some elements. For example, the sequence of 
+hyphens in svn log can be eliminated as follows.
+
+sep = "-"*72 + "\n"
+IO.popen("svn log README") {|f|
+  f.chunk {|line|
+    line != sep || nil
+  }.each {|_, lines|
+    pp lines
+  }
+}
+#=> ["r20018 | knu | 2008-10-29 13:20:42 +0900 (Wed, 29 Oct 2008) | 2 lines\n",
+#    "\n",
+#    "* README, README.ja: Update the portability section.\n",
+#    "\n"]
+#   ["r16725 | knu | 2008-05-31 23:34:23 +0900 (Sat, 31 May 2008) | 2 lines\n",
+#    "\n",
+#    "* README, README.ja: Add a note about default C flags.\n",
+#    "\n"]
+#   ...
+paragraphs separated by empty lines can be parsed as follows.
+
+File.foreach("README").chunk {|line|
+  /\A\s*\z/ !~ line || nil
+}.each {|_, lines|
+  pp lines
+}
+:_alone can be used to pass through bunch of elements. For example, sort consecutive lines 
+formed as Foo#bar and pass other lines, chunk can be used as follows.
+
+pat = /\A[A-Z][A-Za-z0-9_]+\#/
+open(filename) {|f|
+  f.chunk {|line| pat =~ line ? $& : :_alone }.each {|key, lines|
+    if key != :_alone
+      print lines.sort.join('')
+    else
+      print lines.join('')
+    end
+  }
+}
+If the block needs to maintain state over multiple elements, initial_state argument can be 
+used. If non-nil value is given, it is duplicated for each “each” method invocation of the 
+enumerator. The duplicated object is passed to 2nd argument of the block for “chunk” 
+method.
+
+<h3>collect</h3>
+collect {| obj | block } → array 
+collect → an_enumerator 
+Returns a new array with the results of running block once for every element in enum.
+
+If no block is given, an enumerator is returned instead
+(1..4).collect {|i| i*i }   #=> [1, 4, 9, 16]
+(1..4).collect { "cat"  }   #=> ["cat", "cat", "cat", "cat"]
+
+<h3>collect_concat</h3>
+collect_concat {| obj | block } → array 
+collect_concat → an_enumerator 
+Returns a new array with the concatenated results of running block once for every element in 
+enum.
+
+If no block is given, an enumerator is returned instead.
+
+[[1,2],[3,4]].flat_map {|i| i }   #=> [1, 2, 3, 4]
+
+<h3>count</h3>
+count → int count(item) → int 
+count {| obj | block } → int 
+Returns the number of items in enum, where size is called if it responds to it, otherwise the 
+items are counted through enumeration. If an argument is given, counts the number of items 
+in enum, for which equals to item. If a block is given, counts the number of elements yielding 
+a true value.
+
+ary = [1, 2, 4, 2]
+ary.count             #=> 4
+ary.count(2)          #=> 2
+ary.count{|x|x%2==0}  #=> 3
+
+<h3>cycle</h3>
+cycle(n=nil) {|obj| block } → nil 
+cycle(n=nil) → an_enumerator 
+Calls block for each element of enum repeatedly n times or forever if none or nil is given. 
+If a non-positive number is given or the collection is empty, does nothing. Returns nil if 
+the loop has finished without getting interrupted.
+
+Cycle saves elements in an internal array so changes to enum after the first pass have no 
+effect.
+
+If no block is given, an enumerator is returned instead.
+
+a = ["a", "b", "c"]
+a.cycle {|x| puts x }  # print, a, b, c, a, b, c,.. forever.
+a.cycle(2) {|x| puts x }  # print, a, b, c, a, b, c.
+
+<h3>detect</h3>
+detect(ifnone = nil) {| obj | block } → obj or nil 
+detect(ifnone = nil) → an_enumerator 
+Passes each entry in enum to block. Returns the first for which block is not false. 
+If no object matches, calls ifnone and returns its result when it is specified, 
+or returns nil otherwise.
+
+If no block is given, an enumerator is returned instead.
+
+(1..10).detect  {|i| i % 5 == 0 and i % 7 == 0 }   #=> nil
+(1..100).detect {|i| i % 5 == 0 and i % 7 == 0 }   #=> 35
+
+<h3>drop</h3>
+drop(n) → array 
+Drops first n elements from enum, and returns rest elements in an array.
+
+a = [1, 2, 3, 4, 5, 0]
+a.drop(3)             #=> [4, 5, 0]
+
+<h3>drop_while</h3>
+drop_while {|arr| block } → array 
+drop_while → an_enumerator 
+Drops elements up to, but not including, the first element for which the block returns nil 
+or false and returns an array containing the remaining elements.
+
+If no block is given, an enumerator is returned instead.
+
+a = [1, 2, 3, 4, 5, 0]
+a.drop_while {|i| i < 3 }   #=> [3, 4, 5, 0]
+
+<h3>each_cons</h3>
+each_cons(n) {...} → nil 
+each_cons(n) → an_enumerator 
+Iterates the given block for each array of consecutive <n> elements. If no block is given, returns an enumerator.
+
+e.g.:
+
+(1..10).each_cons(3) {|a| p a}
+outputs below
+[1, 2, 3]
+[2, 3, 4]
+[3, 4, 5]
+[4, 5, 6]
+[5, 6, 7]
+[6, 7, 8]
+[7, 8, 9]
+[8, 9, 10]
+
+<h3>each_entry</h3>
+
+<h3>each_slice</h3>
+
+<h3>each_with_index</h3>
+
+<h3>each_with_object</h3>
+
+<h3>entries</h3>
+
+<h3>find</h3>
+
+<h3>find_all</h3>
+
+<h3>find_index</h3>
+
+<h3>first</h3>
+
+<h3>flat_map</h3>
+
+<h3>grep</h3>
+
+<h3>group_by</h3>
+
+<h3>include?</h3>
+
+<h3>inject</h3>
+
+<h3>map</h3>
+
+<h3>max</h3>
+
+<h3>max_by</h3>
+
+<h3>member?</h3>
+
+<h3>min</h3>
+
+<h3>min_by</h3>
+
+<h3>minmax</h3>
+
+<h3>minmax_by</h3>
+
+<h3>none?</h3>
+
+<h3>one?</h3>
+
+<h3>partition</h3>
+
+<h3>reduce</h3>
+
+<h3>reject</h3>
+
+<h3>reverse_each</h3>
+
+<h3>select</h3>
+
+<h3>slice_before</h3>
+
+<h3>sort</h3>
+
+<h3>sort_by</h3>
+
+<h3>take</h3>
+
+<h3>take_while</h3>
+
+<h3>to_a</h3>
+
+<h3>zip</h3>
 
 <h3></h3>
-
-<h3></h3>
-
-
-
-
-<h3></h3>
-
-<h3></h3>
-
-
-<h3></h3>
-
-
-
-<h3>( )</h3>
-
-<h3></h3>
-
 <h2>Private Instance Methods</h2>
 <h3></h3>
 
