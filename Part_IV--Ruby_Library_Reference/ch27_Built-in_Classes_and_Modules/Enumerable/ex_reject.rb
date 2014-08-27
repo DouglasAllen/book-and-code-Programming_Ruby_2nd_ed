@@ -1,6 +1,8 @@
 # Sample code from Programing Ruby, page 436
+
 # reject {| obj | block } → array 
-# reject → an_enumerator 
+# reject → an_enumerator
+ 
 # Returns an array for all elements of enum for which block is false 
 # (see also Enumerable#find_all).
 

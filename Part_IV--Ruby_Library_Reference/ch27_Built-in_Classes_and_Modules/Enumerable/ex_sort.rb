@@ -1,6 +1,8 @@
 # Sample code from Programing Ruby, page 436
+
 # sort → array  
-# sort {| a, b | block } → array 
+# sort {| a, b | block } → array
+ 
 # Returns an array containing the items in enum sorted, either according to their own <=> 
 # method, or by using the results of the supplied block. The block should return -1, 0, or +1
 # depending on the comparison between a and b. As of Ruby 1.8, the method 

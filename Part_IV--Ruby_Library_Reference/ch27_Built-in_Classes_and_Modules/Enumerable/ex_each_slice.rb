@@ -1,0 +1,15 @@
+# each_slice(n) {...} → nil 
+# each_slice(n) → an_enumerator 
+# Iterates the given block for each slice of <n> elements. If no block is given, returns an enumerator.
+
+# e.g.:
+
+# (1..10).each_slice(3) {|a| p a}
+# outputs below
+# [1, 2, 3]
+# [4, 5, 6]
+# [7, 8, 9]
+# [10]
+
+(1..10).each_slice(3) {|a| p a}.send :display
+puts

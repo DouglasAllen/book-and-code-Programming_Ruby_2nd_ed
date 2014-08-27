@@ -1,7 +1,8 @@
 # Sample code from Programing Ruby, page 434
 
 # grep(pattern) → array  
-# grep(pattern) {| obj | block } → array 
+# grep(pattern) {| obj | block } → array
+ 
 # Returns an array of every element in enum for which Pattern === element. 
 # If the optional block is supplied, each matching element is passed to it, 
 # and the block's result is stored in the output array.

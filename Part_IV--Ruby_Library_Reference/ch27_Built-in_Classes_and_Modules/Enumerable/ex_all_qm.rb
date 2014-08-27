@@ -1,5 +1,7 @@
-# Sample code from Programing Ruby, page 433 
-# all? [{|obj| block } ] > true or false 
+# Sample code from Programing Ruby, page 433
+ 
+# all? [{|obj| block } ] > true or false
+ 
 # Passes each element of the collection to the given block. 
 # The method returns true if the block never returns false or nil. 
 # If the block is not given, Ruby adds an implicit block of {|obj| obj} 
