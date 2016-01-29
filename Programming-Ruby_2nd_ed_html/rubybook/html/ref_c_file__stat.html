@@ -1,0 +1,779 @@
+<html><title>Programming Ruby: The Pragmatic Programmer's Guide</title><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><STYLE TYPE="text/css"><!--
+       BODY    { margin-left: 1in;
+                 width: 6in;
+                 font-family: helvetica, arial, sans-serif;
+               }
+       H1      { color: #000080;
+                 font-family: helvetica, arial, sans-serif;
+                 font-size: 22pt;
+                 margin-left: 0in
+               }
+       H2      { color: #000080;  font: bold x-large helvetica, sans-serif;
+                 margin-left: 0in }
+       H3      { color: #000080;  font: bold   large helvetica, sans-serif; }
+       H4      { color: #000080;  font: italic large helvetica, sans-serif; }
+       .ruby   { background: #fff0f0 }
+       .header { color: white }
+       .subheader { color: #ffdddd }
+       .sidebar   { width: 6in }
+       span.sans { font-family: helvetica, arial, sans-serif }
+       -->
+   </STYLE><table bgcolor="#a03030" cellpadding="3" border="0" cellspacing="0"><tr><td colspan="3"><table bgcolor="#902020" cellpadding="20"><tr><td><h1 class="header">Programming Ruby</h1><h3 class="subheader">The Pragmatic Programmer's Guide</h3></td></tr></table></td></tr><tr><td width="33%" align="left"><a class="subheader" href="ref_c_file.html">Previous &lt;</a></td><td width="33%" align="center" valign="middle"><a class="subheader" href="builtins.html">Contents ^</a><br></td><td width="33%" align="right"><a class="subheader" href="ref_c_fixnum.html">Next ></a><br></td></tr></table></head><body bgcolor="white">
+<!--
+    Copyright (c) 2001 by Addison Wesley Longman.  This
+    material may be distributed only subject to the terms and
+    conditions set forth in the Open Publication License, v1.0 or
+    later (the latest version is presently available at
+    http://www.opencontent.org/openpub/).
+-->
+<table><tr><td height="20"><img src="dot.gif" width="1" height="20"></td></tr></table><table border="0" width="100%" bgcolor="660066" cellpadding="10"><tr><td valign="center"><font color="white" size="7">class File::Stat</font></td><td><table border="0"><tr><td><font color="white">
+                Parent:
+              </font></td><td><font color="white">Object</font></td></tr><tr><td><font color="white">
+                Version:
+              </font></td><td><font color="white">
+               1.6
+              </font></td></tr></table></td></tr></table><p></p><H3>Index:</H3><a href="#_lt_eq_lt"><i>&lt;=></i></a> <a href="#atime"><i>atime</i></a> <a href="#blksize"><i>blksize</i></a> <a href="#blockdev_qm"><i>blockdev?</i></a> <a href="#blocks"><i>blocks</i></a> <a href="#chardev_qm"><i>chardev?</i></a> <a href="#ctime"><i>ctime</i></a> <a href="#dev"><i>dev</i></a> <a href="#directory_qm"><i>directory?</i></a> <a href="#executable_qm"><i>executable?</i></a> <a href="#executable_real_qm"><i>executable_real?</i></a> <a href="#file_qm"><i>file?</i></a> <a href="#ftype"><i>ftype</i></a> <a href="#gid"><i>gid</i></a> <a href="#grpowned_qm"><i>grpowned?</i></a> <a href="#ino"><i>ino</i></a> <a href="#mode"><i>mode</i></a> <a href="#mtime"><i>mtime</i></a> <a href="#nlink"><i>nlink</i></a> <a href="#owned_qm"><i>owned?</i></a> <a href="#pipe_qm"><i>pipe?</i></a> <a href="#rdev"><i>rdev</i></a> <a href="#readable_qm"><i>readable?</i></a> <a href="#readable_real_qm"><i>readable_real?</i></a> <a href="#setgid_qm"><i>setgid?</i></a> <a href="#setuid_qm"><i>setuid?</i></a> <a href="#size"><i>size</i></a> <a href="#size_qm"><i>size?</i></a> <a href="#socket_qm"><i>socket?</i></a> <a href="#sticky_qm"><i>sticky?</i></a> <a href="#symlink_qm"><i>symlink?</i></a> <a href="#uid"><i>uid</i></a> <a href="#writable_qm"><i>writable?</i></a> <a href="#writable_real_qm"><i>writable_real?</i></a> <a href="#zero_qm"><i>zero?</i></a> <p></p><hr>  
+<P></P>
+  Objects of class <code>File::Stat</code> encapsulate common status information for
+  <code>File</code> objects.  The information is recorded at the
+  moment the <code>File::Stat</code> object is created; changes made to the file
+  after that point will not be reflected.
+  <code>File::Stat</code> objects are returned by <a href="ref_c_io.html#stat"><code>IO#stat</code></a>, 
+  <a href="ref_c_file.html#stat"><code>File::stat</code></a>, <a href="ref_c_file.html#lstat"><code>File#lstat</code></a>, and <a href="ref_c_file.html#lstat"><code>File::lstat</code></a>.
+  Many of these methods return platform-specific
+  values, and not all values are meaningful on all systems.
+  See also <a href="ref_m_kernel.html#test"><code>Kernel#test</code></a> on page 429.
+  <table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">
+         mixins
+       </font></td></tr>
+    <tr><td>Comparable:
+    </td><td>
+   &lt;, &lt;=, ==, >=, >, between?</td></tr>
+  </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">instance methods
+       </font></td></tr><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_lt_eq_lt"><b>&lt;=></b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i> &lt;=> <i>anOtherStat</i>
+        -> -1, 0, 1
+      </td></tr><td></td><td>
+<P></P>
+       Compares <code>File::Stat</code> objects by comparing their respective
+       modification times.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>f1&nbsp;=&nbsp;File.new("f1",&nbsp;"w")</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>sleep&nbsp;1</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>f2&nbsp;=&nbsp;File.new("f2",&nbsp;"w")</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>f1.stat&nbsp;&lt;=>&nbsp;f2.stat</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>-1</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="atime"><b>atime</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.atime
+        -> <i>aTime</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the last access time for this file 
+      as an object of class <code>Time</code>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").atime</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Wed&nbsp;Dec&nbsp;31&nbsp;18:00:00&nbsp;CST&nbsp;1969</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="blksize"><b>blksize</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.blksize
+        -> <i>anInteger</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the native file system's block size.
+      Will return 0 on platforms that don't support this information.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").blksize</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>4096</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="blockdev_qm"><b>blockdev?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.blockdev?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if the file is a block device, <code>false</code>
+      if it isn't or 
+      if the operating system doesn't support this feature.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").blockdev?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="blocks"><b>blocks</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.blocks
+        -> <i>anInteger</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the number of native file system blocks allocated for
+      this file, or 0
+      if the operating system doesn't support this feature.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").blocks</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>2</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="chardev_qm"><b>chardev?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.chardev?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if the file is a character device, <code>false</code>
+      if it isn't or 
+      if the operating system doesn't support this feature.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("/dev/tty").chardev?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="ctime"><b>ctime</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.ctime
+        -> <i>aTime</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the change time for <i>statfile</i> (that is, the time
+      directory information about the file was changed, not the file
+      itself).
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").ctime</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:28:25&nbsp;CST&nbsp;2001</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="dev"><b>dev</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.dev
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns an integer representing the device on which <i>statfile</i>
+      resides.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").dev</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>774</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="directory_qm"><b>directory?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.directory?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>statfile</i> is a directory, <code>false</code> 
+      otherwise.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").directory?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>File.stat(".").directory?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="executable_qm"><b>executable?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.executable?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>statfile</i> is executable or if the
+      operating system doesn't distinguish executable files from
+      nonexecutable files.  The tests are made using the effective
+      owner of the process.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").executable?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="executable_real_qm"><b>executable_real?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.executable_real?
+    -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Same as <code>executable?</code>, but tests using the real owner of the
+      process.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="file_qm"><b>file?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.file?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+     Returns <code>true</code> if <i>statfile</i> is a regular file (not a device 
+     file, pipe, socket, etc.).
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").file?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="ftype"><b>ftype</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.ftype
+        -> <i>fileType</i>
+      </td></tr><td></td><td>
+<P></P>
+      Identifies the type of <i>statfile</i>.
+      The return string is one of: 
+        ``<code>file</code>'',
+        ``<code>directory</code>'',
+        ``<code>characterSpecial</code>'',
+        ``<code>blockSpecial</code>'',
+        ``<code>fifo</code>'',
+        ``<code>link</code>'', or
+        ``<code>socket</code>''.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("/dev/tty").ftype</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"characterSpecial"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="gid"><b>gid</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.gid
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the numeric group id of the owner of <i>statfile</i>.      
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").gid</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>500</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="grpowned_qm"><b>grpowned?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.grpowned?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns true if the effective group id of the process is the same 
+      as the group id of <i>statfile</i>.
+      On Windows NT, returns <code>false</code>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").grpowned?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>File.stat("/etc/passwd").grpowned?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="ino"><b>ino</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.ino
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the inode number for <i>statfile</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").ino</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>43331</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="mode"><b>mode</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.mode
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns an integer representing the permission bits of
+      <i>statfile</i>.  The meaning of the bits is platform dependent; on Unix
+      systems, see <code>stat(2)</code>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.chmod(0644,&nbsp;"testfile")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>1</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>s&nbsp;=&nbsp;File.stat("testfile")</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>sprintf("%o",&nbsp;s.mode)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"100644"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="mtime"><b>mtime</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.mtime
+        -> <i>aTime</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the modification time for <i>statfile</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").mtime</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:28:25&nbsp;CST&nbsp;2001</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="nlink"><b>nlink</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.nlink
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the number of hard links to <i>statfile</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").nlink</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>1</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>File.link("testfile",&nbsp;"testfile.bak")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>0</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>File.stat("testfile").nlink</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>2</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="owned_qm"><b>owned?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.owned?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if the effective user id of the process is the same 
+      as the owner of <i>statfile</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").owned?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>File.stat("/etc/passwd").owned?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="pipe_qm"><b>pipe?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.pipe?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if the operating system supports pipes and
+      <i>statfile</i> is a pipe; <code>false</code> otherwise.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="rdev"><b>rdev</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.rdev
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns an integer representing the device type on which <i>statfile</i>
+      resides.  Returns <code>0</code> 
+      if the operating system doesn't support this feature.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("/dev/fd0").rdev</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>512</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="readable_qm"><b>readable?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.readable?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>statfile</i> is readable by the effective
+      user id of this process.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").readable?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="readable_real_qm"><b>readable_real?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.readable_real?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>statfile</i> is readable by the real
+      user id of this process.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").readable_real?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="setgid_qm"><b>setgid?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.setgid?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>statfile</i> has the set-group-id      
+      permission bit set, <code>false</code> if it doesn't or
+      if the operating system doesn't support this feature.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("/usr/sbin/lpc").setgid?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="setuid_qm"><b>setuid?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.setuid?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>statfile</i> has the set-user-id
+      permission bit set, <code>false</code> if it doesn't or
+      if the operating system doesn't support this feature.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("/bin/su").setuid?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="size"><b>size</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.size
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the size of <i>statfile</i> in bytes.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").size</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>66</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="size_qm"><b>size?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.size?
+        -> <i>aFixnum</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>nil</code> if <i>statfile</i> is a zero-length file; otherwise,
+      returns the file size.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").size?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>66</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="socket_qm"><b>socket?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.socket?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>statfile</i> is a socket, <code>false</code> if
+      it isn't or 
+      if the operating system doesn't support this feature.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").socket?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="sticky_qm"><b>sticky?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.sticky?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>statfile</i> has its sticky bit set,
+      <code>false</code> if it doesn't or if the operating system doesn't
+      support this feature.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").sticky?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="symlink_qm"><b>symlink?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.symlink?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>statfile</i> is a symbolic link,
+      <code>false</code> if it isn't or if the operating system doesn't
+      support this feature. As <a href="ref_c_file.html#stat"><code>File::stat</code></a> automatically follows
+      symbolic links, <code>symlink?</code> will always be
+      <code>false</code> for an object returned by <a href="ref_c_file.html#stat"><code>File::stat</code></a>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.symlink("testfile",&nbsp;"alink")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>0</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>File.stat("alink").symlink?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>File.lstat("alink").symlink?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="uid"><b>uid</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.uid
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the numeric user id of the owner of <i>statfile</i>.      
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").uid</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>501</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="writable_qm"><b>writable?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.writable?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>statfile</i> is writable by the effective
+      user id of this process.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").writable?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="writable_real_qm"><b>writable_real?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.writable_real?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>statfile</i> is writable by the real
+      user id of this process.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").writable_real?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="zero_qm"><b>zero?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>statfile</i>.zero?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>statfile</i> is a zero-length file; <code>false</code>
+      otherwise.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>File.stat("testfile").zero?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td></table>
+<P></P>
+
+<p></p><hr><table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0"><tr><td width="33%" align="left"><a class="subheader" href="ref_c_file.html">Previous &lt;</a></td><td width="33%" align="center" valign="middle"><a class="subheader" href="builtins.html">Contents ^</a><br></td><td width="33%" align="right"><a class="subheader" href="ref_c_fixnum.html">Next ></a><br></td></tr></table><p></p><font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font><br><font size="-3">
+      Copyright
+      &#169;
+      2000 Addison Wesley Longman, Inc. Released under the terms of the
+      <a href="http://www.opencontent.org/openpub/">Open Publication License</a> V1.0.
+        <br>
+      This reference is available for
+        <a href="http://www.pragmaticprogrammer.com/ruby/downloads/book.html">download</a>.
+   </font></body></html>

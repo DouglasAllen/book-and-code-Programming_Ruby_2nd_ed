@@ -1,0 +1,1074 @@
+<html><title>Programming Ruby: The Pragmatic Programmer's Guide</title><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><STYLE TYPE="text/css"><!--
+       BODY    { margin-left: 1in;
+                 width: 6in;
+                 font-family: helvetica, arial, sans-serif;
+               }
+       H1      { color: #000080;
+                 font-family: helvetica, arial, sans-serif;
+                 font-size: 22pt;
+                 margin-left: 0in
+               }
+       H2      { color: #000080;  font: bold x-large helvetica, sans-serif;
+                 margin-left: 0in }
+       H3      { color: #000080;  font: bold   large helvetica, sans-serif; }
+       H4      { color: #000080;  font: italic large helvetica, sans-serif; }
+       .ruby   { background: #fff0f0 }
+       .header { color: white }
+       .subheader { color: #ffdddd }
+       .sidebar   { width: 6in }
+       span.sans { font-family: helvetica, arial, sans-serif }
+       -->
+   </STYLE><table bgcolor="#a03030" cellpadding="3" border="0" cellspacing="0"><tr><td colspan="3"><table bgcolor="#902020" cellpadding="20"><tr><td><h1 class="header">Programming Ruby</h1><h3 class="subheader">The Pragmatic Programmer's Guide</h3></td></tr></table></td></tr><tr><td width="33%" align="left"><a class="subheader" href="ref_c_threadgroup.html">Previous &lt;</a></td><td width="33%" align="center" valign="middle"><a class="subheader" href="builtins.html">Contents ^</a><br></td><td width="33%" align="right"><a class="subheader" href="ref_c_trueclass.html">Next ></a><br></td></tr></table></head><body bgcolor="white">
+<!--
+    Copyright (c) 2001 by Addison Wesley Longman.  This
+    material may be distributed only subject to the terms and
+    conditions set forth in the Open Publication License, v1.0 or
+    later (the latest version is presently available at
+    http://www.opencontent.org/openpub/).
+-->
+<table><tr><td height="20"><img src="dot.gif" width="1" height="20"></td></tr></table><table border="0" width="100%" bgcolor="660066" cellpadding="10"><tr><td valign="center"><font color="white" size="7">class Time</font></td><td><table border="0"><tr><td><font color="white">
+                Parent:
+              </font></td><td><font color="white">Object</font></td></tr><tr><td><font color="white">
+                Version:
+              </font></td><td><font color="white">
+               1.6
+              </font></td></tr></table></td></tr></table><p></p><H3>Index:</H3><a href="#at">at</a> <a href="#gm">gm</a> <a href="#local">local</a> <a href="#mktime">mktime</a> <a href="#new">new</a> <a href="#now">now</a> <a href="#times">times</a> <a href="#utc">utc</a> <a href="#_pl"><i>+</i></a> <a href="#_mi_mi"><i>--</i></a> <a href="#_lt_eq_lt"><i>&lt;=></i></a> <a href="#asctime"><i>asctime</i></a> <a href="#ctime"><i>ctime</i></a> <a href="#day"><i>day</i></a> <a href="#gmt_qm"><i>gmt?</i></a> <a href="#gmtime"><i>gmtime</i></a> <a href="#hour"><i>hour</i></a> <a href="#isdst"><i>isdst</i></a> <a href="#localtime"><i>localtime</i></a> <a href="#mday"><i>mday</i></a> <a href="#min"><i>min</i></a> <a href="#mon"><i>mon</i></a> <a href="#month"><i>month</i></a> <a href="#sec"><i>sec</i></a> <a href="#strftime"><i>strftime</i></a> <a href="#to_a"><i>to_a</i></a> <a href="#to_f"><i>to_f</i></a> <a href="#to_i"><i>to_i</i></a> <a href="#to_s"><i>to_s</i></a> <a href="#tv_sec"><i>tv_sec</i></a> <a href="#tv_usec"><i>tv_usec</i></a> <a href="#usec"><i>usec</i></a> <a href="#utc"><i>utc</i></a> <a href="#utc_qm"><i>utc?</i></a> <a href="#wday"><i>wday</i></a> <a href="#yday"><i>yday</i></a> <a href="#year"><i>year</i></a> <a href="#zone"><i>zone</i></a> <p></p><hr>
+    <code>Time</code> is an abstraction of dates and times.  Time is stored
+  internally as the number of seconds and microseconds since the
+  <em>epoch</em>, January 1, 1970 00:00&nbsp;UTC. Also see the library
+  modules <code>Date</code> and <code>ParseDate</code>, documented beginning on pages
+  443 and 457, respectively.          
+  The <code>Time</code> class treats GMT (Greenwich Mean Time) and UTC
+  (Coordinated Universal Time)<em>[Yes, UTC really does stand for
+    Coordinated Universal Time. There was a committee involved.]</em>
+  as equivalent. GMT is the older way of
+  referring to these baseline times but persists in the names of
+  calls on Posix systems.
+<P></P>
+  All times are stored with some number of microseconds.
+  Be aware of this fact when
+  comparing times with each other---times that are apparently equal
+  when displayed may be different when compared.
+  <table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">
+         mixins
+       </font></td></tr>
+    <tr><td>Comparable:
+    </td><td>
+   &lt;, &lt;=, ==, >=, >, between?</td></tr>
+  </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">class methods
+       </font></td></tr><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="at"><b>at</b></a></font></td><td bgcolor="#ffaaaa">
+                Time.at( <i>aTime</i> ) -> <i>aTime</i> <br>Time.at( <i>seconds</i> <i>[</i>, <i>microseconds</i><i>]</i> ) 
+          -> <i>aTime</i>
+      </td></tr><td></td><td>
+<P></P>
+      Creates a new time object with the value given by <i>aTime</i>,
+      or the given number of <i>seconds</i> (and optional <i>microseconds</i>)
+      from epoch.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>Time.at(0)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Wed&nbsp;Dec&nbsp;31&nbsp;18:00:00&nbsp;CST&nbsp;1969</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Time.at(946702800)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Fri&nbsp;Dec&nbsp;31&nbsp;23:00:00&nbsp;CST&nbsp;1999</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="gm"><b>gm</b></a></font></td><td bgcolor="#ffaaaa">
+                  Time.gm( <i>year <i>[</i>, month, day, hour, min, sec, usec<i>]</i></i> )
+        -> <i>aTime</i> <br>Time.gm( <i>sec, min, hour, day, month, year, wday, yday,
+            isdst, tz</i> )
+        -> <i>aTime</i>
+      </td></tr><td></td><td>
+<P></P>
+    Creates a time based on given values, interpreted as UTC (GMT).  The
+    year must be specified. Other values default to the minimum value
+    for that field (and may be <code>nil</code> or omitted).  Months may be
+    specified by numbers from 1 to 12, or by the three-letter English month
+    names. Hours are specified on a 24-hour clock (0..23). Raises an
+    <code>ArgumentError</code> if any values are out of range.  Will also
+    accept ten arguments in the order output by <a href="ref_c_time.html#to_a"><code>Time#to_a</code></a>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>Time.gm(2000,"jan",1,20,15,1)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sat&nbsp;Jan&nbsp;01&nbsp;20:15:01&nbsp;UTC&nbsp;2000</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="local"><b>local</b></a></font></td><td bgcolor="#ffaaaa">
+                  Time.local( <i>year <i>[</i>, month, day, hour, min, sec, usec<i>]</i></i> )
+          -> <i>aTime</i> <br>Time.local( <i>sec, min, hour, day, month, year, wday, yday, isdst, tz</i> )
+          -> <i>aTime</i>
+<P></P>
+      </td></tr><td></td><td>
+<P></P>
+      Same as <a href="ref_c_time.html#gm"><code>Time::gm</code></a>, but interprets the values in the local
+      time zone.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>Time.local(2000,"jan",1,20,15,1)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sat&nbsp;Jan&nbsp;01&nbsp;20:15:01&nbsp;CST&nbsp;2000</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="mktime"><b>mktime</b></a></font></td><td bgcolor="#ffaaaa">
+        Time.mktime(
+        <i>year, month, day, hour, min, sec, usec</i> )
+        -> <i>aTime</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_time.html#local"><code>Time::local</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="new"><b>new</b></a></font></td><td bgcolor="#ffaaaa">
+        Time.new
+        -> <i>aTime</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a <code>Time</code> object initialized to the current system
+      time. <b>Note:</b> The object created will be created using
+      the resolution available on your system clock, and so may
+      include fractional seconds.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>a&nbsp;=&nbsp;Time.new</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>b&nbsp;=&nbsp;Time.new</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a&nbsp;==&nbsp;b</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>"%.6f"&nbsp;%&nbsp;a.to_f</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"983770226.132865"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>"%.6f"&nbsp;%&nbsp;b.to_f</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"983770226.133372"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="now"><b>now</b></a></font></td><td bgcolor="#ffaaaa">
+        Time.now -> <i>aTime</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_time.html#new"><code>Time::new</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="times"><b>times</b></a></font></td><td bgcolor="#ffaaaa">
+        Time.times
+        -> <i>aStructTms</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a <code>Tms</code> structure (see <code>Struct::Tms</code>
+      on page 388) that contains
+      user and system CPU times for this process.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>t&nbsp;=&nbsp;Time.times</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>[&nbsp;t.utime,&nbsp;t.stime&nbsp;]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[0.0,&nbsp;0.01]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="utc"><b>utc</b></a></font></td><td bgcolor="#ffaaaa">
+                  Time.utc( <i>year <i>[</i>, month, day, hour, min, sec, usec<i>]</i></i> )
+        -> <i>aTime</i> <br>Time.utc( <i>sec, min, hour, day, month, year, wday, yday,
+            isdst, tz</i> )
+        -> <i>aTime</i>
+      </td></tr><td></td><td>
+<P></P>
+    Synonym for <a href="ref_c_time.html#gm"><code>Time::gm</code></a>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>Time.utc(2000,"jan",1,20,15,1)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sat&nbsp;Jan&nbsp;01&nbsp;20:15:01&nbsp;UTC&nbsp;2000</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td></table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">instance methods
+       </font></td></tr><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_pl"><b>+</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i> + <i>aNumeric</i> 
+        -> <i>aTime</i>
+      </td></tr><td></td><td>
+<P></P>
+      Addition---Adds some number of seconds (possibly fractional) to <i>time</i>
+      and returns that value as a new time.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t&nbsp;+&nbsp;(60&nbsp;*&nbsp;60&nbsp;*&nbsp;24)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Mon&nbsp;Mar&nbsp;05&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_mi_mi"><b>--</b></a></font></td><td bgcolor="#ffaaaa">
+                  <i>time</i> <code>-</code> <i>aTime</i> -> <i>aFloat</i> <br><i>time</i> <code>-</code> <i>aNumeric</i> -> <i>aTime</i>          
+      </td></tr><td></td><td>
+<P></P>
+      Difference---Returns a new time that represents the difference between two
+      times, or subtracts the given number of seconds in
+      <i>aNumeric</i> from <i>time</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t2&nbsp;=&nbsp;t&nbsp;+&nbsp;2592000</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Wed&nbsp;Apr&nbsp;04&nbsp;00:30:26&nbsp;CDT&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t2&nbsp;-&nbsp;t</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>2592000.0</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t2&nbsp;-&nbsp;2592000</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_lt_eq_lt"><b>&lt;=></b></a></font></td><td bgcolor="#ffaaaa">
+                  <i>time</i> &lt;=> <i>anOtherTime</i>
+        -> -1, 0, +1 <br><i>time</i> &lt;=> <i>aNumeric</i>
+        -> -1, 0, +1
+      </td></tr><td></td><td>
+<P></P>
+      Comparison---Compares <i>time</i> with <i>anOtherTime</i> or with
+      <i>aNumeric</i>, which is the number of seconds (possibly
+      fractional) since epoch.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t2&nbsp;=&nbsp;t&nbsp;+&nbsp;2592000</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Wed&nbsp;Apr&nbsp;04&nbsp;00:30:26&nbsp;CDT&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t&nbsp;&lt;=>&nbsp;t2</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>-1</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t2&nbsp;&lt;=>&nbsp;t</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>1</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t&nbsp;&lt;=>&nbsp;t</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>0</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="asctime"><b>asctime</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.asctime
+        -> <i>aString</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a canonical string representation of <i>time</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>Time.now.asctime</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"Sun&nbsp;Mar&nbsp;&nbsp;4&nbsp;23:30:26&nbsp;2001"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="ctime"><b>ctime</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.ctime
+        -> <i>aString</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_time.html#asctime"><code>Time#asctime</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="day"><b>day</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.day
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the day of the month (1..n) for <i>time</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.day</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>4</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="gmt_qm"><b>gmt?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.gmt?
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>time</i> represents a time in UTC (GMT).
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.gmt?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.gm(2000,"jan",1,20,15,1)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sat&nbsp;Jan&nbsp;01&nbsp;20:15:01&nbsp;UTC&nbsp;2000</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.gmt?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="gmtime"><b>gmtime</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.gmtime
+        -> <i>time</i>
+      </td></tr><td></td><td>
+<P></P>
+      Converts <i>time</i> to UTC (GMT), modifying the receiver.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.gmt?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.gmtime</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Mon&nbsp;Mar&nbsp;05&nbsp;05:30:26&nbsp;UTC&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.gmt?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="hour"><b>hour</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.hour
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the hour of the day (0..23) for <i>time</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.hour</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>23</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="isdst"><b>isdst</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.isdst
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>time</i> occurs during Daylight Saving 
+      Time in its time zone.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;&nbsp;=&nbsp;Time.local(2000,&nbsp;7,&nbsp;1)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sat&nbsp;Jul&nbsp;01&nbsp;00:00:00&nbsp;CDT&nbsp;2000</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.isdst</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t2&nbsp;=&nbsp;Time.local(2000,&nbsp;1,&nbsp;1)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sat&nbsp;Jan&nbsp;01&nbsp;00:00:00&nbsp;CST&nbsp;2000</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t2.isdst</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="localtime"><b>localtime</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.localtime
+        -> <i>time</i>
+      </td></tr><td></td><td>
+<P></P>
+      Converts <i>time</i> to local time (using the local time zone in
+      effect for this process) modifying the receiver.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>t&nbsp;=&nbsp;Time.gm(2000,&nbsp;"jan",&nbsp;1,&nbsp;20,&nbsp;15,&nbsp;1)</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.gmt?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.localtime</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sat&nbsp;Jan&nbsp;01&nbsp;14:15:01&nbsp;CST&nbsp;2000</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.gmt?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="mday"><b>mday</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.mday
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_time.html#day"><code>Time#day</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="min"><b>min</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.min
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the minute of the hour (0..59) for <i>time</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.min</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>30</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="mon"><b>mon</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.mon
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the month of the year (1..12) for <i>time</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.mon</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>3</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="month"><b>month</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.month
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_time.html#mon"><code>Time#mon</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="sec"><b>sec</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.sec
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+         Returns the second of the minute
+      (0..60)<em>[Yes, seconds really can range from zero to
+        60. This allows the system to inject leap seconds        
+        every now
+        and then to correct for the fact that years are not really a
+        convenient number of hours long.]</em> for <i>time</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.sec</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>26</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="strftime"><b>strftime</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.strftime( <i>aString</i> )
+        -> <i>aString</i>
+      </td></tr><td></td><td>
+<P></P>
+      Formats <i>time</i> according to the directives in the given format
+      string.  See Table 22.9 on page 402 for the available values.
+      Any text not listed as a directive will be passed through to the
+      output string.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.strftime("Printed&nbsp;on&nbsp;%m/%d/%Y")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"Printed&nbsp;on&nbsp;03/04/2001"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.strftime("at&nbsp;%I:%M%p")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"at&nbsp;11:30PM"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+    <table border="2" width="500" bgcolor="#ffe0e0"><tr><td>
+      <b><a href="ref_c_time.html#strftime"><code>Time#strftime</code></a> directives</b>
+      <table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top"><b>Format</b></td>
+  <td valign="top"><b>Meaning</b></td>
+</tr>
+<tr>
+  <td valign="top">%a</td>
+  <td valign="top">The abbreviated weekday name (``Sun'')</td>
+</tr>
+<tr>
+  <td valign="top">%A</td>
+  <td valign="top">The  full  weekday  name (``Sunday'')</td>
+</tr>
+<tr>
+  <td valign="top">%b</td>
+  <td valign="top">The abbreviated month name (``Jan'')</td>
+</tr>
+<tr>
+  <td valign="top">%B</td>
+  <td valign="top">The  full  month  name (``January'')</td>
+</tr>
+<tr>
+  <td valign="top">%c</td>
+  <td valign="top">The preferred local date and time representation</td>
+</tr>
+<tr>
+  <td valign="top">%d</td>
+  <td valign="top">Day of the month (01..31)</td>
+</tr>
+<tr>
+  <td valign="top">%H</td>
+  <td valign="top">Hour of the day, 24-hour clock (00..23)</td>
+</tr>
+<tr>
+  <td valign="top">%I</td>
+  <td valign="top">Hour of the day, 12-hour clock (01..12)</td>
+</tr>
+<tr>
+  <td valign="top">%j</td>
+  <td valign="top">Day of the year (001..366)</td>
+</tr>
+<tr>
+  <td valign="top">%m</td>
+  <td valign="top">Month of the year (01..12)</td>
+</tr>
+<tr>
+  <td valign="top">%M</td>
+  <td valign="top">Minute of the hour (00..59)</td>
+</tr>
+<tr>
+  <td valign="top">%p</td>
+  <td valign="top">Meridian indicator (``AM''  or  ``PM'')</td>
+</tr>
+<tr>
+  <td valign="top">%S</td>
+  <td valign="top">Second of the minute (00..60)</td>
+</tr>
+<tr>
+  <td valign="top">%U</td>
+  <td valign="top">Week  number  of the current year,
+              starting with the first Sunday as the first
+              day of the first week (00..53)</td>
+</tr>
+<tr>
+  <td valign="top">%W</td>
+  <td valign="top">Week  number  of the current year,
+              starting with the first Monday as the first
+              day of the first week (00..53)</td>
+</tr>
+<tr>
+  <td valign="top">%w</td>
+  <td valign="top">Day of the week (Sunday is 0, 0..6)</td>
+</tr>
+<tr>
+  <td valign="top">%x</td>
+  <td valign="top">Preferred representation for the date alone, no time</td>
+</tr>
+<tr>
+  <td valign="top">%X</td>
+  <td valign="top">Preferred representation for the time alone, no date</td>
+</tr>
+<tr>
+  <td valign="top">%y</td>
+  <td valign="top">Year without a century (00..99)</td>
+</tr>
+<tr>
+  <td valign="top">%Y</td>
+  <td valign="top">Year with century</td>
+</tr>
+<tr>
+  <td valign="top">%Z</td>
+  <td valign="top">Time zone name</td>
+</tr>
+<tr>
+  <td valign="top">%%</td>
+  <td valign="top">Literal ``%'' character</td>
+</tr>
+<tr><td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td></tr></table>
+<P></P>
+    </td></tr></table>
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="to_a"><b>to_a</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.to_a
+        -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a ten-element <i>anArray</i>
+      of values for <i>time</i>: {<code>[ sec, min, hour, day, month,
+        year, wday, yday, isdst, zone ]</code>}.  See the individual
+      methods for an explanation of the valid ranges of each value.
+      The ten elements can be passed directly to   <a href="ref_c_time.html#utc"><code>Time::utc</code></a> or
+      <a href="ref_c_time.html#local"><code>Time::local</code></a> to create a new <code>Time</code>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>now&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;now.to_a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[26,&nbsp;30,&nbsp;23,&nbsp;4,&nbsp;3,&nbsp;2001,&nbsp;0,&nbsp;63,&nbsp;false,&nbsp;"CST"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="to_f"><b>to_f</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.to_f
+        -> <i>aFloat</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the value of <i>time</i> as a floating point number of
+      seconds since epoch.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>"%10.5f"&nbsp;%&nbsp;t.to_f</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"983770226.64529"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.to_i</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>983770226</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="to_i"><b>to_i</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.to_i
+        -> <i>anInteger</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the value of <i>time</i> as an integer number of
+      seconds since epoch.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>"%10.5f"&nbsp;%&nbsp;t.to_f</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"983770226.67497"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.to_i</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>983770226</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="to_s"><b>to_s</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.to_s
+        -> <i>aString</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a string representing <i>time</i>.  Equivalent to calling
+      <a href="ref_c_time.html#strftime"><code>Time#strftime</code></a> with a format string of 
+        ``<code>%a</code> <code>%b</code> <code>%d</code> <code>%H:%M:%S</code> <code>%Z</code> <code>%Y</code>''.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>Time.now.to_s</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="tv_sec"><b>tv_sec</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.tv_sec
+        -> <i>anInteger</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_time.html#to_i"><code>Time#to_i</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="tv_usec"><b>tv_usec</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.tv_usec
+        -> <i>anInteger</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_time.html#usec"><code>Time#usec</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="usec"><b>usec</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.usec
+        -> <i>anInteger</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns just the number of microseconds for <i>time</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>"%10.6f"&nbsp;%&nbsp;t.to_f</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"983770226.729373"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.usec</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>729373</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="utc"><b>utc</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.utc -> <i>time</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_time.html#gmtime"><code>Time#gmtime</code></a>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.utc?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.utc</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Mon&nbsp;Mar&nbsp;05&nbsp;05:30:26&nbsp;UTC&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.utc?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="utc_qm"><b>utc?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.utc? -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>time</i> represents a time in UTC (GMT).
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.utc?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.gm(2000,"jan",1,20,15,1)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sat&nbsp;Jan&nbsp;01&nbsp;20:15:01&nbsp;UTC&nbsp;2000</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.utc?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="wday"><b>wday</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.wday
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns an integer representing the day of the week, 0..6,
+      with Sunday == 0.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.wday</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>0</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="yday"><b>yday</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.yday
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns an integer representing the day of the year, 1..366.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.yday</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>63</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="year"><b>year</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.year
+        -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the year for <i>time</i> (including the century).
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;Time.now</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Sun&nbsp;Mar&nbsp;04&nbsp;23:30:26&nbsp;CST&nbsp;2001</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.year</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>2001</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="zone"><b>zone</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>time</i>.zone
+        -> <i>aString</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the name of the time zone used for <i>time</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>t&nbsp;=&nbsp;Time.gm(2000,&nbsp;"jan",&nbsp;1,&nbsp;20,&nbsp;15,&nbsp;1)</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.zone</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"GMT"</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>t&nbsp;=&nbsp;Time.local(2000,&nbsp;"jan",&nbsp;1,&nbsp;20,&nbsp;15,&nbsp;1)</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t.zone</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"CST"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td></table>
+<P></P>
+
+<p></p><hr><table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0"><tr><td width="33%" align="left"><a class="subheader" href="ref_c_threadgroup.html">Previous &lt;</a></td><td width="33%" align="center" valign="middle"><a class="subheader" href="builtins.html">Contents ^</a><br></td><td width="33%" align="right"><a class="subheader" href="ref_c_trueclass.html">Next ></a><br></td></tr></table><p></p><font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font><br><font size="-3">
+      Copyright
+      &#169;
+      2000 Addison Wesley Longman, Inc. Released under the terms of the
+      <a href="http://www.opencontent.org/openpub/">Open Publication License</a> V1.0.
+        <br>
+      This reference is available for
+        <a href="http://www.pragmaticprogrammer.com/ruby/downloads/book.html">download</a>.
+   </font></body></html>

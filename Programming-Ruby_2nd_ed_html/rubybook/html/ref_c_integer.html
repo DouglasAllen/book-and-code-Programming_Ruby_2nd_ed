@@ -1,0 +1,203 @@
+<html><title>Programming Ruby: The Pragmatic Programmer's Guide</title><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><STYLE TYPE="text/css"><!--
+       BODY    { margin-left: 1in;
+                 width: 6in;
+                 font-family: helvetica, arial, sans-serif;
+               }
+       H1      { color: #000080;
+                 font-family: helvetica, arial, sans-serif;
+                 font-size: 22pt;
+                 margin-left: 0in
+               }
+       H2      { color: #000080;  font: bold x-large helvetica, sans-serif;
+                 margin-left: 0in }
+       H3      { color: #000080;  font: bold   large helvetica, sans-serif; }
+       H4      { color: #000080;  font: italic large helvetica, sans-serif; }
+       .ruby   { background: #fff0f0 }
+       .header { color: white }
+       .subheader { color: #ffdddd }
+       .sidebar   { width: 6in }
+       span.sans { font-family: helvetica, arial, sans-serif }
+       -->
+   </STYLE><table bgcolor="#a03030" cellpadding="3" border="0" cellspacing="0"><tr><td colspan="3"><table bgcolor="#902020" cellpadding="20"><tr><td><h1 class="header">Programming Ruby</h1><h3 class="subheader">The Pragmatic Programmer's Guide</h3></td></tr></table></td></tr><tr><td width="33%" align="left"><a class="subheader" href="ref_c_hash.html">Previous &lt;</a></td><td width="33%" align="center" valign="middle"><a class="subheader" href="builtins.html">Contents ^</a><br></td><td width="33%" align="right"><a class="subheader" href="ref_c_io.html">Next ></a><br></td></tr></table></head><body bgcolor="white">
+<!--
+    Copyright (c) 2001 by Addison Wesley Longman.  This
+    material may be distributed only subject to the terms and
+    conditions set forth in the Open Publication License, v1.0 or
+    later (the latest version is presently available at
+    http://www.opencontent.org/openpub/).
+-->
+<table><tr><td height="20"><img src="dot.gif" width="1" height="20"></td></tr></table><table border="0" width="100%" bgcolor="660066" cellpadding="10"><tr><td valign="center"><font color="white" size="7">class Integer</font></td><td><table border="0"><tr><td><font color="white">
+                Parent:
+              </font></td><td><font color="white">Numeric</font></td></tr><tr><td><font color="white">
+                Version:
+              </font></td><td><font color="white">
+               1.6
+              </font></td></tr></table></td></tr></table><p></p><H3>Index:</H3><a href="#chr"><i>chr</i></a> <a href="#downto"><i>downto</i></a> <a href="#integer_qm"><i>integer?</i></a> <a href="#next"><i>next</i></a> <a href="#step"><i>step</i></a> <a href="#succ"><i>succ</i></a> <a href="#times"><i>times</i></a> <a href="#upto"><i>upto</i></a> <p></p><hr>    <br><font size="-1">Subclasses: Bignum, Fixnum</font><p></p>
+<P></P>
+  <code>Integer</code> is the basis for the two concrete classes that hold
+  whole numbers, <code>Bignum</code> and <code>Fixnum</code>.
+<P></P>
+  <table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">instance methods
+       </font></td></tr><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="chr"><b>chr</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>int</i>.chr -> <i>aString</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a string containing the ASCII character represented by 
+      the receiver's value.            
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>65.chr</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"A"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>?a.chr</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"a"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>230.chr</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"\346"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="downto"><b>downto</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>int</i>.downto( <i>anInteger</i> ) {| i | block }
+<P></P>
+        -> <i>int</i>
+      </td></tr><td></td><td>
+<P></P>
+      Iterates <em>block</em>, passing decreasing values
+      from <i>int</i> down to and including <i>anInteger</i>.      
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+5.downto(1)&nbsp;{&nbsp;|n|&nbsp;print&nbsp;n,&nbsp;"..&nbsp;"&nbsp;}
+print&nbsp;"&nbsp;&nbsp;Liftoff!\n"
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+5..&nbsp;4..&nbsp;3..&nbsp;2..&nbsp;1..&nbsp;&nbsp;&nbsp;Liftoff!
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="integer_qm"><b>integer?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>int</i>.integer? -> <code>true</code>
+      </td></tr><td></td><td>
+<P></P>
+      Always returns <code>true</code>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="next"><b>next</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>int</i>.next -> <i>anInteger</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the <code>Integer</code> equal to <i>int</i>&nbsp;+&nbsp;1.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>1.next</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>2</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>(-1).next</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>0</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="step"><b>step</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>int</i>.step( <i>endNum</i>, <i>step</i> ) {| i | block }
+<P></P>
+        -> <i>int</i>
+      </td></tr><td></td><td>
+<P></P>
+      Invokes <em>block</em> with the sequence of numbers starting at
+      <i>int</i>,      
+      incremented by <i>step</i> on each call. The loop
+      finishes when the value to be passed to the block is greater
+      than <i>endNum</i> (if <i>step</i> is positive) or less than
+      <i>endNum</i> (if <i>step</i> is negative).
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+1.step(10,&nbsp;2)&nbsp;{&nbsp;|i|&nbsp;print&nbsp;i,&nbsp;"&nbsp;"&nbsp;}
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+1&nbsp;3&nbsp;5&nbsp;7&nbsp;9
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="succ"><b>succ</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>int</i>.succ -> <i>anInteger</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_integer.html#next"><code>Integer#next</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="times"><b>times</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>int</i>.times {| i | block }
+<P></P>
+        -> <i>int</i>
+      </td></tr><td></td><td>
+<P></P>
+      Iterates block <i>int</i> times, passing in values from zero to
+      <i>int</i> - 1.      
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+5.times&nbsp;do&nbsp;|i|
+&nbsp;&nbsp;print&nbsp;i,&nbsp;"&nbsp;"
+end
+print&nbsp;"\n"
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+0&nbsp;1&nbsp;2&nbsp;3&nbsp;4
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="upto"><b>upto</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>int</i>.upto( <i>anInteger</i> ) {| i | block }
+<P></P>
+        -> <i>int</i>
+      </td></tr><td></td><td>
+<P></P>
+      Iterates <em>block</em>, passing in integer values from
+      <i>int</i> up to and including <i>anInteger</i>.      
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+5.upto(10)&nbsp;{&nbsp;|i|&nbsp;print&nbsp;i,&nbsp;"&nbsp;"&nbsp;}
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+5&nbsp;6&nbsp;7&nbsp;8&nbsp;9&nbsp;10
+</pre></td></tr></table>
+
+<P></P>
+      </td></table>
+<P></P>
+
+<p></p><hr><table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0"><tr><td width="33%" align="left"><a class="subheader" href="ref_c_hash.html">Previous &lt;</a></td><td width="33%" align="center" valign="middle"><a class="subheader" href="builtins.html">Contents ^</a><br></td><td width="33%" align="right"><a class="subheader" href="ref_c_io.html">Next ></a><br></td></tr></table><p></p><font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font><br><font size="-3">
+      Copyright
+      &#169;
+      2000 Addison Wesley Longman, Inc. Released under the terms of the
+      <a href="http://www.opencontent.org/openpub/">Open Publication License</a> V1.0.
+        <br>
+      This reference is available for
+        <a href="http://www.pragmaticprogrammer.com/ruby/downloads/book.html">download</a>.
+   </font></body></html>

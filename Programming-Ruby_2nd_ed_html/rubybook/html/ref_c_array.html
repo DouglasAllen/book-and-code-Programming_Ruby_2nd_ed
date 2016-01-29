@@ -1,0 +1,1849 @@
+<html><title>Programming Ruby: The Pragmatic Programmer's Guide</title><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><STYLE TYPE="text/css"><!--
+       BODY    { margin-left: 1in;
+                 width: 6in;
+                 font-family: helvetica, arial, sans-serif;
+               }
+       H1      { color: #000080;
+                 font-family: helvetica, arial, sans-serif;
+                 font-size: 22pt;
+                 margin-left: 0in
+               }
+       H2      { color: #000080;  font: bold x-large helvetica, sans-serif;
+                 margin-left: 0in }
+       H3      { color: #000080;  font: bold   large helvetica, sans-serif; }
+       H4      { color: #000080;  font: italic large helvetica, sans-serif; }
+       .ruby   { background: #fff0f0 }
+       .header { color: white }
+       .subheader { color: #ffdddd }
+       .sidebar   { width: 6in }
+       span.sans { font-family: helvetica, arial, sans-serif }
+       -->
+   </STYLE><table bgcolor="#a03030" cellpadding="3" border="0" cellspacing="0"><tr><td colspan="3"><table bgcolor="#902020" cellpadding="20"><tr><td><h1 class="header">Programming Ruby</h1><h3 class="subheader">The Pragmatic Programmer's Guide</h3></td></tr></table></td></tr><tr><td width="33%" align="left"></td><td width="33%" align="center" valign="middle"><a class="subheader" href="builtins.html">Contents ^</a><br></td><td width="33%" align="right"><a class="subheader" href="ref_c_bignum.html">Next ></a><br></td></tr></table></head><body bgcolor="white">
+<!--
+    Copyright (c) 2001 by Addison Wesley Longman.  This
+    material may be distributed only subject to the terms and
+    conditions set forth in the Open Publication License, v1.0 or
+    later (the latest version is presently available at
+    http://www.opencontent.org/openpub/).
+-->
+<table><tr><td height="20"><img src="dot.gif" width="1" height="20"></td></tr></table><table border="0" width="100%" bgcolor="660066" cellpadding="10"><tr><td valign="center"><font color="white" size="7">class Array</font></td><td><table border="0"><tr><td><font color="white">
+                Parent:
+              </font></td><td><font color="white">Object</font></td></tr><tr><td><font color="white">
+                Version:
+              </font></td><td><font color="white">
+               1.6
+              </font></td></tr></table></td></tr></table><p></p><H3>Index:</H3><a href="#_ob_cb">[ ]</a> <a href="#new">new</a> <a href="#_et"><i>&amp;</i></a> <a href="#_st"><i>*</i></a> <a href="#_pl"><i>+</i></a> <a href="#_mi_mi"><i>--</i></a> <a href="#_lt_lt"><i>&lt;&lt;</i></a> <a href="#_lt_eq_lt"><i>&lt;=></i></a> <a href="#_eq_eq"><i>==</i></a> <a href="#_eq_eq_eq"><i>===</i></a> <a href="#_ob_cb"><i>[ ]</i></a> <a href="#_ob_cb_eq"><i>[ ]=</i></a> <a href="#_ba"><i>|</i></a> <a href="#assoc"><i>assoc</i></a> <a href="#at"><i>at</i></a> <a href="#clear"><i>clear</i></a> <a href="#collect"><i>collect</i></a> <a href="#collect_oh"><i>collect!</i></a> <a href="#compact"><i>compact</i></a> <a href="#compact_oh"><i>compact!</i></a> <a href="#concat"><i>concat</i></a> <a href="#delete"><i>delete</i></a> <a href="#delete_at"><i>delete_at</i></a> <a href="#delete_if"><i>delete_if</i></a> <a href="#each"><i>each</i></a> <a href="#each_index"><i>each_index</i></a> <a href="#empty_qm"><i>empty?</i></a> <a href="#eql_qm"><i>eql?</i></a> <a href="#fill"><i>fill</i></a> <a href="#first"><i>first</i></a> <a href="#flatten"><i>flatten</i></a> <a href="#flatten_oh"><i>flatten!</i></a> <a href="#include_qm"><i>include?</i></a> <a href="#index"><i>index</i></a> <a href="#indexes"><i>indexes</i></a> <a href="#indices"><i>indices</i></a> <a href="#join"><i>join</i></a> <a href="#last"><i>last</i></a> <a href="#length"><i>length</i></a> <a href="#map_oh"><i>map!</i></a> <a href="#nitems"><i>nitems</i></a> <a href="#pack"><i>pack</i></a> <a href="#pop"><i>pop</i></a> <a href="#push"><i>push</i></a> <a href="#rassoc"><i>rassoc</i></a> <a href="#reject_oh"><i>reject!</i></a> <a href="#replace"><i>replace</i></a> <a href="#reverse"><i>reverse</i></a> <a href="#reverse_oh"><i>reverse!</i></a> <a href="#reverse_each"><i>reverse_each</i></a> <a href="#rindex"><i>rindex</i></a> <a href="#shift"><i>shift</i></a> <a href="#size"><i>size</i></a> <a href="#slice"><i>slice</i></a> <a href="#slice_oh"><i>slice!</i></a> <a href="#sort"><i>sort</i></a> <a href="#sort_oh"><i>sort!</i></a> <a href="#to_a"><i>to_a</i></a> <a href="#to_ary"><i>to_ary</i></a> <a href="#to_s"><i>to_s</i></a> <a href="#uniq"><i>uniq</i></a> <a href="#uniq_oh"><i>uniq!</i></a> <a href="#unshift"><i>unshift</i></a> <p></p><hr>
+<P></P>
+  Arrays are ordered, integer-indexed collections of any object.
+  Array indexing starts at 0, as in C or Java.  A negative index is
+  assumed relative to the end of the array---that is, an index of -1
+  indicates the last element of the array, -2 is the next to last
+  element in the array, and so on.
+  <table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">
+         mixins
+       </font></td></tr>
+    <tr><td>Enumerable:
+    </td><td>
+   collect, detect, each_with_index, entries, find, find_all, grep,
+   include?, map, max, member?, min, reject, select, sort, to_a</td></tr>
+  </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">class methods
+       </font></td></tr><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_ob_cb"><b>[ ]</b></a></font></td><td bgcolor="#ffaaaa">
+        Array[ <i>[</i>anObject<i>]<sup>*</sup></i> ]
+        -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a new array populated with the given objects. Equivalent to
+      the operator form <code>Array.[](</code><em>...</em><code>)</code>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>Array.[](&nbsp;1,&nbsp;'a',&nbsp;/^A/&nbsp;)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;"a",&nbsp;/^A/]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Array[&nbsp;1,&nbsp;'a',&nbsp;/^A/&nbsp;]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;"a",&nbsp;/^A/]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>[&nbsp;1,&nbsp;'a',&nbsp;/^A/&nbsp;]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;"a",&nbsp;/^A/]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="new"><b>new</b></a></font></td><td bgcolor="#ffaaaa">
+        Array.new( <i>anInteger=0</i>, <i>anObject=nil</i> )
+        -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a new array, optionally with a size and initial value
+      (that is, <i>anInteger</i> references to the same
+      <i>anObject</i>).
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>Array.new</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Array.new(2)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[nil,&nbsp;nil]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Array.new(5,&nbsp;"A")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["A",&nbsp;"A",&nbsp;"A",&nbsp;"A",&nbsp;"A"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Array.new(2,&nbsp;Hash.new)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[{},&nbsp;{}]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td></table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">instance methods
+       </font></td></tr><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_et"><b>&amp;</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i> &amp; <i>anOtherArray</i>
+        -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Set Intersection---Returns a new array
+      containing elements common to the two arrays, with no duplicates.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;1,&nbsp;1,&nbsp;3,&nbsp;5&nbsp;]&nbsp;&amp;&nbsp;[&nbsp;1,&nbsp;2,&nbsp;3&nbsp;]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;3]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_st"><b>*</b></a></font></td><td bgcolor="#ffaaaa">
+                   <i>arr</i> * <i>anInteger</i> -> <i>anArray</i><br><i>arr</i> * <i>aString</i>   -> <i>anOtherString</i>
+      </td></tr><td></td><td>
+<P></P>
+       Repetition---With a <code>String</code> argument, equivalent to
+       <code><i>arr</i>.join(aString)</code>. Otherwise, returns a new array
+       built by concatenating the <i>anInteger</i> copies of <i>arr</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;1,&nbsp;2,&nbsp;3&nbsp;]&nbsp;*&nbsp;3</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;2,&nbsp;3,&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;1,&nbsp;2,&nbsp;3]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_pl"><b>+</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i> + <i>anOtherArray</i>
+         -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+       Concatenation---Returns a new array built by concatenating the
+       two arrays together to produce a third array.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;1,&nbsp;2,&nbsp;3&nbsp;]&nbsp;+&nbsp;[&nbsp;4,&nbsp;5&nbsp;]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_mi_mi"><b>--</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i> - <i>anOtherArray</i>
+         -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+       Set Difference---Returns a new array that is a copy of
+       the original array, removing any items that also appear in
+       <i>anOtherArray</i> and duplicated items.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;1,&nbsp;1,&nbsp;2,&nbsp;2,&nbsp;3,&nbsp;3,&nbsp;3,&nbsp;4,&nbsp;5&nbsp;]&nbsp;-&nbsp;[&nbsp;1,&nbsp;2,&nbsp;4&nbsp;]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[3,&nbsp;5]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_lt_lt"><b>&lt;&lt;</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i> &lt;&lt; <i>anObject</i>
+         -> <i>arr</i>
+      </td></tr><td></td><td>
+<P></P>
+       Append---Pushes the given object on to the end of this array. This
+       expression returns the array itself, so several appends
+       may be chained together.
+<P></P>
+       See also <a href="ref_c_array.html#push"><code>Array#push</code></a>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;1,&nbsp;2&nbsp;]&nbsp;&lt;&lt;&nbsp;"c"&nbsp;&lt;&lt;&nbsp;"d"&nbsp;&lt;&lt;&nbsp;[&nbsp;3,&nbsp;4&nbsp;]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;2,&nbsp;"c",&nbsp;"d",&nbsp;[3,&nbsp;4]]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_lt_eq_lt"><b>&lt;=></b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i> &lt;=> <i>anOtherArray</i>
+         -> -1, 0, +1
+      </td></tr><td></td><td>
+<P></P>
+       Comparison---Returns an integer -1, 0,
+       or +1 if this array is less than, equal to, or greater than
+       <i>anOtherArray</i>.  Each object in each array is compared
+       (using <code>&lt;=></code>). If any value isn't
+       equal, then that inequality is the return value. If all the
+       values found are equal, then the return is based on a
+       comparison of the array lengths.  Thus, two arrays are
+       ``equal'' according to <a href="ref_c_array.html#_lt_eq_lt"><code>Array#&lt;=></code></a> if and only if they have
+       the same length and the value of each element is equal to the
+       value of the corresponding element in the other array.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;"a",&nbsp;"a",&nbsp;"c"&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;&lt;=>&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>-1</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>[&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5,&nbsp;6&nbsp;]&nbsp;&lt;=>&nbsp;[&nbsp;1,&nbsp;2&nbsp;]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>1</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_eq_eq"><b>==</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i> == <i>anOtherArray</i>
+         -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+       Equality---Two arrays are equal if they contain the same number
+       of elements and if each element is equal to (according to
+       <a href="ref_c_object.html#_eq_eq"><code>Object#==</code></a>) the corresponding element in the other array.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;"a",&nbsp;"c"&nbsp;]&nbsp;&nbsp;&nbsp;&nbsp;==&nbsp;[&nbsp;"a",&nbsp;"c",&nbsp;7&nbsp;]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>[&nbsp;"a",&nbsp;"c",&nbsp;7&nbsp;]&nbsp;==&nbsp;[&nbsp;"a",&nbsp;"c",&nbsp;7&nbsp;]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>[&nbsp;"a",&nbsp;"c",&nbsp;7&nbsp;]&nbsp;==&nbsp;[&nbsp;"a",&nbsp;"d",&nbsp;"f"&nbsp;]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_eq_eq_eq"><b>===</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i> === <i>anOtherArray</i>
+         -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+       Case Equality---Equality as evaluated by <code>case</code>
+       expressions. For arrays, this is the same as <a href="ref_c_array.html#_eq_eq"><code>Array#==</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_ob_cb"><b>[ ]</b></a></font></td><td bgcolor="#ffaaaa">
+                   <i>arr</i>[<i>anInteger</i>] 
+              -> <i>anObject</i> or <code>nil</code><br><i>arr</i>[<i>start</i>, <i>length</i>]
+              -> <i>aSubArray</i> or <code>nil</code><br><i>arr</i>[<i>aRange</i>] 
+              -> <i>aSubArray</i> or <code>nil</code>
+<P></P>
+      </td></tr><td></td><td>
+<P></P>
+     Element Reference---Returns the element at index <i>anInteger</i>,
+     or returns a subarray starting at index <i>start</i> and
+     continuing for <i>length</i> elements, or returns a subarray
+     specified by <i>aRange</i>.
+     Negative indices count backward from the end of the
+     array (-1 is the last element). Returns <code>nil</code> if any indices
+     are out of range.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c",&nbsp;"d",&nbsp;"e"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a[2]&nbsp;+&nbsp;&nbsp;a[0]&nbsp;+&nbsp;a[1]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"cab"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a[6]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a[1,&nbsp;2]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["b",&nbsp;"c"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a[1..3]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["b",&nbsp;"c",&nbsp;"d"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a[4..7]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["e"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a[6..10]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a[-3,&nbsp;3]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["c",&nbsp;"d",&nbsp;"e"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_ob_cb_eq"><b>[ ]=</b></a></font></td><td bgcolor="#ffaaaa">
+                   <i>arr</i>[<i>anInteger</i>] = <i>anObject</i> -> 
+             <i>anObject</i>  <br><i>arr</i>[<i>start</i>, <i>length</i>] = <i>aSubArray</i>
+           ->  <i>aSubArray</i> <br><i>arr</i>[<i>aRange</i>] = <i>aSubArray</i> ->  <i>aSubArray</i> 
+             
+      </td></tr><td></td><td>
+<P></P>
+       Element Assignment---Sets the element at index <i>anInteger</i>,
+       or replaces a subarray starting at index <i>start</i> and
+       continuing for <i>length</i> elements, or replaces a subarray
+       specified by <i>aRange</i>.  If <i>anInteger</i> is greater than
+       the current capacity of the array, the array grows
+       automatically. A negative <i>anInteger</i> will count backward
+       from the end of the array. Inserts elements if <i>length</i> is
+       zero. If <i>subArray</i> is <code>nil</code>, deletes elements from <i>arr</i>.
+       An <code>IndexError</code> is raised if a
+       negative index points past the beginning of the array. See also
+       <a href="ref_c_array.html#push"><code>Array#push</code></a>, <a href="ref_c_array.html#unshift"><code>Array#unshift</code></a>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>a&nbsp;=&nbsp;Array.new</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a[4]&nbsp;=&nbsp;"4";&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[nil,&nbsp;nil,&nbsp;nil,&nbsp;nil,&nbsp;"4"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a[0,&nbsp;3]&nbsp;=&nbsp;[&nbsp;'a',&nbsp;'b',&nbsp;'c'&nbsp;];&nbsp;a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"b",&nbsp;"c",&nbsp;nil,&nbsp;"4"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a[1..2]&nbsp;=&nbsp;[&nbsp;1,&nbsp;2&nbsp;];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;1,&nbsp;2,&nbsp;nil,&nbsp;"4"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a[0,&nbsp;2]&nbsp;=&nbsp;"?";&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["?",&nbsp;2,&nbsp;nil,&nbsp;"4"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a[0..2]&nbsp;=&nbsp;"A";&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["A",&nbsp;"4"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a[-1]&nbsp;&nbsp;&nbsp;=&nbsp;"Z";&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["A",&nbsp;"Z"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a[1..-1]&nbsp;=&nbsp;nil;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["A"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_ba"><b>|</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i> | <i>anOtherArray</i>
+        -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Set Union---Returns a new array by joining this array with
+      <i>anOtherArray</i>, removing duplicates.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;]&nbsp;|&nbsp;[&nbsp;"c",&nbsp;"d",&nbsp;"a"&nbsp;]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"b",&nbsp;"c",&nbsp;"d"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="assoc"><b>assoc</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.assoc( <i>anObject</i> )
+        -> <i>anArray</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+       Searches through an array whose elements are also arrays
+       comparing <i>anObject</i> with the first element of each contained array
+       using <i>anObject</i><code>.==</code> .
+       Returns the first contained array that matches (that
+       is, the first <em>assoc</em>iated array),
+       or <code>nil</code> if no match is found.
+       See also <a href="ref_c_array.html#rassoc"><code>Array#rassoc</code></a>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>s1&nbsp;=&nbsp;[&nbsp;"colors",&nbsp;"red",&nbsp;"blue",&nbsp;"green"&nbsp;]</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>s2&nbsp;=&nbsp;[&nbsp;"letters",&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;]</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>s3&nbsp;=&nbsp;"foo"</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;&nbsp;=&nbsp;[&nbsp;s1,&nbsp;s2,&nbsp;s3&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.assoc("letters")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["letters",&nbsp;"a",&nbsp;"b",&nbsp;"c"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.assoc("foo")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="at"><b>at</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.at( <i>anInteger</i> ) 
+         -> <i>anObject</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+       Returns the element at index <i>anInteger</i>.  A
+       negative index counts from the end of <i>arr</i>.  Returns <code>nil</code>
+       if the index is out of range. See also <a href="ref_c_array.html#_ob_cb"><code>Array#[]</code></a>.
+       (<a href="ref_c_array.html#at"><code>Array#at</code></a> is slightly faster than <a href="ref_c_array.html#_ob_cb"><code>Array#[]</code></a>, as it
+       does not accept ranges and so on.)
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c",&nbsp;"d",&nbsp;"e"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.at(0)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"a"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.at(-1)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"e"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="clear"><b>clear</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.clear
+         -> <i>arr</i>
+      </td></tr><td></td><td>
+<P></P>
+       Removes all elements from <i>arr</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c",&nbsp;"d",&nbsp;"e"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.clear</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="collect"><b>collect</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.collect {| obj | block }
+<P></P>
+        -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a new array by invoking <i>block</i> once for every
+      element, passing each element as a parameter to <i>block</i>.  The
+      result of <i>block</i> is used as the given element in the new
+      array. See also <a href="ref_c_array.html#collect_oh"><code>Array#collect!</code></a>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c",&nbsp;"d"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.collect&nbsp;{|x|&nbsp;x&nbsp;+&nbsp;"!"&nbsp;}</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a!",&nbsp;"b!",&nbsp;"c!",&nbsp;"d!"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"b",&nbsp;"c",&nbsp;"d"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="collect_oh"><b>collect!</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.collect! {| obj | block }
+<P></P>
+        -> <i>arr</i>
+      </td></tr><td></td><td>
+<P></P>
+      Invokes <i>block</i> once for each element of <i>arr</i>, replacing the
+      element with the value returned by <i>block</i>.
+       See also <a href="ref_c_array.html#collect"><code>Array#collect</code></a>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c",&nbsp;"d"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.collect!&nbsp;{|x|&nbsp;x&nbsp;+&nbsp;"!"&nbsp;}</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a!",&nbsp;"b!",&nbsp;"c!",&nbsp;"d!"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a!",&nbsp;"b!",&nbsp;"c!",&nbsp;"d!"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="compact"><b>compact</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.compact -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a new array based on the <i>arr</i> with
+      all <code>nil</code> elements removed.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;"a",&nbsp;nil,&nbsp;"b",&nbsp;nil,&nbsp;"c",&nbsp;nil&nbsp;].compact</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"b",&nbsp;"c"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="compact_oh"><b>compact!</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.compact! -> <i>arr</i> or <code>nil</code></td></tr><td></td><td>
+<P></P>
+      Same as <a href="ref_c_array.html#compact"><code>Array#compact</code></a>, but modifies the receiver in place.  
+      Returns <code>nil</code> if no changes were made.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;"a",&nbsp;nil,&nbsp;"b",&nbsp;nil,&nbsp;"c"&nbsp;].compact!</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"b",&nbsp;"c"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;].compact!</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="concat"><b>concat</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.concat( <i>anOtherArray</i> )
+        -> <i>arr</i>
+      </td></tr><td></td><td>
+<P></P>
+      Appends the elements in <i>anOtherArray</i> to <i>arr</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;"a",&nbsp;"b"&nbsp;].concat(&nbsp;["c",&nbsp;"d"]&nbsp;)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"b",&nbsp;"c",&nbsp;"d"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="delete"><b>delete</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.delete( <i>anObject</i> )
+        -> <i>anObject</i> or <code>nil</code> <br><i>arr</i>.delete( <i>anObject</i> ) {|  | block }
+<P></P>
+        -> <i>anObject</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Deletes items from the self that are equal to <i>anObject</i>.
+      If the item is not found, returns <code>nil</code>.  If the optional
+      code block is given, returns the result of <i>block</i> if the item
+      is not found. 
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"b",&nbsp;"b",&nbsp;"c"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.delete("b")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"b"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"c"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.delete("z")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.delete("z")&nbsp;{&nbsp;"not&nbsp;found"&nbsp;}</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"not&nbsp;found"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="delete_at"><b>delete_at</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.delete_at( <i>anIndex</i> )
+        -> <i>anObject</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Deletes the element at the specified index, returning that
+      element, or <code>nil</code> if the index is out of range.
+      See also <a href="ref_c_array.html#slice_oh"><code>Array#slice!</code></a>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;%w(&nbsp;ant&nbsp;bat&nbsp;cat&nbsp;dog&nbsp;)</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.delete_at(2)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"cat"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["ant",&nbsp;"bat",&nbsp;"dog"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.delete_at(99)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="delete_if"><b>delete_if</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.delete_if {|  | block }
+<P></P>
+        -> <i>arr</i>
+      </td></tr><td></td><td>
+<P></P>
+      Deletes every element of <i>arr</i> for which <i>block</i>
+      evaluates to <code>true</code>. 
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.delete_if&nbsp;{|x|&nbsp;x&nbsp;>=&nbsp;"b"&nbsp;}</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="each"><b>each</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.each {| item | block }
+  -> <i>arr</i>
+      </td></tr><td></td><td>
+<P></P>
+      Calls <i>block</i> once for each element in <i>arr</i>, passing that
+      element as a parameter.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;]
+a.each&nbsp;{|x|&nbsp;print&nbsp;x,&nbsp;"&nbsp;--&nbsp;"&nbsp;}
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+a&nbsp;--&nbsp;b&nbsp;--&nbsp;c&nbsp;--
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="each_index"><b>each_index</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.each_index {| anIndex | block }
+ -> <i>arr</i>
+      </td></tr><td></td><td>
+<P></P>
+      Same as <a href="ref_c_array.html#each"><code>Array#each</code></a>, but passes the index of the element instead of
+      the element itself.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;]
+a.each_index&nbsp;{|x|&nbsp;print&nbsp;x,&nbsp;"&nbsp;--&nbsp;"&nbsp;}
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+0&nbsp;--&nbsp;1&nbsp;--&nbsp;2&nbsp;--
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="empty_qm"><b>empty?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.empty? 
+      -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>arr</i> array contains no elements.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[].empty?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="eql_qm"><b>eql?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.eql?( <i>anOtherArray</i> )
+        -> <code>true</code> or <code>false</code></td></tr><td></td><td>
+<P></P>
+      An array is equal to another array if the lengths are equal and 
+      each corresponding element is equal (according to
+      <a href="ref_c_object.html#eql_qm"><code>Object#eql?</code></a>).  See also <a href="ref_c_array.html#_lt_eq_lt"><code>Array#&lt;=></code></a>.
+      <code>eql?</code> is used for <code>Hash</code> comparison.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;].eql?(["a",&nbsp;"b",&nbsp;"c"])</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;].eql?(["a",&nbsp;"b"])</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;].eql?(["b",&nbsp;"c",&nbsp;"d"])</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="fill"><b>fill</b></a></font></td><td bgcolor="#ffaaaa">
+                  <i>arr</i>.fill( <i>anObject</i> ) -> <i>arr</i> <br><i>arr</i>.fill( <i>anObject</i>, <i>start</i> <i>[</i>, <i>length</i><i>]</i>
+          )  -> <i>arr</i> <br><i>arr</i>.fill( <i>anObject</i>, <i>aRange</i> ) -> <i>arr</i>
+<P></P>
+      </td></tr><td></td><td>
+<P></P>
+      Sets the selected elements of <i>arr</i> (which may be the entire array)
+      to <i>anObject</i>. A <i>start</i> of <code>nil</code> is 
+      equivalent to zero. A <i>length</i> of <code>nil</code> is equivalent to
+      <i>arr</i>.length. 
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c",&nbsp;"d"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.fill("x")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["x",&nbsp;"x",&nbsp;"x",&nbsp;"x"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.fill("z",&nbsp;2,&nbsp;2)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["x",&nbsp;"x",&nbsp;"z",&nbsp;"z"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.fill("y",&nbsp;0..1)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["y",&nbsp;"y",&nbsp;"z",&nbsp;"z"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="first"><b>first</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.first -> <i>anObject</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the first element of the array.  If the array is empty,
+      returns <code>nil</code>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"q",&nbsp;"r",&nbsp;"s",&nbsp;"t"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.first</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"q"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="flatten"><b>flatten</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.flatten -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a new array that is a one-dimensional flattening of this
+      array (recursively). That is, for every element that is an 
+      array, extract its elements into the new array.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>s&nbsp;=&nbsp;[&nbsp;1,&nbsp;2,&nbsp;3&nbsp;]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;2,&nbsp;3]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>t&nbsp;=&nbsp;[&nbsp;4,&nbsp;5,&nbsp;6,&nbsp;[7,&nbsp;8]&nbsp;]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[4,&nbsp;5,&nbsp;6,&nbsp;[7,&nbsp;8]]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a&nbsp;=&nbsp;[&nbsp;s,&nbsp;t,&nbsp;9,&nbsp;10&nbsp;]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[[1,&nbsp;2,&nbsp;3],&nbsp;[4,&nbsp;5,&nbsp;6,&nbsp;[7,&nbsp;8]],&nbsp;9,&nbsp;10]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.flatten</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5,&nbsp;6,&nbsp;7,&nbsp;8,&nbsp;9,&nbsp;10]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="flatten_oh"><b>flatten!</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.flatten! -> <i>arr</i> or <code>nil</code></td></tr><td></td><td>
+<P></P>
+      Same as <a href="ref_c_array.html#flatten"><code>Array#flatten</code></a>, but modifies the receiver in place.
+      Returns <code>nil</code> if no modifications were made (i.e., <i>arr</i>
+      contains no subarrays.)
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;1,&nbsp;2,&nbsp;[3,&nbsp;[4,&nbsp;5]&nbsp;]&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.flatten!</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.flatten!</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="include_qm"><b>include?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.include?( <i>anObject</i> ) 
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if the given object
+      is present in <i>arr</i> (that is, if any object <code>==</code>
+      <i>anObject</i>), <code>false</code> otherwise.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.include?("b")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.include?("z")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+    <table border="2" width="500" bgcolor="#ffe0e0"><tr><td>
+        <b>Template characters for <a href="ref_c_array.html#pack"><code>Array#pack</code></a></b>
+        <table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top"><b>Directive</b></td>
+  <td valign="top"><b>Meaning</b></td>
+</tr>
+<tr>
+  <td valign="top">@</td>
+  <td valign="top">Moves to absolute position</td>
+</tr>
+<tr>
+  <td valign="top">A</td>
+  <td valign="top">ASCII string (space padded, count is width)</td>
+</tr>
+<tr>
+  <td valign="top">a</td>
+  <td valign="top">ASCII string (null padded, count is width)</td>
+</tr>
+<tr>
+  <td valign="top">B</td>
+  <td valign="top">Bit string (descending bit order)</td>
+</tr>
+<tr>
+  <td valign="top">b</td>
+  <td valign="top">Bit string (ascending bit order)</td>
+</tr>
+<tr>
+  <td valign="top">C</td>
+  <td valign="top">Unsigned char</td>
+</tr>
+<tr>
+  <td valign="top">c</td>
+  <td valign="top">Char</td>
+</tr>
+<tr>
+  <td valign="top">d</td>
+  <td valign="top">Double-precision float, native format</td>
+</tr>
+<tr>
+  <td valign="top">E</td>
+  <td valign="top">Double-precision float, little-endian byte order</td>
+</tr>
+<tr>
+  <td valign="top">e</td>
+  <td valign="top">Single-precision float, little-endian byte order</td>
+</tr>
+<tr>
+  <td valign="top">f</td>
+  <td valign="top">Single-precision float, native format</td>
+</tr>
+<tr>
+  <td valign="top">G</td>
+  <td valign="top">Double-precision float, network (big-endian) byte order</td>
+</tr>
+<tr>
+  <td valign="top">g</td>
+  <td valign="top">Single-precision float, network (big-endian) byte order</td>
+</tr>
+<tr>
+  <td valign="top">H</td>
+  <td valign="top">Hex string (high nibble first)</td>
+</tr>
+<tr>
+  <td valign="top">h</td>
+  <td valign="top">Hex string (low nibble first)</td>
+</tr>
+<tr>
+  <td valign="top">I</td>
+  <td valign="top">Unsigned integer</td>
+</tr>
+<tr>
+  <td valign="top">i</td>
+  <td valign="top">Integer</td>
+</tr>
+<tr>
+  <td valign="top">L</td>
+  <td valign="top">Unsigned long</td>
+</tr>
+<tr>
+  <td valign="top">l</td>
+  <td valign="top">Long</td>
+</tr>
+<tr>
+  <td valign="top">M</td>
+  <td valign="top">Quoted printable, MIME encoding (see RFC2045)</td>
+</tr>
+<tr>
+  <td valign="top">m</td>
+  <td valign="top">Base64 encoded string</td>
+</tr>
+<tr>
+  <td valign="top">N</td>
+  <td valign="top">Long, network (big-endian) byte order</td>
+</tr>
+<tr>
+  <td valign="top">n</td>
+  <td valign="top">Short, network (big-endian) byte-order</td>
+</tr>
+<tr>
+  <td valign="top">P</td>
+  <td valign="top">Pointer to a structure (fixed-length string)</td>
+</tr>
+<tr>
+  <td valign="top">p</td>
+  <td valign="top">Pointer to a null-terminated string</td>
+</tr>
+<tr>
+  <td valign="top">S</td>
+  <td valign="top">Unsigned short</td>
+</tr>
+<tr>
+  <td valign="top">s</td>
+  <td valign="top">Short</td>
+</tr>
+<tr>
+  <td valign="top">U</td>
+  <td valign="top">UTF-8</td>
+</tr>
+<tr>
+  <td valign="top">u</td>
+  <td valign="top">UU-encoded string</td>
+</tr>
+<tr>
+  <td valign="top">V</td>
+  <td valign="top">Long, little-endian byte order</td>
+</tr>
+<tr>
+  <td valign="top">v</td>
+  <td valign="top">Short, little-endian byte order</td>
+</tr>
+<tr>
+  <td valign="top">X</td>
+  <td valign="top">Back up a byte</td>
+</tr>
+<tr>
+  <td valign="top">x</td>
+  <td valign="top">Null byte</td>
+</tr>
+<tr>
+  <td valign="top">Z</td>
+  <td valign="top">Same as ``A''</td>
+</tr>
+<tr><td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td></tr></table>
+<P></P>
+      </td></tr></table>
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="index"><b>index</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.index( <i>anObject</i> )
+        -> <i>anInteger</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the index of the first object in <i>arr</i> such that
+      the object <code>==</code> <i>anObject</i>.  Returns
+      <code>nil</code> if no match is found.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.index("b")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>1</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.index("z")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="indexes"><b>indexes</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.indexes( <i>i1, i2, ... iN</i> )
+        -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a new array consisting of elements at the given indices.
+      May insert <code>nil</code> for indices out of range.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c",&nbsp;"d",&nbsp;"e",&nbsp;"f",&nbsp;"g"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.indexes(0,&nbsp;2,&nbsp;4)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"c",&nbsp;"e"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.indexes(0,&nbsp;2,&nbsp;4,&nbsp;12)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"c",&nbsp;"e",&nbsp;nil]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="indices"><b>indices</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.indices( <i>i1, i2, ... iN</i> )
+        -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_array.html#indexes"><code>Array#indexes</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="join"><b>join</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.join( <i>aSepString</i>=<code>$,</code> )
+        -> <i>aString</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a string created by converting each element of the array to a
+      string, separated by <i>aSepString</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;].join</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"abc"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;].join("-")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"a-b-c"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="last"><b>last</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.last -> <i>anObject</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the last element of <i>arr</i>.  If the array is empty,
+      returns <code>nil</code>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;"w",&nbsp;"x",&nbsp;"y",&nbsp;"z"&nbsp;].last</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"z"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="length"><b>length</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.length -> <i>anInteger</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the number of elements in <i>arr</i>. May be zero.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;4,&nbsp;5&nbsp;].length</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>5</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="map_oh"><b>map!</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.map! {| obj | block }
+<P></P>
+        -> <i>arr</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_array.html#collect_oh"><code>Array#collect!</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="nitems"><b>nitems</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.nitems -> <i>anInteger</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the number of non-<code>nil</code> elements in <i>arr</i>. May be zero.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;1,&nbsp;nil,&nbsp;3,&nbsp;nil,&nbsp;5&nbsp;].nitems</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>3</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="pack"><b>pack</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.pack ( <i>aTemplateString</i> ) 
+        -> <i>aBinaryString</i>
+      </td></tr><td></td><td>
+                    Packs the contents of <i>arr</i> into a binary sequence according
+      to the directives in <i>aTemplateString</i> (see Table
+      22.1 on page 289). Directives ``A,'' ``a,'' and ``Z'' may be
+      followed by a count, which gives the width of the resulting
+      field. The remaining directives also may take a count,
+      indicating the number of array elements to convert.  If the
+      count is an asterisk (``<code>*</code>''), all remaining array elements
+      will be converted. Any of the directives ``<code>sSiIlL</code>'' may be
+      followed by an underscore (``<code>_</code>'') to use the underlying
+      platform's native size for the specified type; otherwise, they
+      use a platform-independent size.  Spaces are ignored in the
+      template string. See also <a href="ref_c_string.html#unpack"><code>String#unpack</code></a>
+      on page 383.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;]</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>n&nbsp;=&nbsp;[&nbsp;65,&nbsp;66,&nbsp;67&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.pack("A3A3A3")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"a<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">b<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">c<img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]"><img src="visible_space.gif" width="15" height="10" align="bottom" alt="[visible space]">"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.pack("a3a3a3")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"a\000\000b\000\000c\000\000"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>n.pack("ccc")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"ABC"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="pop"><b>pop</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.pop -> <i>anObject</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Removes the last element from <i>arr</i> and returns it, or
+      <code>nil</code> if the array is empty (as with a stack).
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"m",&nbsp;"z"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.pop</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"z"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"m"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="push"><b>push</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.push( <i>[</i><i>anObject</i><i>]<sup>+</sup></i>  ) 
+        -> <i>arr</i>
+      </td></tr><td></td><td>
+<P></P>
+      Appends the given argument(s) to the end of <i>arr</i> (as with a
+      stack).
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.push("d",&nbsp;"e",&nbsp;"f")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"b",&nbsp;"c",&nbsp;"d",&nbsp;"e",&nbsp;"f"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="rassoc"><b>rassoc</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.rassoc( <em>key</em> )
+        -> <i>anArray</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Searches through the array whose elements are also arrays.
+      Compares <em>key</em> with the second element of each contained
+      array using <code>==</code>.  Returns the first contained array that
+      matches.  See also <code>assoc</code>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;[&nbsp;1,&nbsp;"one"],&nbsp;[2,&nbsp;"two"],&nbsp;[3,&nbsp;"three"],&nbsp;["ii",&nbsp;"two"]&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.rassoc("two")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[2,&nbsp;"two"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.rassoc("four")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="reject_oh"><b>reject!</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.reject! {|  | block }
+<P></P>
+        -> <i>arr</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+    Equivalent to <a href="ref_c_array.html#delete_if"><code>Array#delete_if</code></a>, but returns <code>nil</code> if no
+    changes were made.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="replace"><b>replace</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.replace( <i>anOtherArray</i> )
+        -> <i>arr</i>
+      </td></tr><td></td><td>
+<P></P>
+      Replaces the contents of <i>arr</i> with the contents of
+      <i>anOtherArray</i>, truncating or expanding if necessary.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c",&nbsp;"d",&nbsp;"e"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.replace(&nbsp;[&nbsp;"x",&nbsp;"y",&nbsp;"z"&nbsp;]&nbsp;)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["x",&nbsp;"y",&nbsp;"z"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["x",&nbsp;"y",&nbsp;"z"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="reverse"><b>reverse</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.reverse -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a new array using <i>arr</i>'s elements in reverse order.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;].reverse</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["c",&nbsp;"b",&nbsp;"a"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>[&nbsp;1&nbsp;].reverse</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="reverse_oh"><b>reverse!</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.reverse! -> <i>arr</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Same as <code>reverse</code>, but returns <code>nil</code> if
+      <i>arr</i> is unchanged (<i>arr</i><code>.length</code> is zero or one).
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.reverse!</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["c",&nbsp;"b",&nbsp;"a"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["c",&nbsp;"b",&nbsp;"a"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>[&nbsp;1&nbsp;].reverse!</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="reverse_each"><b>reverse_each</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.reverse_each {|  | block }
+<P></P>
+      </td></tr><td></td><td>
+<P></P>
+      Same as <a href="ref_c_array.html#each"><code>Array#each</code></a>, but traverses <i>arr</i> in reverse order.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;]
+a.reverse_each&nbsp;{|x|&nbsp;print&nbsp;x,&nbsp;"&nbsp;"&nbsp;}
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+c&nbsp;b&nbsp;a
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="rindex"><b>rindex</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.rindex( <i>anObject</i> )
+        -> <i>anInteger</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the index of the last object in <i>arr</i> such that
+      the object <code>==</code> <i>anObject</i>.  Returns 
+      <code>nil</code> if no match is found.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"b",&nbsp;"b",&nbsp;"c"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.rindex("b")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>3</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.rindex("z")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="shift"><b>shift</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.shift -> <i>anObject</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the first element of <i>arr</i> and removes it (shifting
+      all other elements down by one).  Returns <code>nil</code> if the array
+      is empty.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>args&nbsp;=&nbsp;[&nbsp;"-m",&nbsp;"-q",&nbsp;"filename"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>args.shift</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"-m"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>args</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["-q",&nbsp;"filename"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="size"><b>size</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.size -> <i>anInteger</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_array.html#length"><code>Array#length</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="slice"><b>slice</b></a></font></td><td bgcolor="#ffaaaa">
+                   <i>arr</i>.slice( <i>anInteger</i> ) 
+              -> <i>anObject</i><br><i>arr</i>.slice( <i>start</i>, <i>length</i> )
+              -> <i>aSubArray</i><br><i>arr</i>.slice( <i>aRange</i> )
+              -> <i>aSubArray</i>
+<P></P>
+      </td></tr><td></td><td>
+<P></P>
+     Synonym for <a href="ref_c_array.html#_ob_cb"><code>Array#[ ]</code></a>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c",&nbsp;"d",&nbsp;"e"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.slice(2)&nbsp;+&nbsp;a.slice(0)&nbsp;+&nbsp;a.slice(1)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"cab"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.slice(6)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.slice(1,&nbsp;2)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["b",&nbsp;"c"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.slice(1..3)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["b",&nbsp;"c",&nbsp;"d"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.slice(4..7)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["e"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.slice(6..10)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.slice(-3,&nbsp;3)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["c",&nbsp;"d",&nbsp;"e"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="slice_oh"><b>slice!</b></a></font></td><td bgcolor="#ffaaaa">
+                   <i>arr</i>.slice!( <i>anInteger</i> )
+              -> <i>anObject</i> or <code>nil</code><br><i>arr</i>.slice!( <i>start</i>, <i>length</i> )
+              -> <i>aSubArray</i> or <code>nil</code><br><i>arr</i>.slice!( <i>aRange</i> )
+              -> <i>aSubArray</i> or <code>nil</code>
+<P></P>
+      </td></tr><td></td><td>
+<P></P>
+      Deletes the element(s)  given by an index (optionally with a
+      length) or by a range. Returns the deleted object, subarray, or
+      <code>nil</code> if the index is out of range. Equivalent to:
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+def&nbsp;slice!(*args)
+&nbsp;&nbsp;result&nbsp;=&nbsp;self[*args]
+&nbsp;&nbsp;self[*args]&nbsp;=&nbsp;nil
+&nbsp;&nbsp;result
+end
+</pre></td></tr></table>
+
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.slice!(1)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"b"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"c"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.slice!(-1)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"c"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.slice!(100)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="sort"><b>sort</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.sort 
+        -> <i>anArray</i> <br><i>arr</i>.sort {| a,b | block }
+<P></P>
+        -> <i>anArray</i>
+<P></P>
+      </td></tr><td></td><td>
+<P></P>
+            Returns a new array created by sorting <i>arr</i>.  Comparisons
+      for the sort will be done using the <code>&lt;=></code> operator or using an optional
+      code block. The block implements a comparison between
+  <i>a</i> and <i>b</i>, returning -1, 0, or +1.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"d",&nbsp;"a",&nbsp;"e",&nbsp;"c",&nbsp;"b"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.sort</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"b",&nbsp;"c",&nbsp;"d",&nbsp;"e"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.sort&nbsp;{|x,y|&nbsp;y&nbsp;&lt;=>&nbsp;x&nbsp;}</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["e",&nbsp;"d",&nbsp;"c",&nbsp;"b",&nbsp;"a"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="sort_oh"><b>sort!</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.sort!
+        -> <i>arr</i> <br><i>arr</i>.sort! {| a,b | block }
+<P></P>
+        -> <i>arr</i>
+<P></P>
+      </td></tr><td></td><td>
+<P></P>
+      Same as <a href="ref_c_array.html#sort"><code>Array#sort</code></a>, but modifies the receiver in place.
+      <i>arr</i> is effectively frozen while a sort is in progress.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"d",&nbsp;"a",&nbsp;"e",&nbsp;"c",&nbsp;"b"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.sort!</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"b",&nbsp;"c",&nbsp;"d",&nbsp;"e"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"b",&nbsp;"c",&nbsp;"d",&nbsp;"e"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="to_a"><b>to_a</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.to_a -> <i>arr</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <i>arr</i>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="to_ary"><b>to_ary</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.to_ary -> <i>arr</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_array.html#to_a"><code>Array#to_a</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="to_s"><b>to_s</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.to_s -> <i>aString</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <i>arr</i><code>.join</code>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>[&nbsp;"a",&nbsp;"e",&nbsp;"i",&nbsp;"o"&nbsp;].to_s</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"aeio"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="uniq"><b>uniq</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.uniq -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a new array by removing duplicate values in <i>arr</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"a",&nbsp;"b",&nbsp;"b",&nbsp;"c"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.uniq</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"b",&nbsp;"c"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="uniq_oh"><b>uniq!</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.uniq! -> <i>arr</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Same as <a href="ref_c_array.html#uniq"><code>Array#uniq</code></a>, but modifies the receiver in place.
+      Returns <code>nil</code> if no changes are made (that is, no duplicates
+      are found).
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"a",&nbsp;"b",&nbsp;"b",&nbsp;"c"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.uniq!</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"b",&nbsp;"c"]</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>b&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b",&nbsp;"c"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>b.uniq!</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="unshift"><b>unshift</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>arr</i>.unshift( <i>anObject</i> )
+        -> <i>arr</i>
+      </td></tr><td></td><td>
+<P></P>
+      Prepends <i>anObject</i> to the front of <i>arr</i>, and shifts all
+      other elements up one.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"b",&nbsp;"c",&nbsp;"d"&nbsp;]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.unshift("a")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"b",&nbsp;"c",&nbsp;"d"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td></table>
+<P></P>
+
+<p></p><hr><table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0"><tr><td width="33%" align="left"></td><td width="33%" align="center" valign="middle"><a class="subheader" href="builtins.html">Contents ^</a><br></td><td width="33%" align="right"><a class="subheader" href="ref_c_bignum.html">Next ></a><br></td></tr></table><p></p><font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font><br><font size="-3">
+      Copyright
+      &#169;
+      2000 Addison Wesley Longman, Inc. Released under the terms of the
+      <a href="http://www.opencontent.org/openpub/">Open Publication License</a> V1.0.
+        <br>
+      This reference is available for
+        <a href="http://www.pragmaticprogrammer.com/ruby/downloads/book.html">download</a>.
+   </font></body></html>

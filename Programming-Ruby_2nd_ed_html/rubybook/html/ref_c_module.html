@@ -1,0 +1,1154 @@
+<html><title>Programming Ruby: The Pragmatic Programmer's Guide</title><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><STYLE TYPE="text/css"><!--
+       BODY    { margin-left: 1in;
+                 width: 6in;
+                 font-family: helvetica, arial, sans-serif;
+               }
+       H1      { color: #000080;
+                 font-family: helvetica, arial, sans-serif;
+                 font-size: 22pt;
+                 margin-left: 0in
+               }
+       H2      { color: #000080;  font: bold x-large helvetica, sans-serif;
+                 margin-left: 0in }
+       H3      { color: #000080;  font: bold   large helvetica, sans-serif; }
+       H4      { color: #000080;  font: italic large helvetica, sans-serif; }
+       .ruby   { background: #fff0f0 }
+       .header { color: white }
+       .subheader { color: #ffdddd }
+       .sidebar   { width: 6in }
+       span.sans { font-family: helvetica, arial, sans-serif }
+       -->
+   </STYLE><table bgcolor="#a03030" cellpadding="3" border="0" cellspacing="0"><tr><td colspan="3"><table bgcolor="#902020" cellpadding="20"><tr><td><h1 class="header">Programming Ruby</h1><h3 class="subheader">The Pragmatic Programmer's Guide</h3></td></tr></table></td></tr><tr><td width="33%" align="left"><a class="subheader" href="ref_c_method.html">Previous &lt;</a></td><td width="33%" align="center" valign="middle"><a class="subheader" href="builtins.html">Contents ^</a><br></td><td width="33%" align="right"><a class="subheader" href="ref_c_nilclass.html">Next ></a><br></td></tr></table></head><body bgcolor="white">
+<!--
+    Copyright (c) 2001 by Addison Wesley Longman.  This
+    material may be distributed only subject to the terms and
+    conditions set forth in the Open Publication License, v1.0 or
+    later (the latest version is presently available at
+    http://www.opencontent.org/openpub/).
+-->
+<table><tr><td height="20"><img src="dot.gif" width="1" height="20"></td></tr></table><table border="0" width="100%" bgcolor="660066" cellpadding="10"><tr><td valign="center"><font color="white" size="7">class Module</font></td><td><table border="0"><tr><td><font color="white">
+                Parent:
+              </font></td><td><font color="white">Object</font></td></tr><tr><td><font color="white">
+                Version:
+              </font></td><td><font color="white">
+               1.6
+              </font></td></tr></table></td></tr></table><p></p><H3>Index:</H3><a href="#constants">constants</a> <a href="#nesting">nesting</a> <a href="#new">new</a> <a href="#_lt_cm_lt_eq_cm_lt_cm_lt_eq"><i>&lt;, &lt;=, >, >=</i></a> <a href="#_lt_eq_lt"><i>&lt;=></i></a> <a href="#_eq_eq_eq"><i>===</i></a> <a href="#ancestors"><i>ancestors</i></a> <a href="#class_eval"><i>class_eval</i></a> <a href="#class_variables"><i>class_variables</i></a> <a href="#clone"><i>clone</i></a> <a href="#const_defined_qm"><i>const_defined?</i></a> <a href="#const_get"><i>const_get</i></a> <a href="#const_set"><i>const_set</i></a> <a href="#constants"><i>constants</i></a> <a href="#included_modules"><i>included_modules</i></a> <a href="#instance_methods"><i>instance_methods</i></a> <a href="#method_defined_qm"><i>method_defined?</i></a> <a href="#module_eval"><i>module_eval</i></a> <a href="#name"><i>name</i></a> <a href="#private_class_method"><i>private_class_method</i></a> <a href="#private_instance_methods"><i>private_instance_methods</i></a> <a href="#protected_instance_methods"><i>protected_instance_methods</i></a> <a href="#public_class_method"><i>public_class_method</i></a> <a href="#public_instance_methods"><i>public_instance_methods</i></a> <a href="#alias_method"><i>alias_method</i></a> <a href="#append_features"><i>append_features</i></a> <a href="#attr"><i>attr</i></a> <a href="#attr_accessor"><i>attr_accessor</i></a> <a href="#attr_reader"><i>attr_reader</i></a> <a href="#attr_writer"><i>attr_writer</i></a> <a href="#extend_object"><i>extend_object</i></a> <a href="#include"><i>include</i></a> <a href="#method_added"><i>method_added</i></a> <a href="#module_function"><i>module_function</i></a> <a href="#private"><i>private</i></a> <a href="#protected"><i>protected</i></a> <a href="#public"><i>public</i></a> <a href="#remove_const"><i>remove_const</i></a> <a href="#remove_method"><i>remove_method</i></a> <a href="#undef_method"><i>undef_method</i></a> <p></p><hr>  <br><font size="-1">Subclasses: Class</font><p></p>
+<P></P>
+  A <code>Module</code> is a collection of methods and constants. The methods
+  in a module may be instance methods or module methods. Instance
+  methods appear as methods in a class when the module is included,
+  module methods do not. Conversely, module methods may be called
+  without creating an encapsulating object, while instance methods may
+  not. See <a href="ref_c_module.html#module_function"><code>Module#module_function</code></a>
+  on page 350.
+<P></P>
+  In the descriptions that follow, the
+  parameter <i>aSymbol</i> refers to a symbol, which is either a
+  quoted string or a <code>Symbol</code> (such as <code>:name</code>).
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>module&nbsp;Mod</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;include&nbsp;Math</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;CONST&nbsp;=&nbsp;1</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;def&nbsp;meth</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;...</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Mod.type</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Module</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Mod.constants</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["CONST",&nbsp;"E",&nbsp;"PI"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Mod.instance_methods</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["meth"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+  <table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">class methods
+       </font></td></tr><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="constants"><b>constants</b></a></font></td><td bgcolor="#ffaaaa">
+        Module.constants -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns an array of the names of all constants defined in the
+      system. This list includes the names of all modules and classes.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+p&nbsp;Module.constants.sort[1..5]
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+["ARGV",&nbsp;"ArgumentError",&nbsp;"Array",&nbsp;"Bignum",&nbsp;"Binding"]
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="nesting"><b>nesting</b></a></font></td><td bgcolor="#ffaaaa">
+        Module.nesting -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the list of <code>Modules</code> nested at the point of call.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>module&nbsp;M1</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;module&nbsp;M2</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;&nbsp;&nbsp;$a&nbsp;=&nbsp;Module.nesting</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>$a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[M1::M2,&nbsp;M1]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>$a[0].name</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"M1::M2"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="new"><b>new</b></a></font></td><td bgcolor="#ffaaaa">
+        Module.new -> <i>aModule</i>
+      </td></tr><td></td><td>
+<P></P>
+      Creates a new anonymous module.      
+<P></P>
+      </td></table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">instance methods
+       </font></td></tr><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_lt_cm_lt_eq_cm_lt_cm_lt_eq"><b>&lt;, &lt;=, >, >=</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>mod</i> <code><em>relop</em></code>
+        <i>aModule</i>
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Hierarchy Query---One module is considered <em>greater than</em>
+      another if it is included in (or is a
+      parent class of) the other module.      
+      The other operators are
+      defined accordingly. If there is no relationship
+      between the modules, returns false for all operators.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>module&nbsp;Mixin</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code></code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>module&nbsp;Parent</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;include&nbsp;Mixin</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code></code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>module&nbsp;Unrelated</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code></code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Parent&nbsp;>&nbsp;Mixin</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Parent&nbsp;&lt;&nbsp;Mixin</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Parent&nbsp;&lt;=&nbsp;Parent</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Parent&nbsp;&lt;&nbsp;Unrelated</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Parent&nbsp;>&nbsp;Unrelated</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_lt_eq_lt"><b>&lt;=></b></a></font></td><td bgcolor="#ffaaaa">
+        <i>mod</i> &lt;=> <i>aModule</i>
+        -> -1, 0, +1
+      </td></tr><td></td><td>
+<P></P>
+      Comparison---Returns -1 if <i>mod</i> includes <i>aModule</i>, 0 if <i>mod</i> is
+      the same as <i>aModule</i>, and +1 if <i>mod</i> is included by
+      <i>aModule</i> or if <i>mod</i> has no relationship with
+      <i>aModule</i>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_eq_eq_eq"><b>===</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>mod</i> === <i>anObject</i>
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Case Equality---Returns <code>true</code> if <i>anObject</i> is an instance of <i>mod</i>
+      or one of <i>mod</i>'s descendents. Of limited use for modules, but 
+      can be used in <code>case</code> statements to classify objects by class.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="ancestors"><b>ancestors</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>mod</i>.ancestors -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a list of modules included in <i>mod</i> (including <i>mod</i>
+      itself).
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>module&nbsp;Mod</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;include&nbsp;Math</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;include&nbsp;Comparable</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code></code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Mod.ancestors</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[Mod,&nbsp;Comparable,&nbsp;Math]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Math.ancestors</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[Math]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="class_eval"><b>class_eval</b></a></font></td><td bgcolor="#ffaaaa">
+                  <i>mod</i>.class_eval( <i>aString</i> ) -> <i>anObject</i><br><i>mod</i>.class_eval {|  | block }
+ -> <i>anObject</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <code>Module.module_eval</code>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="class_variables"><b>class_variables</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>mod</i>.class_variables
+        -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns an array of the names of class variables in
+      <i>mod</i> and the ancestors of <i>mod</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>class&nbsp;One</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;@@var1&nbsp;=&nbsp;1</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>class&nbsp;Two&nbsp;&lt;&nbsp;One</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;@@var2&nbsp;=&nbsp;2</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>One.class_variables</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["@@var1"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Two.class_variables</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["@@var2",&nbsp;"@@var1"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="clone"><b>clone</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>mod</i>.clone -> <i>aModule</i>
+      </td></tr><td></td><td>
+<P></P>
+      Creates a new copy of a module.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>m&nbsp;=&nbsp;Math.clone</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Math</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>m.constants</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["PI",&nbsp;"E"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>m&nbsp;==&nbsp;Math</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="const_defined_qm"><b>const_defined?</b></a></font></td><td bgcolor="#ffaaaa">
+                <i>mod</i>.const_defined?( <i>aSymbol</i> ) -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if a constant with
+      the given name is defined by <i>mod</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>Math.const_defined?&nbsp;"PI"</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="const_get"><b>const_get</b></a></font></td><td bgcolor="#ffaaaa">
+                <i>mod</i>.const_get( <i>aSymbol</i> ) -> <i>anObject</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the value of the named constant in <i>mod</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>Math.const_get&nbsp;:PI</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>3.141592654</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="const_set"><b>const_set</b></a></font></td><td bgcolor="#ffaaaa">
+                <i>mod</i>.const_set( <i>aSymbol</i>, <i>anObject</i> )
+           -> <i>anObject</i>
+      </td></tr><td></td><td>
+<P></P>
+      Sets the named constant to the given object, returning that
+      object. Creates a new constant if no constant with the given
+      name previously existed.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>Math.const_set("HIGH_SCHOOL_PI",&nbsp;22.0/7.0)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>3.142857143</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Math::HIGH_SCHOOL_PI&nbsp;-&nbsp;Math::PI</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>0.001264489267</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="constants"><b>constants</b></a></font></td><td bgcolor="#ffaaaa">
+                <i>mod</i>.constants -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns an array of the names of the constants accessible
+      in <i>mod</i>. This includes the names of constants in any
+      included modules (example at start of section).
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="included_modules"><b>included_modules</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>mod</i>.included_modules
+        -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the list of modules included in <i>mod</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>module&nbsp;Mixin</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code></code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>module&nbsp;Outer</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;include&nbsp;Mixin</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code></code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Mixin.included_modules</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Outer.included_modules</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[Mixin]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="instance_methods"><b>instance_methods</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>mod</i>.instance_methods(
+        <i>includeSuper</i>=<code>false</code> ) -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns an array containing the names of public instance methods
+      in the receiver. For a module, these are the public methods; for 
+      a class, they are the instance (not singleton) methods. With no
+      argument, or with an argument that is 
+      <code>false</code>, the instance methods in <i>mod</i> are returned, 
+      otherwise the methods in <i>mod</i> and <i>mod</i>'s superclasses
+      are returned.
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+module&nbsp;A
+&nbsp;&nbsp;def&nbsp;method1()&nbsp;&nbsp;end
+end
+class&nbsp;B
+&nbsp;&nbsp;def&nbsp;method2()&nbsp;&nbsp;end
+end
+class&nbsp;C&nbsp;&lt;&nbsp;B
+&nbsp;&nbsp;def&nbsp;method3()&nbsp;&nbsp;end
+end
+</pre></td></tr></table>
+
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>A.instance_methods</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["method1"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>B.instance_methods</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["method2"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>C.instance_methods</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["method3"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>C.instance_methods(true).length</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>39</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="method_defined_qm"><b>method_defined?</b></a></font></td><td bgcolor="#ffaaaa">
+                <i>mod</i>.method_defined?( <i>aSymbol</i> ) -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if the named method is defined by <i>mod</i>
+      (or its included modules and, if <i>mod</i> is a class, its
+      ancestors).
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>module&nbsp;A</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;def&nbsp;method1()&nbsp;&nbsp;end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>class&nbsp;B</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;def&nbsp;method2()&nbsp;&nbsp;end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>class&nbsp;C&nbsp;&lt;&nbsp;B</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;include&nbsp;A</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;def&nbsp;method3()&nbsp;&nbsp;end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code></code></td>
+</tr>
+<tr>
+  <td valign="top"><code>A.method_defined?&nbsp;:method1</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>C.method_defined?&nbsp;"method1"</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>C.method_defined?&nbsp;"method2"</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>C.method_defined?&nbsp;"method3"</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>C.method_defined?&nbsp;"method4"</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="module_eval"><b>module_eval</b></a></font></td><td bgcolor="#ffaaaa">
+                  <i>mod</i>.module_eval( <i>aString</i> ) -> <i>anObject</i><br><i>mod</i>.module_eval {|  | block }
+ -> <i>anObject</i>
+      </td></tr><td></td><td>
+<P></P>
+      Evaluates the string or block in the context of <i>mod</i>. This can
+      be used to add methods to a class. <code>module_eval</code> returns 
+      the result of evaluating its argument.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>class&nbsp;Thing</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;%q{def&nbsp;hello()&nbsp;"Hello&nbsp;there!"&nbsp;end}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Thing.module_eval(a)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Thing.new.hello()</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"Hello&nbsp;there!"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="name"><b>name</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>mod</i>.name -> <i>aString</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the name of the module <i>mod</i>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="private_class_method"><b>private_class_method</b></a></font></td><td bgcolor="#ffaaaa">
+                <i>mod</i>.private_class_method( <i>[</i><i>aSymbol</i><i>]<sup>+</sup></i> )
+        -> <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Makes existing class methods private.            
+      Often used to hide the 
+      default constructor <code>new</code>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+class&nbsp;SimpleSingleton&nbsp;&nbsp;#&nbsp;Not&nbsp;thread&nbsp;safe
+&nbsp;&nbsp;private_class_method&nbsp;:new
+&nbsp;&nbsp;def&nbsp;SimpleSingleton.create(*args,&nbsp;&amp;block)
+&nbsp;&nbsp;&nbsp;&nbsp;@me&nbsp;=&nbsp;new(*args,&nbsp;&amp;block)&nbsp;if&nbsp;!&nbsp;@me
+&nbsp;&nbsp;&nbsp;&nbsp;@me
+&nbsp;&nbsp;end
+end
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="private_instance_methods"><b>private_instance_methods</b></a></font></td><td bgcolor="#ffaaaa">
+        <br><i>mod</i>.private_instance_methods(
+        <i>includeSuper</i>=<code>false</code> )
+        -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a list of the private instance methods defined in <i>mod</i>.
+      If the optional parameter is not <code>false</code>, the methods 
+      of any ancestors are included.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>module&nbsp;Mod</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;def&nbsp;method1()&nbsp;&nbsp;end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;private&nbsp;:method1</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;def&nbsp;method2()&nbsp;&nbsp;end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Mod.instance_methods</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["method2"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Mod.private_instance_methods</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["method1"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="protected_instance_methods"><b>protected_instance_methods</b></a></font></td><td bgcolor="#ffaaaa">
+        <br><i>mod</i>.protected_instance_methods(
+        <i>includeSuper</i>=<code>false</code> )
+        -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a list of the protected instance methods defined in <i>mod</i>.
+      If the optional parameter is not <code>false</code>, the methods 
+      of any ancestors are included.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="public_class_method"><b>public_class_method</b></a></font></td><td bgcolor="#ffaaaa">
+                <i>mod</i>.public_class_method( <i>[</i><i>aSymbol</i><i>]<sup>+</sup></i> )
+        -> <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Makes a list of existing class methods public.            
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="public_instance_methods"><b>public_instance_methods</b></a></font></td><td bgcolor="#ffaaaa">
+        <br><i>mod</i>.public_instance_methods(
+        <i>includeSuper</i>=<code>false</code> )
+        -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a list of the public instance methods defined in <i>mod</i>.
+      If the optional parameter is not <code>false</code>, the methods 
+      of any ancestors are included.
+<P></P>
+      </td></table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">private methods
+       </font></td></tr><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="alias_method"><b>alias_method</b></a></font></td><td bgcolor="#ffaaaa">
+                alias_method( <i>newID, oldID</i> )
+        -> <i>mod</i>
+      </td></tr><td></td><td>
+<P></P>
+      Makes <i>newID</i> a new copy of the method
+      <i>oldID</i>. This can be used to retain access to methods that
+      are overridden.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+module&nbsp;Mod
+&nbsp;&nbsp;alias_method&nbsp;:origExit,&nbsp;:exit
+&nbsp;&nbsp;def&nbsp;exit(code=0)
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"Exiting&nbsp;with&nbsp;code&nbsp;#{code}\n"
+&nbsp;&nbsp;&nbsp;&nbsp;origExit(code)
+&nbsp;&nbsp;end
+end
+include&nbsp;Mod
+exit(99)
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+Exiting&nbsp;with&nbsp;code&nbsp;99
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="append_features"><b>append_features</b></a></font></td><td bgcolor="#ffaaaa">
+                append_features( <i>aModule</i> )
+        -> <i>mod</i>
+      </td></tr><td></td><td>
+<P></P>
+      When this module is included in
+      another, Ruby calls <code>append_features</code> in this module,
+      passing it the receiving module in <i>aModule</i>. Ruby's default 
+      implementation is to add the constants, methods, and module
+      variables of this module to <i>aModule</i> if this
+      module has not already been added to <i>aModule</i> or one of its
+      ancestors. See also
+      <a href="ref_c_module.html#include"><code>Module#include</code></a> on page 350.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="attr"><b>attr</b></a></font></td><td bgcolor="#ffaaaa">
+                attr( <i>aSymbol</i>, <i>writable</i>=<code>false</code> )
+        -> <code>nil</code>
+      </td></tr><td></td><td>
+              Defines a named attribute for this module, where the name is
+      <i>aSymbol.</i><code>id2name</code>, creating an instance variable
+      (<code>@name</code>) and a corresponding access method to read it.
+      If the optional <i>writable</i>
+      argument is <code>true</code>, also creates a method called <code>name=</code> to 
+      set the attribute.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+module&nbsp;Mod
+&nbsp;&nbsp;attr&nbsp;&nbsp;:size,&nbsp;true
+end
+</pre></td></tr></table>
+
+      <em>is equivalent to:</em>
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+module&nbsp;Mod
+&nbsp;&nbsp;def&nbsp;size
+&nbsp;&nbsp;&nbsp;&nbsp;@size
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;size=(val)
+&nbsp;&nbsp;&nbsp;&nbsp;@size&nbsp;=&nbsp;val
+&nbsp;&nbsp;end
+end
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="attr_accessor"><b>attr_accessor</b></a></font></td><td bgcolor="#ffaaaa">
+                attr_accessor( <i>[</i><i>aSymbol</i><i>]<sup>+</sup></i> )
+        -> <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Equivalent to calling ``<code>attr&nbsp;</code><i>aSymbol</i><code>,&nbsp;true</code>'' on each
+      <i>aSymbol</i> in turn.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>module&nbsp;Mod</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;attr_accessor(:one,&nbsp;:two)</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Mod.instance_methods.sort</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["one",&nbsp;"one=",&nbsp;"two",&nbsp;"two="]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="attr_reader"><b>attr_reader</b></a></font></td><td bgcolor="#ffaaaa">
+                attr_reader( <i>[</i><i>aSymbol</i><i>]<sup>+</sup></i> )
+        -> <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Creates instance variables and corresponding methods that
+      return the value of each instance variable.
+      Equivalent to calling ``<code>attr&nbsp;</code><i>:name</i>'' on each name
+      in turn.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="attr_writer"><b>attr_writer</b></a></font></td><td bgcolor="#ffaaaa">
+<P></P>
+        attr_writer( <i>[</i><i>aSymbol</i><i>]<sup>+</sup></i> )
+        -> <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Creates an accessor method to allow assignment to the attribute
+      <i>aSymbol</i><code>.id2name</code>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="extend_object"><b>extend_object</b></a></font></td><td bgcolor="#ffaaaa">
+                extend_object( <i>anObject</i> )
+        -> <i>anObject</i>
+      </td></tr><td></td><td>
+<P></P>
+      Extends the specified object by adding this module's constants
+      and methods (which are added as singleton methods). This is the
+      callback method used by <a href="ref_c_object.html#extend"><code>Object#extend</code></a>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+module&nbsp;Picky
+&nbsp;&nbsp;def&nbsp;Picky.extend_object(o)
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;String&nbsp;===&nbsp;o
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"Can't&nbsp;add&nbsp;Picky&nbsp;to&nbsp;a&nbsp;String\n"
+&nbsp;&nbsp;&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"Picky&nbsp;added&nbsp;to&nbsp;",&nbsp;o.type,&nbsp;"\n"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;super
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+end
+(s&nbsp;=&nbsp;Array.new).extend&nbsp;Picky&nbsp;&nbsp;#&nbsp;Call&nbsp;Object.extend
+(s&nbsp;=&nbsp;"quick&nbsp;brown&nbsp;fox").extend&nbsp;Picky
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+Picky&nbsp;added&nbsp;to&nbsp;Array
+Can't&nbsp;add&nbsp;Picky&nbsp;to&nbsp;a&nbsp;String
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="include"><b>include</b></a></font></td><td bgcolor="#ffaaaa">
+                include( <i>[</i><i>aModule</i><i>]<sup>+</sup></i> )
+        -> <i>mod</i>
+      </td></tr><td></td><td>
+<P></P>
+      Invokes <code>Module.append_features</code>
+      (documented on page 349)
+      on each parameter in turn. 
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="method_added"><b>method_added</b></a></font></td><td bgcolor="#ffaaaa">
+        method_added( <i>aSymbol</i> )
+      </td></tr><td></td><td>
+<P></P>
+      Invoked as a callback whenever a method is added to the receiver.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+module&nbsp;Chatty
+&nbsp;&nbsp;def&nbsp;Chatty.method_added(id)
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"Adding&nbsp;",&nbsp;id.id2name,&nbsp;"\n"
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;one()&nbsp;&nbsp;&nbsp;end
+end
+module&nbsp;Chatty
+&nbsp;&nbsp;def&nbsp;two()&nbsp;&nbsp;&nbsp;end
+end
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+Adding&nbsp;one
+Adding&nbsp;two
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="module_function"><b>module_function</b></a></font></td><td bgcolor="#ffaaaa">
+                module_function( <i>[</i><i>aSymbol</i><i>]<sup>*</sup></i> )  -> <i>mod</i>
+      </td></tr><td></td><td>
+<P></P>
+            Creates module functions for the named methods. These
+      functions may be called with the module as a receiver, and also
+      become available as instance methods to classes that mix in the
+      module. Module functions are copies of the original, and so may
+      be changed independently. The instance-method versions are made
+      private. If used with no arguments, subsequently defined methods 
+      become module functions.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>module&nbsp;Mod</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;def&nbsp;one</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;&nbsp;&nbsp;"This&nbsp;is&nbsp;one"</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;module_function&nbsp;:one</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>class&nbsp;Cls</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;include&nbsp;Mod</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;def&nbsp;callOne</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;&nbsp;&nbsp;one</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Mod.one</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"This&nbsp;is&nbsp;one"</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>c&nbsp;=&nbsp;Cls.new</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>c.callOne</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"This&nbsp;is&nbsp;one"</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>module&nbsp;Mod</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;def&nbsp;one</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;&nbsp;&nbsp;"This&nbsp;is&nbsp;the&nbsp;new&nbsp;one"</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Mod.one</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"This&nbsp;is&nbsp;one"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>c.callOne</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"This&nbsp;is&nbsp;the&nbsp;new&nbsp;one"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="private"><b>private</b></a></font></td><td bgcolor="#ffaaaa">
+        private( <i>[</i><i>aSymbol</i><i>]<sup>*</sup></i> )
+        -> <i>mod</i>
+      </td></tr><td></td><td>
+<P></P>
+      With no arguments, sets the default visibility for subsequently
+      defined methods to private.            
+      With arguments, sets the named
+      methods to have private visibility. See <em>Access Control</em>
+      starting on page 235. 
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>module&nbsp;Mod</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;def&nbsp;a()&nbsp;&nbsp;end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;def&nbsp;b()&nbsp;&nbsp;end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;private</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;def&nbsp;c()&nbsp;&nbsp;end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;private&nbsp;:a</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Mod.private_instance_methods</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["c",&nbsp;"a"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="protected"><b>protected</b></a></font></td><td bgcolor="#ffaaaa">
+        protected( <i>[</i><i>aSymbol</i><i>]<sup>*</sup></i> )
+        -> <i>mod</i>
+      </td></tr><td></td><td>
+<P></P>
+      With no arguments, sets the default visibility for subsequently
+      defined methods to protected.            
+      With arguments, sets the named
+      methods to have protected visibility. See <em>Access Control</em> starting
+      on page 235.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="public"><b>public</b></a></font></td><td bgcolor="#ffaaaa">
+        public( <i>[</i><i>aSymbol</i><i>]<sup>*</sup></i> )
+        -> <i>mod</i>
+      </td></tr><td></td><td>
+<P></P>
+      With no arguments, sets the default visibility for subsequently
+      defined methods to public.            
+      With arguments, sets the named
+      methods to have public visibility. See <em>Access Control</em> starting
+      on page 235.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="remove_const"><b>remove_const</b></a></font></td><td bgcolor="#ffaaaa">
+        remove_const( <i>aSymbol</i> )
+        -> <i>anObject</i>
+      </td></tr><td></td><td>
+<P></P>
+      Removes the definition of the given constant, returning that
+      constant's value. Predefined classes and singleton objects (such 
+      as <i>true</i>) cannot be removed.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="remove_method"><b>remove_method</b></a></font></td><td bgcolor="#ffaaaa">
+        remove_method( <i>aSymbol</i> )
+        -> <i>mod</i>
+      </td></tr><td></td><td>
+         Removes the method identified by
+      <i>aSymbol</i>
+      from the current class.
+      For an example, see <code>Module.undef_method</code>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="undef_method"><b>undef_method</b></a></font></td><td bgcolor="#ffaaaa">
+        undef_method( <i>aSymbol</i> )
+        -> <i>mod</i>
+      </td></tr><td></td><td>
+<P></P>
+      Prevents the current class from responding to calls to the named
+      method. Contrast this with
+      <code>remove_method</code>, which
+      deletes the method from the particular class; Ruby will still
+      search superclasses and mixed-in modules for a possible
+      receiver.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+class&nbsp;Parent
+&nbsp;&nbsp;def&nbsp;hello
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"In&nbsp;parent\n"
+&nbsp;&nbsp;end
+end
+class&nbsp;Child&nbsp;&lt;&nbsp;Parent
+&nbsp;&nbsp;def&nbsp;hello
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"In&nbsp;child\n"
+&nbsp;&nbsp;end
+end
+<P></P>
+c&nbsp;=&nbsp;Child.new
+c.hello
+<P></P>
+class&nbsp;Child
+&nbsp;&nbsp;remove_method&nbsp;:hello&nbsp;&nbsp;#&nbsp;remove&nbsp;from&nbsp;child,&nbsp;still&nbsp;in&nbsp;parent
+end
+c.hello
+<P></P>
+class&nbsp;Child
+&nbsp;&nbsp;undef_method&nbsp;:hello&nbsp;&nbsp;&nbsp;#&nbsp;prevent&nbsp;any&nbsp;calls&nbsp;to&nbsp;'hello'
+end
+c.hello
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+In&nbsp;child
+In&nbsp;parent
+prog.rb:23:&nbsp;undefined&nbsp;method&nbsp;`hello'&nbsp;for&nbsp;#&lt;Child:0x4018d428>&nbsp;(NameError)
+</pre></td></tr></table>
+
+<P></P>
+      </td></table>
+<P></P>
+
+<p></p><hr><table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0"><tr><td width="33%" align="left"><a class="subheader" href="ref_c_method.html">Previous &lt;</a></td><td width="33%" align="center" valign="middle"><a class="subheader" href="builtins.html">Contents ^</a><br></td><td width="33%" align="right"><a class="subheader" href="ref_c_nilclass.html">Next ></a><br></td></tr></table><p></p><font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font><br><font size="-3">
+      Copyright
+      &#169;
+      2000 Addison Wesley Longman, Inc. Released under the terms of the
+      <a href="http://www.opencontent.org/openpub/">Open Publication License</a> V1.0.
+        <br>
+      This reference is available for
+        <a href="http://www.pragmaticprogrammer.com/ruby/downloads/book.html">download</a>.
+   </font></body></html>

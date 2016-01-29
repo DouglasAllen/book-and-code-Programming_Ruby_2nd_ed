@@ -1,0 +1,962 @@
+<html><title>Programming Ruby: The Pragmatic Programmer's Guide</title><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><STYLE TYPE="text/css"><!--
+       BODY    { margin-left: 1in;
+                 width: 6in;
+                 font-family: helvetica, arial, sans-serif;
+               }
+       H1      { color: #000080;
+                 font-family: helvetica, arial, sans-serif;
+                 font-size: 22pt;
+                 margin-left: 0in
+               }
+       H2      { color: #000080;  font: bold x-large helvetica, sans-serif;
+                 margin-left: 0in }
+       H3      { color: #000080;  font: bold   large helvetica, sans-serif; }
+       H4      { color: #000080;  font: italic large helvetica, sans-serif; }
+       .ruby   { background: #fff0f0 }
+       .header { color: white }
+       .subheader { color: #ffdddd }
+       .sidebar   { width: 6in }
+       span.sans { font-family: helvetica, arial, sans-serif }
+       -->
+   </STYLE><table bgcolor="#a03030" cellpadding="3" border="0" cellspacing="0"><tr><td colspan="3"><table bgcolor="#902020" cellpadding="20"><tr><td><h1 class="header">Programming Ruby</h1><h3 class="subheader">The Pragmatic Programmer's Guide</h3></td></tr></table></td></tr><tr><td width="33%" align="left"><a class="subheader" href="ref_c_float.html">Previous &lt;</a></td><td width="33%" align="center" valign="middle"><a class="subheader" href="builtins.html">Contents ^</a><br></td><td width="33%" align="right"><a class="subheader" href="ref_c_integer.html">Next ></a><br></td></tr></table></head><body bgcolor="white">
+<!--
+    Copyright (c) 2001 by Addison Wesley Longman.  This
+    material may be distributed only subject to the terms and
+    conditions set forth in the Open Publication License, v1.0 or
+    later (the latest version is presently available at
+    http://www.opencontent.org/openpub/).
+-->
+<table><tr><td height="20"><img src="dot.gif" width="1" height="20"></td></tr></table><table border="0" width="100%" bgcolor="660066" cellpadding="10"><tr><td valign="center"><font color="white" size="7">class Hash</font></td><td><table border="0"><tr><td><font color="white">
+                Parent:
+              </font></td><td><font color="white">Object</font></td></tr><tr><td><font color="white">
+                Version:
+              </font></td><td><font color="white">
+               1.6
+              </font></td></tr></table></td></tr></table><p></p><H3>Index:</H3><a href="#_ob_cb">[ ]</a> <a href="#new">new</a> <a href="#_eq_eq"><i>==</i></a> <a href="#_ob_cb"><i>[ ]</i></a> <a href="#_ob_cb_eq"><i>[ ]=</i></a> <a href="#clear"><i>clear</i></a> <a href="#default"><i>default</i></a> <a href="#default_eq"><i>default=</i></a> <a href="#delete"><i>delete</i></a> <a href="#delete_if"><i>delete_if</i></a> <a href="#each"><i>each</i></a> <a href="#each_key"><i>each_key</i></a> <a href="#each_pair"><i>each_pair</i></a> <a href="#each_value"><i>each_value</i></a> <a href="#empty_qm"><i>empty?</i></a> <a href="#fetch"><i>fetch</i></a> <a href="#has_key_qm"><i>has_key?</i></a> <a href="#has_value_qm"><i>has_value?</i></a> <a href="#include_qm"><i>include?</i></a> <a href="#index"><i>index</i></a> <a href="#indexes"><i>indexes</i></a> <a href="#indices"><i>indices</i></a> <a href="#invert"><i>invert</i></a> <a href="#key_qm"><i>key?</i></a> <a href="#keys"><i>keys</i></a> <a href="#length"><i>length</i></a> <a href="#member_qm"><i>member?</i></a> <a href="#rehash"><i>rehash</i></a> <a href="#reject"><i>reject</i></a> <a href="#reject_oh"><i>reject!</i></a> <a href="#replace"><i>replace</i></a> <a href="#shift"><i>shift</i></a> <a href="#size"><i>size</i></a> <a href="#sort"><i>sort</i></a> <a href="#store"><i>store</i></a> <a href="#to_a"><i>to_a</i></a> <a href="#to_s"><i>to_s</i></a> <a href="#update"><i>update</i></a> <a href="#value_qm"><i>value?</i></a> <a href="#values"><i>values</i></a> <p></p><hr>    
+<P></P>
+  A <code>Hash</code> is a collection of key-value pairs.  It is similar to
+  an <code>Array</code>, except that indexing is done via arbitrary keys of any
+  object type, not an integer index.  The order in which you traverse a 
+  hash by either key or value may seem arbitrary, and will generally not be
+  in the insertion order. 
+<P></P>
+  Hashes have a <em>default value</em> that is returned when accessing
+  keys that do not exist in the hash.  By default, that value is
+  <code>nil</code>.
+  <table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">
+         mixins
+       </font></td></tr>
+    <tr><td>Enumerable:
+    </td><td>
+   collect, detect, each_with_index, entries, find, find_all, grep,
+   include?, map, max, member?, min, reject, select, sort, to_a</td></tr>
+  </table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">class methods
+       </font></td></tr><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_ob_cb"><b>[ ]</b></a></font></td><td bgcolor="#ffaaaa">
+         Hash[ <i>[</i><i>key</i> => <i>value</i><i>]<sup>*</sup></i> ]
+        -> <i>aHash</i>
+      </td></tr><td></td><td>
+<P></P>
+      Creates a new hash populated with the given objects. Equivalent
+      to the literal <code>{&nbsp;<i>key</i>, <i>value</i>, ...&nbsp;}</code>.
+      Keys and values occur in pairs, so there must be an
+      even number of arguments.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>Hash["a",&nbsp;100,&nbsp;"b",&nbsp;200]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>{"a"=>100,&nbsp;"b"=>200}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Hash["a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>{"a"=>100,&nbsp;"b"=>200}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200&nbsp;}</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>{"a"=>100,&nbsp;"b"=>200}</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="new"><b>new</b></a></font></td><td bgcolor="#ffaaaa">
+        Hash.new( <i>anObject</i>=<code>nil</code> )
+          -> <i>aHash</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a new, empty hash.  If <i>anObject</i> is
+      specified, it will be used as the <em>default value</em>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;Hash.new("Go&nbsp;Fish")</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>h["a"]&nbsp;=&nbsp;100</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>h["b"]&nbsp;=&nbsp;200</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h["a"]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>100</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h["c"]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"Go&nbsp;Fish"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td></table>
+<P></P>
+  <table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">instance methods
+       </font></td></tr><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_eq_eq"><b>==</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i> == <i>anOtherHash</i>
+         -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+       Equality---Two hashes are equal if they each contain the same number
+       of keys and if each key-value pair is equal to (according to
+       <a href="ref_c_object.html#_eq_eq"><code>Object#==</code></a>) the corresponding elements in the other hash.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h1&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;1,&nbsp;"c"&nbsp;=>&nbsp;2&nbsp;}</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>h2&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;1,&nbsp;"c"&nbsp;=>&nbsp;2,&nbsp;7&nbsp;=>&nbsp;35&nbsp;}</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>h3&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;1,&nbsp;"c"&nbsp;=>&nbsp;2,&nbsp;7&nbsp;=>&nbsp;35&nbsp;}</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>h4&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;1,&nbsp;"d"&nbsp;=>&nbsp;2,&nbsp;"f"&nbsp;=>&nbsp;35&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h1&nbsp;==&nbsp;h2</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h2&nbsp;==&nbsp;h3</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h3&nbsp;==&nbsp;h4</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_ob_cb"><b>[ ]</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>[ <i>aKeyObject</i> ] 
+        -> <i>aValueObject</i>
+      </td></tr><td></td><td>
+<P></P>
+      Element Reference---Retrieves the <i>aValueObject</i> stored for
+      <i>aKeyObject</i>.  If not found, returns the <em>default value</em>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h["a"]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>100</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h["c"]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_ob_cb_eq"><b>[ ]=</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>[ <i>aKeyObject</i> ] = <i>aValueObject</i>
+        -> <i>aValueObject</i>
+      </td></tr><td></td><td>
+<P></P>
+      Element Assignment---Associates the value given by
+      <i>aValueObject</i> with the key given by <i>aKeyObject</i>.
+      <i>aKeyObject</i> should not have its value changed while it is
+      in use as a key (a <code>String</code> passed as a key will be
+      duplicated and frozen).
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200&nbsp;}</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>h["a"]&nbsp;=&nbsp;9</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>h["c"]&nbsp;=&nbsp;4</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>{"a"=>9,&nbsp;"b"=>200,&nbsp;"c"=>4}</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="clear"><b>clear</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.clear -> <i>hsh</i>
+      </td></tr><td></td><td>
+<P></P>
+      Removes all key-value pairs from <i>hsh</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200&nbsp;}</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>{"a"=>100,&nbsp;"b"=>200}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.clear</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>{}</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="default"><b>default</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.default -> <i>anObject</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the ``<em>default value</em>''---that is, the value returned for a 
+      key that does not exist in the hash.  Defaults to <code>nil</code>.
+      See also <a href="ref_c_hash.html#default_eq"><code>Hash#default=</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="default_eq"><b>default=</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.default = <i>anObject</i>
+        -> <i>hsh</i>
+      </td></tr><td></td><td>
+<P></P>
+      Sets the ``<em>default value</em>''---that is, the value returned for a 
+      key that does not exist in the hash.  Defaults to <code>nil</code>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200&nbsp;}</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>h.default&nbsp;=&nbsp;"Go&nbsp;fish"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h["a"]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>100</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h["z"]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"Go&nbsp;fish"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="delete"><b>delete</b></a></font></td><td bgcolor="#ffaaaa">
+                <i>hsh</i>.delete( <i>aKeyObject</i> )
+          -> <i>aValueObject</i><br><i>hsh</i>.delete( <i>aKeyObject</i> ) {| aKeyObject | block }
+<P></P>
+          -> <i>aValueObject</i>
+<P></P>
+      </td></tr><td></td><td>
+<P></P>
+      Deletes and returns a key-value pair from <i>hsh</i> whose key is equal to
+      <i>aKeyObject</i>.  If the key is not found, returns
+      the <em>default value</em>.  If the optional code block is given
+      and the key is not found,  pass in the key and return
+      the result of <i>block</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.delete("a")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>100</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.delete("z")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.delete("z")&nbsp;{&nbsp;|el|&nbsp;"#{el}&nbsp;not&nbsp;found"&nbsp;}</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"z&nbsp;not&nbsp;found"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="delete_if"><b>delete_if</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.delete_if {| key, value | block }
+<P></P>
+        -> <i>hsh</i>
+      </td></tr><td></td><td>
+<P></P>
+      Deletes every key-value pair from <i>hsh</i> for which <i>block</i>
+      evaluates to <code>true</code>. 
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200,&nbsp;"c"&nbsp;=>&nbsp;300&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.delete_if&nbsp;{|key,&nbsp;value|&nbsp;key&nbsp;>=&nbsp;"b"&nbsp;}</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>{"a"=>100}</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="each"><b>each</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.each {| key, value | block }
+ -> <i>hsh</i>
+      </td></tr><td></td><td>
+<P></P>
+      Calls <i>block</i> once for each key in <i>hsh</i>, passing the key
+      and value as parameters.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200&nbsp;}
+h.each&nbsp;{|key,&nbsp;value|&nbsp;print&nbsp;key,&nbsp;"&nbsp;is&nbsp;",&nbsp;value,&nbsp;"\n"&nbsp;}
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+a&nbsp;is&nbsp;100
+b&nbsp;is&nbsp;200
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="each_key"><b>each_key</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.each_key {| key | block }
+ -> <i>hsh</i>
+      </td></tr><td></td><td>
+<P></P>
+      Calls <i>block</i> once for each key in <i>hsh</i>, passing the key
+      as a parameter.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200&nbsp;}
+h.each_key&nbsp;{|key|&nbsp;puts&nbsp;key&nbsp;}
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+a
+b
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="each_pair"><b>each_pair</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.each_pair {| key, value | block }
+ -> <i>hsh</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_hash.html#each"><code>Hash#each</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="each_value"><b>each_value</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.each_value {| value | block }
+ -> <i>hsh</i>
+      </td></tr><td></td><td>
+<P></P>
+      Calls <i>block</i> once for each key in <i>hsh</i>, passing the value
+      as a parameter.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200&nbsp;}
+h.each_value&nbsp;{|value|&nbsp;puts&nbsp;value&nbsp;}
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+100
+200
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="empty_qm"><b>empty?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.empty? -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if <i>hsh</i> contains no key-value pairs.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>{}.empty?</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="fetch"><b>fetch</b></a></font></td><td bgcolor="#ffaaaa">
+            <i>hsh</i>.fetch( <i>aKeyObject</i> <i>[</i>, <i>aDefObject</i><i>]</i> )
+          -> <i>anObject</i><br><i>hsh</i>.fetch( <i>aKeyObject</i> ) {| aKeyObject | block }
+<P></P>
+          -> <i>anObject</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a value from the hash for the given key.  If the key
+      can't be found, there are several options: With no other
+      arguments, it will raise an <code>IndexError</code> exception; if
+      <i>aDefObject</i> is given, then that will be returned;  if the
+      optional code block is specified, then that will be run and its
+      result returned.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.fetch("a")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>100</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.fetch("z",&nbsp;"go&nbsp;fish")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"go&nbsp;fish"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.fetch("z")&nbsp;{&nbsp;|el|&nbsp;"go&nbsp;fish,&nbsp;#{el}"}</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"go&nbsp;fish,&nbsp;z"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      The following example shows that an exception is raised if the
+      key is not found and a default value is not supplied.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200&nbsp;}
+h.fetch("z")
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+prog.rb:2:in&nbsp;`fetch':&nbsp;key&nbsp;not&nbsp;found&nbsp;(IndexError)
+	from&nbsp;prog.rb:2
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="has_key_qm"><b>has_key?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.has_key?( <i>aKeyObject</i> )
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if the given key is present in <i>hsh</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.has_key?("a")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.has_key?("z")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="has_value_qm"><b>has_value?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.has_value?( <i>aValueObject</i> )
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Returns <code>true</code> if the given value is present for some key in
+      <i>hsh</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.has_value?(100)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.has_value?(999)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="include_qm"><b>include?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.include?( <i>aKeyObject</i> )
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_hash.html#has_key_qm"><code>Hash#has_key?</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="index"><b>index</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.index( <i>aValueObject</i> )
+        -> <i>aKeyObject</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the key for a given value.  If not found, returns the
+      <em>default value</em>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.index(200)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"b"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.index(999)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="indexes"><b>indexes</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.indexes( <i>[</i><i>key</i><i>]<sup>+</sup></i> )
+        -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a new array consisting of values for the given key(s).
+      Will insert the <em>default value</em> for keys that are not found.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200,&nbsp;"c"&nbsp;=>&nbsp;300&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.indexes("a",&nbsp;"c")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[100,&nbsp;300]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.indexes("a",&nbsp;"c",&nbsp;"z")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[100,&nbsp;300,&nbsp;nil]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="indices"><b>indices</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.indices( <i>[</i><i>key</i><i>]<sup>+</sup></i> )
+        -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_hash.html#indexes"><code>Hash#indexes</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="invert"><b>invert</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.invert -> <i>aHash</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a new hash created by using <i>hsh</i>'s values as keys, and the
+      keys as values.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"n"&nbsp;=>&nbsp;100,&nbsp;"m"&nbsp;=>&nbsp;100,&nbsp;"y"&nbsp;=>&nbsp;300,&nbsp;"d"&nbsp;=>&nbsp;200,&nbsp;"a"&nbsp;=>&nbsp;0&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.invert</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>{200=>"d",&nbsp;300=>"y",&nbsp;0=>"a",&nbsp;100=>"n"}</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="key_qm"><b>key?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.key?( <i>aKeyObject</i> )
+      -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_hash.html#has_key_qm"><code>Hash#has_key?</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="keys"><b>keys</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.keys -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a new array populated with the keys from this hash.
+      See also <a href="ref_c_hash.html#values"><code>Hash#values</code></a>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200,&nbsp;"c"&nbsp;=>&nbsp;300,&nbsp;"d"&nbsp;=>&nbsp;400&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.keys</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["a",&nbsp;"b",&nbsp;"c",&nbsp;"d"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="length"><b>length</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.length -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns the number of key-value pairs in the hash.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"d"&nbsp;=>&nbsp;100,&nbsp;"a"&nbsp;=>&nbsp;200,&nbsp;"v"&nbsp;=>&nbsp;300,&nbsp;"e"&nbsp;=>&nbsp;400&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.length</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>4</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.delete("a")</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>200</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.length</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>3</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="member_qm"><b>member?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.member?( <i>aKeyObject</i> )
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_hash.html#has_key_qm"><code>Hash#has_key?</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="rehash"><b>rehash</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.rehash -> <i>hsh</i>
+      </td></tr><td></td><td>
+<P></P>
+      Rebuilds the hash based on the current hash values for each key.
+      If values of key objects have changed since they were inserted,
+      this method will reindex <i>hsh</i>.
+      If <a href="ref_c_hash.html#rehash"><code>Hash#rehash</code></a> is called while an
+      iterator is traversing the hash, an <code>IndexError</code> will be
+      raised in the iterator.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;[&nbsp;"a",&nbsp;"b"&nbsp;]</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>c&nbsp;=&nbsp;[&nbsp;"c",&nbsp;"d"&nbsp;]</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;a&nbsp;=>&nbsp;100,&nbsp;c&nbsp;=>&nbsp;300&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h[a]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>100</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>a[0]&nbsp;=&nbsp;"z"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h[a]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nil</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.rehash</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>{["c",&nbsp;"d"]=>300,&nbsp;["z",&nbsp;"b"]=>100}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h[a]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>100</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="reject"><b>reject</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.reject {| key, value | block }
+<P></P>
+        -> <i>aHash</i>
+      </td></tr><td></td><td>
+<P></P>
+      Same as <a href="ref_c_hash.html#delete_if"><code>Hash#delete_if</code></a>, but works on (and returns) a 
+      copy of the <i>hsh</i>. Equivalent to <code><i>hsh</i>.dup.delete_if</code>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="reject_oh"><b>reject!</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.reject! {| key, value | block }
+<P></P>
+        -> <i>hsh</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Equivalent to <a href="ref_c_hash.html#delete_if"><code>Hash#delete_if</code></a>, but returns <code>nil</code> if no
+      changes were made.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="replace"><b>replace</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.replace( <i>anOtherHash</i> )
+        -> <i>hsh</i>
+      </td></tr><td></td><td>
+<P></P>
+      Replaces the contents of <i>hsh</i> with the contents of
+      <i>anOtherHash</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.replace({&nbsp;"c"&nbsp;=>&nbsp;300,&nbsp;"d"&nbsp;=>&nbsp;400&nbsp;})</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>{"c"=>300,&nbsp;"d"=>400}</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="shift"><b>shift</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.shift -> <i>anArray</i> or <code>nil</code>
+      </td></tr><td></td><td>
+<P></P>
+      Removes a key-value pair
+      from <i>hsh</i>
+      and returns it as the two-item array <code>[</code>
+      <i>key, value</i> <code>]</code>, or <code>nil</code> if the
+      hash is empty. 
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;1&nbsp;=>&nbsp;"a",&nbsp;2&nbsp;=>&nbsp;"b",&nbsp;3&nbsp;=>&nbsp;"c"&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.shift</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;"a"]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>{2=>"b",&nbsp;3=>"c"}</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="size"><b>size</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.size -> <i>aFixnum</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_hash.html#length"><code>Hash#length</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="sort"><b>sort</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.sort 
+        -> <i>anArray</i> <br><i>hsh</i>.sort {| a, b | block }
+<P></P>
+        -> <i>anArray</i>
+<P></P>
+      </td></tr><td></td><td>
+<P></P>
+      Converts <i>hsh</i> to a nested array of <code>[</code> <i>key, value</i>
+      <code>]</code> arrays and sorts it, using <a href="ref_c_array.html#sort"><code>Array#sort</code></a>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;20,&nbsp;"b"&nbsp;=>&nbsp;30,&nbsp;"c"&nbsp;=>&nbsp;10&nbsp;&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.sort</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[["a",&nbsp;20],&nbsp;["b",&nbsp;30],&nbsp;["c",&nbsp;10]]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.sort&nbsp;{|a,b|&nbsp;a[1]&lt;=>b[1]}</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[["c",&nbsp;10],&nbsp;["a",&nbsp;20],&nbsp;["b",&nbsp;30]]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="store"><b>store</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.store( <i>aKeyObject, aValueObject</i> ) 
+        -> <i>aValueObject</i>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for Element Assignment (<a href="ref_c_hash.html#_ob_cb_eq"><code>Hash#[]=</code></a>).
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="to_a"><b>to_a</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.to_a 
+        -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Converts <i>hsh</i> to a nested array of <code>[</code> <i>key, value</i>
+      <code>]</code> arrays.  
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"c"&nbsp;=>&nbsp;300,&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"d"&nbsp;=>&nbsp;400,&nbsp;"c"&nbsp;=>&nbsp;300&nbsp;&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.to_a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[["a",&nbsp;100],&nbsp;["c",&nbsp;300],&nbsp;["d",&nbsp;400]]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="to_s"><b>to_s</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.to_s -> <i>aString</i>
+      </td></tr><td></td><td>
+<P></P>
+      Converts <i>hsh</i> to a string by converting the hash to an array
+      of <code>[</code> <i>key, value</i> <code>]</code> pairs and then converting that array to a string using
+      <a href="ref_c_array.html#join"><code>Array#join</code></a> with the default separator.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"c"&nbsp;=>&nbsp;300,&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"d"&nbsp;=>&nbsp;400,&nbsp;"c"&nbsp;=>&nbsp;300&nbsp;&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.to_s</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"a100c300d400"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="update"><b>update</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.update( <i>anOtherHash</i> )
+        -> <i>hsh</i>
+      </td></tr><td></td><td>
+<P></P>
+     Adds the contents of <i>anOtherHash</i> to <i>hsh</i>, overwriting
+     entries with duplicate keys  with those from <i>anOtherHash</i>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h1&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200&nbsp;}</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>h2&nbsp;=&nbsp;{&nbsp;"b"&nbsp;=>&nbsp;254,&nbsp;"c"&nbsp;=>&nbsp;300&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h1.update(h2)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>{"a"=>100,&nbsp;"b"=>254,&nbsp;"c"=>300}</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="value_qm"><b>value?</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.value?( <i>aValueObject</i> )
+        -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+      Synonym for <a href="ref_c_hash.html#has_value_qm"><code>Hash#has_value?</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="values"><b>values</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>hsh</i>.values -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+      Returns a new array populated with the values from <i>hsh</i>.
+      See also <a href="ref_c_hash.html#keys"><code>Hash#keys</code></a>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>h&nbsp;=&nbsp;{&nbsp;"a"&nbsp;=>&nbsp;100,&nbsp;"b"&nbsp;=>&nbsp;200,&nbsp;"c"&nbsp;=>&nbsp;300&nbsp;}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>h.values</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[100,&nbsp;200,&nbsp;300]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td></table>
+<P></P>
+
+<p></p><hr><table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0"><tr><td width="33%" align="left"><a class="subheader" href="ref_c_float.html">Previous &lt;</a></td><td width="33%" align="center" valign="middle"><a class="subheader" href="builtins.html">Contents ^</a><br></td><td width="33%" align="right"><a class="subheader" href="ref_c_integer.html">Next ></a><br></td></tr></table><p></p><font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font><br><font size="-3">
+      Copyright
+      &#169;
+      2000 Addison Wesley Longman, Inc. Released under the terms of the
+      <a href="http://www.opencontent.org/openpub/">Open Publication License</a> V1.0.
+        <br>
+      This reference is available for
+        <a href="http://www.pragmaticprogrammer.com/ruby/downloads/book.html">download</a>.
+   </font></body></html>

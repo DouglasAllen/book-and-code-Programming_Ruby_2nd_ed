@@ -1,0 +1,381 @@
+<html><title>Programming Ruby: The Pragmatic Programmer's Guide</title><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><STYLE TYPE="text/css"><!--
+       BODY    { margin-left: 1in;
+                 width: 6in;
+                 font-family: helvetica, arial, sans-serif;
+               }
+       H1      { color: #000080;
+                 font-family: helvetica, arial, sans-serif;
+                 font-size: 22pt;
+                 margin-left: 0in
+               }
+       H2      { color: #000080;  font: bold x-large helvetica, sans-serif;
+                 margin-left: 0in }
+       H3      { color: #000080;  font: bold   large helvetica, sans-serif; }
+       H4      { color: #000080;  font: italic large helvetica, sans-serif; }
+       .ruby   { background: #fff0f0 }
+       .header { color: white }
+       .subheader { color: #ffdddd }
+       .sidebar   { width: 6in }
+       span.sans { font-family: helvetica, arial, sans-serif }
+       -->
+   </STYLE><table bgcolor="#a03030" cellpadding="3" border="0" cellspacing="0"><tr><td colspan="3"><table bgcolor="#902020" cellpadding="20"><tr><td><h1 class="header">Programming Ruby</h1><h3 class="subheader">The Pragmatic Programmer's Guide</h3></td></tr></table></td></tr><tr><td width="33%" align="left"><a class="subheader" href="ref_c_string.html">Previous &lt;</a></td><td width="33%" align="center" valign="middle"><a class="subheader" href="builtins.html">Contents ^</a><br></td><td width="33%" align="right"><a class="subheader" href="ref_c_struct__tms.html">Next ></a><br></td></tr></table></head><body bgcolor="white">
+<!--
+    Copyright (c) 2001 by Addison Wesley Longman.  This
+    material may be distributed only subject to the terms and
+    conditions set forth in the Open Publication License, v1.0 or
+    later (the latest version is presently available at
+    http://www.opencontent.org/openpub/).
+-->
+<table><tr><td height="20"><img src="dot.gif" width="1" height="20"></td></tr></table><table border="0" width="100%" bgcolor="660066" cellpadding="10"><tr><td valign="center"><font color="white" size="7">class Struct</font></td><td><table border="0"><tr><td><font color="white">
+                Parent:
+              </font></td><td><font color="white">Object</font></td></tr><tr><td><font color="white">
+                Version:
+              </font></td><td><font color="white">
+               1.6
+              </font></td></tr></table></td></tr></table><p></p><H3>Index:</H3><a href="#new">new</a> <a href="#new">new</a> <a href="#members">members</a> <a href="#_eq_eq"><i>==</i></a> <a href="#_ob_cb"><i>[ ]</i></a> <a href="#_ob_cb_eq"><i>[ ]=</i></a> <a href="#each"><i>each</i></a> <a href="#length"><i>length</i></a> <a href="#members"><i>members</i></a> <a href="#size"><i>size</i></a> <a href="#to_a"><i>to_a</i></a> <a href="#values"><i>values</i></a> <p></p><hr>  <br><font size="-1">Subclasses: Struct::Tms</font><p></p>
+<P></P>
+A <code>Struct</code> is a convenient way to bundle a number of attributes
+together, using accessor methods, without having to write an explicit
+class.
+<P></P>
+The <code>Struct</code> class is a generator of specific classes, each one of
+which is defined to hold a set of variables and their accessors. In
+these examples, we'll call the generated class ``<i>Customer</i>Class,'' and
+we'll show an example instance of that class as ``<i>Customer</i>Inst.''
+<P></P>
+In the descriptions that follow, the
+  parameter <i>aSymbol</i> refers to a symbol, which is either a
+  quoted string or a <code>Symbol</code> (such as <code>:name</code>).<table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">
+         mixins
+       </font></td></tr>
+    <tr><td>Enumerable:
+    </td><td>
+   collect, detect, each_with_index, entries, find, find_all, grep,
+   include?, map, max, member?, min, reject, select, sort, to_a</td></tr>
+  </table>
+<P></P>
+<table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">class methods
+       </font></td></tr><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="new"><b>new</b></a></font></td><td bgcolor="#ffaaaa">
+        Struct.new( <i>[</i><i>aString</i><i>]</i> <i>[</i>, <i>aSym</i><i>]<sup>+</sup></i> )
+      -> <i>Customer</i>Class
+      </td></tr><td></td><td>
+<P></P>
+    Creates a new class, named by <i>aString</i>, containing
+    accessor methods for the given symbols.
+    If the name <i>aString</i> is omitted, an anonymous structure
+    class will be created. Otherwise, the name of this struct will
+    appear as a constant in class <code>Struct</code>, so it must be unique
+    for all <code>Struct</code>s in the system and should start with a
+    capital letter.
+<P></P>
+    <a href="ref_c_struct.html#new"><code>Struct::new</code></a> returns a new <code>Class</code> object, which can then be used
+    to create specific instances of the new structure.
+    The remaining methods listed below (class and instance) are
+    defined for this generated class. See the description that follows 
+    for an example.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="new"><b>new</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>Customer</i>Class.new( <i>[</i><i>anObject</i><i>]<sup>+</sup></i> )
+      -> <i>Customer</i>Inst
+      </td></tr><td></td><td>
+<P></P>
+    Creates a new instance.  The number of actual parameters must be
+    less than or equal to the number of attributes defined for this
+    class; unset parameters default to <code>nil</code>.  Passing too many
+    parameters will raise an <code>ArgumentError</code>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>Customer&nbsp;=&nbsp;Struct.new(&nbsp;"Customer",&nbsp;:name,&nbsp;:address,&nbsp;:zip&nbsp;)</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>joe&nbsp;=&nbsp;Customer.new(&nbsp;"Joe&nbsp;Smith",&nbsp;"123&nbsp;Maple,&nbsp;Anytown&nbsp;NC",&nbsp;12345&nbsp;)</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>joe.name</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"Joe&nbsp;Smith"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>joe.zip</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>12345</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="members"><b>members</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>Customer</i>Class.members
+      -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+    Returns an array of strings representing the names of the
+    instance variables.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>Customer&nbsp;=&nbsp;Struct.new(&nbsp;"Customer",&nbsp;:name,&nbsp;:address,&nbsp;:zip&nbsp;)</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Customer.members</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["name",&nbsp;"address",&nbsp;"zip"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td></table>
+<P></P>
+<table border="0" width="100%" cellpadding="10"><tr><td valign="center" colspan="2" bgcolor="990066"><font color="white" size="6">instance methods
+       </font></td></tr><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_eq_eq"><b>==</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>Customer</i>Inst == <i>anOtherStruct</i>
+      -> <code>true</code> or <code>false</code>
+      </td></tr><td></td><td>
+<P></P>
+    Equality---Returns <code>true</code> if <i>anOtherStruct</i> is equal to this
+    one: they must be of the same class as generated by
+    <a href="ref_c_struct.html#new"><code>Struct::new</code></a>, and the values of
+    all instance variables must be equal (according to
+    <a href="ref_c_object.html#_eq_eq"><code>Object#==</code></a>).
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>Customer&nbsp;=&nbsp;Struct.new(&nbsp;"Customer",&nbsp;:name,&nbsp;:address,&nbsp;:zip&nbsp;)</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>joe&nbsp;&nbsp;&nbsp;=&nbsp;Customer.new(&nbsp;"Joe&nbsp;Smith",&nbsp;"123&nbsp;Maple,&nbsp;Anytown&nbsp;NC",&nbsp;12345&nbsp;)</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>joejr&nbsp;=&nbsp;Customer.new(&nbsp;"Joe&nbsp;Smith",&nbsp;"123&nbsp;Maple,&nbsp;Anytown&nbsp;NC",&nbsp;12345&nbsp;)</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>jane&nbsp;&nbsp;=&nbsp;Customer.new(&nbsp;"Jane&nbsp;Doe",&nbsp;"456&nbsp;Elm,&nbsp;Anytown&nbsp;NC",&nbsp;12345&nbsp;)</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>joe&nbsp;==&nbsp;joejr</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>true</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>joe&nbsp;==&nbsp;jane</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>false</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_ob_cb"><b>[ ]</b></a></font></td><td bgcolor="#ffaaaa">
+                <i>Customer</i>Inst[ <i>aSymbol</i> ] -> <i>anObject</i><br><i>Customer</i>Inst[ <i>anInteger</i> ] -> <i>anObject</i>
+<P></P>
+      </td></tr><td></td><td>
+<P></P>
+    Attribute Reference---Returns the value of the instance variable
+    named by <i>aSymbol</i>, or indexed (0..length-1) by
+    <i>anInteger</i>.  Will raise <code>NameError</code> if the named
+    variable does not exist, or <code>IndexError</code> if the index is out of range.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>Customer&nbsp;=&nbsp;Struct.new(&nbsp;"Customer",&nbsp;:name,&nbsp;:address,&nbsp;:zip&nbsp;)</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>joe&nbsp;=&nbsp;Customer.new(&nbsp;"Joe&nbsp;Smith",&nbsp;"123&nbsp;Maple,&nbsp;Anytown&nbsp;NC",&nbsp;12345&nbsp;)</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code></code></td>
+</tr>
+<tr>
+  <td valign="top"><code>joe["name"]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"Joe&nbsp;Smith"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>joe[:name]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"Joe&nbsp;Smith"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>joe[0]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"Joe&nbsp;Smith"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="_ob_cb_eq"><b>[ ]=</b></a></font></td><td bgcolor="#ffaaaa">
+                <i>Customer</i>Inst[ <i>aSymbol</i> ] = <i>anObject</i> -> <i>anObject</i><br><i>Customer</i>Inst[ <i>anInteger</i> ] = <i>anObject</i> -> <i>anObject</i>
+<P></P>
+      </td></tr><td></td><td>
+<P></P>
+    Attribute Assignment---Assigns to the instance variable named by
+    <i>aSymbol</i> or <i>anInteger</i>
+    the value <i>anObject</i> and returns it.  Will raise
+    a <code>NameError</code> if the named variable does not exist, or an
+    <code>IndexError</code> if the index is out of range.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>Customer&nbsp;=&nbsp;Struct.new(&nbsp;"Customer",&nbsp;:name,&nbsp;:address,&nbsp;:zip&nbsp;)</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>joe&nbsp;=&nbsp;Customer.new(&nbsp;"Joe&nbsp;Smith",&nbsp;"123&nbsp;Maple,&nbsp;Anytown&nbsp;NC",&nbsp;12345&nbsp;)</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code></code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>joe["name"]&nbsp;=&nbsp;"Luke"</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>joe[:zip]&nbsp;&nbsp;&nbsp;=&nbsp;"90210"</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code></code></td>
+</tr>
+<tr>
+  <td valign="top"><code>joe.name</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"Luke"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>joe.zip</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"90210"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="each"><b>each</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>Customer</i>Inst.each {| anObject | block }
+<P></P>
+      -> <i>Customer</i>Inst
+      </td></tr><td></td><td>
+<P></P>
+    Calls <i>block</i> once for each instance variable, passing the 
+    value as a parameter.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+Customer&nbsp;=&nbsp;Struct.new(&nbsp;"Customer",&nbsp;:name,&nbsp;:address,&nbsp;:zip&nbsp;)
+joe&nbsp;=&nbsp;Customer.new(&nbsp;"Joe&nbsp;Smith",&nbsp;"123&nbsp;Maple,&nbsp;Anytown&nbsp;NC",&nbsp;12345&nbsp;)
+joe.each&nbsp;{|x|&nbsp;puts(x)&nbsp;}
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+Joe&nbsp;Smith
+123&nbsp;Maple,&nbsp;Anytown&nbsp;NC
+12345
+</pre></td></tr></table>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="length"><b>length</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>Customer</i>Inst.length
+      -> <i>anInteger</i>
+      </td></tr><td></td><td>
+<P></P>
+    Returns the number of instance variables.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>Customer&nbsp;=&nbsp;Struct.new(&nbsp;"Customer",&nbsp;:name,&nbsp;:address,&nbsp;:zip&nbsp;)</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>joe&nbsp;=&nbsp;Customer.new(&nbsp;"Joe&nbsp;Smith",&nbsp;"123&nbsp;Maple,&nbsp;Anytown&nbsp;NC",&nbsp;12345&nbsp;)</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>joe.length</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>3</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="members"><b>members</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>Customer</i>Inst.members
+      -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+    Returns an array of strings representing the names of the
+    instance variables.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>Customer&nbsp;=&nbsp;Struct.new(&nbsp;"Customer",&nbsp;:name,&nbsp;:address,&nbsp;:zip&nbsp;)</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>joe&nbsp;=&nbsp;Customer.new(&nbsp;"Joe&nbsp;Smith",&nbsp;"123&nbsp;Maple,&nbsp;Anytown&nbsp;NC",&nbsp;12345&nbsp;)</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>joe.members</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["name",&nbsp;"address",&nbsp;"zip"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="size"><b>size</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>Customer</i>Inst.size
+      -> <i>anInteger</i>
+      </td></tr><td></td><td>
+<P></P>
+    Synonym for <a href="ref_c_struct.html#length"><code>Struct#length</code></a>.
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="to_a"><b>to_a</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>Customer</i>Inst.to_a
+      -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+    Returns the values for this instance as an array.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>Customer&nbsp;=&nbsp;Struct.new(&nbsp;"Customer",&nbsp;:name,&nbsp;:address,&nbsp;:zip&nbsp;)</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>joe&nbsp;=&nbsp;Customer.new(&nbsp;"Joe&nbsp;Smith",&nbsp;"123&nbsp;Maple,&nbsp;Anytown&nbsp;NC",&nbsp;12345&nbsp;)</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>joe.to_a[1]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"123&nbsp;Maple,&nbsp;Anytown&nbsp;NC"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+      </td><tr><td valign="center" bgcolor="#ff9999"><font size="4"><a name="values"><b>values</b></a></font></td><td bgcolor="#ffaaaa">
+        <i>Customer</i>Inst.values
+      -> <i>anArray</i>
+      </td></tr><td></td><td>
+<P></P>
+    Synonym for <code>to_a</code>.
+<P></P>
+      </td></table>
+<P></P>
+
+<p></p><hr><table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0"><tr><td width="33%" align="left"><a class="subheader" href="ref_c_string.html">Previous &lt;</a></td><td width="33%" align="center" valign="middle"><a class="subheader" href="builtins.html">Contents ^</a><br></td><td width="33%" align="right"><a class="subheader" href="ref_c_struct__tms.html">Next ></a><br></td></tr></table><p></p><font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font><br><font size="-3">
+      Copyright
+      &#169;
+      2000 Addison Wesley Longman, Inc. Released under the terms of the
+      <a href="http://www.opencontent.org/openpub/">Open Publication License</a> V1.0.
+        <br>
+      This reference is available for
+        <a href="http://www.pragmaticprogrammer.com/ruby/downloads/book.html">download</a>.
+   </font></body></html>

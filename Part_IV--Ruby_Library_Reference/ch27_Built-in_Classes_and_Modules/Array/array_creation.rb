@@ -1,7 +1,0 @@
-@ary = [1, "two", 3.0]                      #=> [1, "two", 3.0] 
-@ary = Array.new                            #=> []
-@ary = Array.new(3)                         #=> [nil, nil, nil]      
-@ary = Array.new(3, true)                   #=> [true, true, true]     
-@ary = Array.new(4) { Hash.new }            #=> [{}, {}, {}, {}]  
-@empty_table = Array.new(3) { Array.new(3) }#=> [[nil, nil, nil], [nil, nil, nil], [nil, nil, nil]]
-@ary = Array({:a => "a", :b => "b"})        #=> [[:a, "a"], [:b, "b"]]

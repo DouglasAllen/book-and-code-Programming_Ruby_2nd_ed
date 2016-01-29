@@ -1,6 +1,0 @@
-@arr = [1, 2, 3, 4]
-@arr.push(5)                   #=> [1, 2, 3, 4, 5]
-@arr << 6                      #=> [1, 2, 3, 4, 5, 6]                                  
-@arr.unshift(0)                #=> [0, 1, 2, 3, 4, 5, 6]                                 
-@arr.insert(3, 'apple')        #=> [0, 1, 2, 'apple', 3, 4, 5, 6]                                  
-@arr.insert(3, 'orange', 'pear', 'grapefruit') #=> [0, 1, 2, "orange", "pear", "grapefruit", "apple", 3, 4, 5, 6]

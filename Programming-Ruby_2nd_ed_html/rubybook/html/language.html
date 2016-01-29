@@ -1,0 +1,2977 @@
+<html><title>Programming Ruby: The Pragmatic Programmer's Guide</title><head><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><STYLE TYPE="text/css"><!--
+       BODY    { margin-left: 1in;
+                 width: 6in;
+                 font-family: helvetica, arial, sans-serif;
+               }
+       H1      { color: #000080;
+                 font-family: helvetica, arial, sans-serif;
+                 font-size: 22pt;
+                 margin-left: 0in
+               }
+       H2      { color: #000080;  font: bold x-large helvetica, sans-serif;
+                 margin-left: 0in }
+       H3      { color: #000080;  font: bold   large helvetica, sans-serif; }
+       H4      { color: #000080;  font: italic large helvetica, sans-serif; }
+       .ruby   { background: #fff0f0 }
+       .header { color: white }
+       .subheader { color: #ffdddd }
+       .sidebar   { width: 6in }
+       span.sans { font-family: helvetica, arial, sans-serif }
+       -->
+   </STYLE><table bgcolor="#a03030" cellpadding="3" border="0" cellspacing="0"><tr><td colspan="3"><table bgcolor="#902020" cellpadding="20"><tr><td><h1 class="header">Programming Ruby</h1><h3 class="subheader">The Pragmatic Programmer's Guide</h3></td></tr></table></td></tr><tr><td width="33%" align="left"><a class="subheader" href="ext_ruby.html">Previous &lt;</a></td><td width="33%" align="center" valign="middle"><a class="subheader" href="index.html">Contents ^</a><br></td><td width="33%" align="right"><a class="subheader" href="classes.html">Next ></a><br></td></tr></table></head><body bgcolor="white">
+<!--
+    Copyright (c) 2001 by Addison Wesley Longman.  This
+    material may be distributed only subject to the terms and
+    conditions set forth in the Open Publication License, v1.0 or
+    later (the latest version is presently available at
+    http://www.opencontent.org/openpub/).
+-->
+
+<h1>The Ruby Language</h1><hr><br>
+<P></P>
+This chapter is a bottom-up look at the Ruby language. Unlike the
+previous tutorial, here we're concentrating on presenting facts,
+rather than motivating some of the language design features. We also
+ignore the built-in classes and modules where possible. These are
+covered in depth starting on page 279.
+<P></P>
+If the content of this chapter looks familiar, it's because it should;
+we've covered just about all of this in the earlier tutorial chapters.
+Consider this chapter to be a self-contained reference to the core Ruby 
+language.
+<h2>Source Layout</h2>
+<P></P>
+Ruby programs are written in 7-bit
+ASCII.<em>[Ruby also has extensive support for Kanji,    
+   using the
+  EUC, SJIS, or UTF-8 coding system. If a
+  code set
+  other than 7-bit ASCII is used, the <code>KCODE</code> option must be
+  set appropriately, as shown on page 139.]</em>
+<P></P>
+Ruby is a line-oriented language. Ruby expressions and statements are
+terminated at the end of a line unless the statement is obviously
+incomplete---for example if the last token on a line is an operator or
+comma.
+A semicolon can be used to separate
+multiple expressions on a line.  You can also put a backslash at the
+end of a line to continue it onto the next.  Comments start
+with `#' and run to the end of the
+physical line. Comments are ignored during compilation.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+a&nbsp;=&nbsp;1
+<P></P>
+b&nbsp;=&nbsp;2;&nbsp;c&nbsp;=&nbsp;3
+<P></P>
+d&nbsp;=&nbsp;4&nbsp;+&nbsp;5&nbsp;+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;no&nbsp;'\'&nbsp;needed
+&nbsp;&nbsp;&nbsp;&nbsp;6&nbsp;+&nbsp;7
+<P></P>
+e&nbsp;=&nbsp;8&nbsp;+&nbsp;9&nbsp;&nbsp;&nbsp;\
+&nbsp;&nbsp;&nbsp;&nbsp;+&nbsp;10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;'\'&nbsp;needed
+</pre></td></tr></table>
+
+<P></P>
+Physical lines between a line starting with =begin and{=begin...=end@<code></code>{=begin documentation}
+a line starting with =end are
+ignored by the compiler and may be used for embedded documentation
+(see Appendix A, which begins on page 517).
+<P></P>
+Ruby reads its program input in a single pass, so you can pipe
+programs to the compiler's <code>stdin</code>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+echo&nbsp;'print&nbsp;"Hello\n"'&nbsp;|&nbsp;ruby
+</pre></td></tr></table>
+
+<P></P>
+If the compiler comes across a line anywhere in the source containing
+just ``<code>__END__</code>'',
+with no leading or trailing whitespace, it
+treats that line as the end of the program---any subsequent lines will not be
+compiled. However, these lines can be read into the running program
+using the global <code>IO</code> object <code>DATA</code>, described
+on page 219.
+<h3>BEGIN and END Blocks</h3>
+<P></P>
+Every Ruby source file can declare blocks of code to be run as the
+file is being loaded (the <code>BEGIN</code> blocks) and after the program
+has finished executing (the <code>END</code> blocks).
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+BEGIN {
+  <i>begin code</i>
+}
+<P></P>
+END {
+  <i>end code</i>
+}
+</pre></td></tr></table>
+<P></P>
+A program may include multiple <code>BEGIN</code> and <code>END</code> blocks.
+<code>BEGIN</code> blocks are executed in the order they are encountered.
+<code>END</code> blocks are executed in reverse order.
+<h3>General Delimited Input</h3>
+<P></P>
+There are alternative forms of literal strings, arrays, regular
+expressions, and shell commands that are specified using a generalized
+delimited syntax.
+All these literals start with a percent character,
+followed by a single character that identifies the literal's type.
+These
+characters are summarized in Table 18.1 on page 203; the actual
+literals are described in the corresponding sections later in this
+chapter.
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0"><tr><td>
+  <b>General delimited input</b>
+  <center>
+    <table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top"><b>Type</b></td>
+  <td valign="top"><b>Meaning</b></td>
+  <td valign="top"><b>See Page</b></td>
+</tr>
+<tr>
+  <td valign="top"><code>%q</code></td>
+  <td valign="top">Single-quoted string</td>
+  <td valign="top">204</td>
+</tr>
+<tr>
+  <td valign="top"><code>%Q</code>, <code>%</code></td>
+  <td valign="top">Double-quoted string</td>
+  <td valign="top">204</td>
+</tr>
+<tr>
+  <td valign="top"><code>%w</code></td>
+  <td valign="top">Array of tokens</td>
+  <td valign="top">206</td>
+</tr>
+<tr>
+  <td valign="top"><code>%r</code></td>
+  <td valign="top">Regular expression pattern</td>
+  <td valign="top">207</td>
+</tr>
+<tr>
+  <td valign="top"><code>%x</code></td>
+  <td valign="top">Shell command</td>
+  <td valign="top">220</td>
+</tr>
+<tr><td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td></tr></table>
+<P></P>
+  </center>
+</td></tr></table>
+<P></P>
+Following the type character is a delimiter, which can be any
+character. If the delimiter is one of the characters ``<code>(</code>'',
+``<code>[</code>'', ``<code>{</code>'', or ``<code>&lt;</code>'', the literal consists of the
+characters up to the matching closing delimiter, taking account of
+nested delimiter pairs. For all other delimiters, the literal
+comprises the characters up to the next occurrence of the delimiter
+character.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+%q/this&nbsp;is&nbsp;a&nbsp;string/
+%q-string-
+%q(a&nbsp;(nested)&nbsp;string)
+</pre></td></tr></table>
+
+<P></P>
+Delimited strings may continue over multiple lines.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+%q{def&nbsp;fred(a)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a.each&nbsp;{&nbsp;|i|&nbsp;puts&nbsp;i&nbsp;}
+&nbsp;&nbsp;&nbsp;end}
+</pre></td></tr></table>
+
+<P></P>
+<h2>The Basic Types</h2>
+<P></P>
+The basic types in Ruby are numbers, strings, arrays, hashes, ranges,
+symbols, and regular expressions.
+<P></P>
+<h3>Integer and Floating Point Numbers</h3>
+<P></P>
+Ruby integers are objects of class <code>Fixnum</code>
+or <code>Bignum</code>.
+<code>Fixnum</code> objects
+hold integers that fit within the native machine word minus 1 bit.
+Whenever a <code>Fixnum</code> exceeds this range, it is automatically converted
+to a <code>Bignum</code> object, whose range is effectively limited only
+by available memory.  If an operation with a <code>Bignum</code> result
+has a final value that will fit in a <code>Fixnum</code>, the result will
+be returned as a <code>Fixnum</code>.
+<P></P>
+Integers are written using an optional leading sign, an optional base
+indicator (<code>0</code> for octal, <code>0x</code> for hex, or <code>0b</code>
+for binary), followed by a string of digits in the appropriate base.
+Underscore characters are ignored in the digit string.
+<P></P>
+You can get the integer value corresponding to an ASCII
+character by preceding that character with a question mark.  Control
+and meta combinations of characters can also be generated using
+?\C-<em>x</em>, ?\M-<em>x</em>, and ?\M-\C-<em>x</em>.
+The control version of <code>ch</code> is <code>ch&amp;0x9f</code>, and the meta
+version is <code>ch&nbsp;|&nbsp;0x80</code>. You can get the integer value of a backslash
+character using the sequence <code>?\\</code>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+123456&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Fixnum
+123_456&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Fixnum&nbsp;(underscore&nbsp;ignored)
+-543&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Negative&nbsp;Fixnum
+123_456_789_123_345_789&nbsp;&nbsp;&nbsp;#&nbsp;Bignum
+0xaabb&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Hexadecimal
+0377&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Octal
+-0b1010&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Binary&nbsp;(negated)
+0b001_001&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;Binary
+?a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;character&nbsp;code
+?A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;upper&nbsp;case
+?\C-a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;control&nbsp;a&nbsp;=&nbsp;A&nbsp;-&nbsp;0x40
+?\C-A&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;case&nbsp;ignored&nbsp;for&nbsp;control&nbsp;chars
+?\M-a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;meta&nbsp;sets&nbsp;bit&nbsp;7
+?\M-\C-a&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;meta&nbsp;and&nbsp;control&nbsp;a
+</pre></td></tr></table>
+
+<P></P>
+A numeric literal with a decimal point and/or an exponent is turned
+into a <code>Float</code> object, corresponding to the native
+architecture's <code>double</code> data type. You must
+follow the decimal point with a digit, as 
+<code>1.e3</code> tries to invoke the method <code>e3</code> in class <code>Fixnum</code>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>12.34</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>12.34</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>-.1234e2</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>-12.34</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>1234e-2</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>12.34</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+<h3>Strings</h3>
+<P></P>
+Ruby provides a number of mechanisms for creating literal strings.
+Each generates objects of type <code>String</code>.  The different
+mechanisms vary in terms of how a string is delimited and how much
+substitution is done on the literal's content.
+<P></P>
+Single-quoted string literals (<code>'</code><em>stuff</em><code>'</code> and
+%q/<em>stuff</em>/)
+undergo the least substitution.
+Both convert
+the sequence <br> into a single backslash, and the form with
+single quotes converts \' into a single quote.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>'hello'</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>hello</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>'a&nbsp;backslash&nbsp;\'\\\''</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>a&nbsp;backslash&nbsp;'\'</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>%q/simple&nbsp;string/</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>simple&nbsp;string</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>%q(nesting&nbsp;(really)&nbsp;works)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>nesting&nbsp;(really)&nbsp;works</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>%q&nbsp;no_blanks_here&nbsp;;</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>no_blanks_here</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Double-quoted strings
+("<em>stuff</em>",
+%Q/<em>stuff</em>/, and
+%/<em>stuff</em>/)
+undergo additional substitutions, shown in Table
+18.2 on page 205.
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0"><tr><td>
+  <b>Substitutions in double-quoted
+    strings</b>            
+  <center>
+  <table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3">
+<P></P>
+    <tr><td colspan="9" bgcolor="#ff9999" height="3"><img src="dot.gif" width="1" height="1"></td></tr><tr>
+  <td valign="top">\a</td>
+  <td valign="top">Bell/alert (0x07)</td>
+  <td valign="top">\<em>nnn</em></td>
+  <td valign="top">Octal <em>nnn</em></td>
+</tr>
+<tr>
+  <td valign="top">\b</td>
+  <td valign="top">Backspace  (0x08)</td>
+  <td valign="top">\x<em>nn</em></td>
+  <td valign="top">Hex <em>nn</em></td>
+</tr>
+<tr>
+  <td valign="top">\e</td>
+  <td valign="top">Escape     (0x1b)</td>
+  <td valign="top">\c<em>x</em></td>
+  <td valign="top">Control-<em>x</em></td>
+</tr>
+<tr>
+  <td valign="top">\f</td>
+  <td valign="top">Formfeed   (0x0c)</td>
+  <td valign="top">\C-<em>x</em></td>
+  <td valign="top">Control-<em>x</em></td>
+</tr>
+<tr>
+  <td valign="top">\n</td>
+  <td valign="top">Newline    (0x0a)</td>
+  <td valign="top">\M-<em>x</em></td>
+  <td valign="top">Meta-<em>x</em></td>
+</tr>
+<tr>
+  <td valign="top">\r</td>
+  <td valign="top">Return     (0x0d)</td>
+  <td valign="top">\M-\C-<em>x</em></td>
+  <td valign="top">Meta-control-<em>x</em></td>
+</tr>
+<tr>
+  <td valign="top">\s</td>
+  <td valign="top">Space      (0x20)</td>
+  <td valign="top">\<em>x</em></td>
+  <td valign="top"><em>x</em></td>
+</tr>
+<tr>
+  <td valign="top">\t</td>
+  <td valign="top">Tab        (0x09)</td>
+  <td valign="top">#{expr}</td>
+  <td valign="top">Value of <em>expr</em></td>
+</tr>
+<tr>
+  <td valign="top">\v</td>
+  <td valign="top">Vertical tab (0x0b)</td>
+</tr>
+<tr><td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td></tr></table>
+<P></P>
+</center>
+</td></tr></table>
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;&nbsp;=&nbsp;123</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>"\123mile"</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Smile</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>"Say&nbsp;\"Hello\""</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Say&nbsp;"Hello"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>%Q!"I&nbsp;said&nbsp;'nuts',"&nbsp;I&nbsp;said!</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"I&nbsp;said&nbsp;'nuts',"&nbsp;I&nbsp;said</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>%Q{Try&nbsp;#{a&nbsp;+&nbsp;1},&nbsp;not&nbsp;#{a&nbsp;-&nbsp;1}}</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Try&nbsp;124,&nbsp;not&nbsp;122</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>%&lt;Try&nbsp;#{a&nbsp;+&nbsp;1},&nbsp;not&nbsp;#{a&nbsp;-&nbsp;1}></code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Try&nbsp;124,&nbsp;not&nbsp;122</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>"Try&nbsp;#{a&nbsp;+&nbsp;1},&nbsp;not&nbsp;#{a&nbsp;-&nbsp;1}"</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>Try&nbsp;124,&nbsp;not&nbsp;122</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Strings can continue across multiple input lines, in which case they
+will contain newline characters. It is also possible to use <em>here
+  documents</em> to express long string literals. Whenever Ruby parses the sequence
+&lt;&lt;<em>identifier</em> or &lt;&lt;<em>quoted string</em>, it
+replaces it with a string literal built from successive logical input
+lines.
+It stops building the string when it finds a line that starts
+with the identifier or the <em>quoted string</em>.  You can put a minus
+sign immediately after the &lt;&lt; characters, in which case the
+terminator can be indented from the left margin.  If a quoted
+string was used to specify the terminator, its quoting rules will be
+applied to the here document; otherwise, double-quoting rules apply.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+a&nbsp;=&nbsp;123
+print&nbsp;&lt;&lt;HERE
+Double&nbsp;quoted&nbsp;\
+here&nbsp;document.
+Sum&nbsp;=&nbsp;#{a&nbsp;+&nbsp;1}
+HERE
+<P></P>
+print&nbsp;&lt;&lt;-'THERE'
+&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;is&nbsp;single&nbsp;quoted.
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;above&nbsp;used&nbsp;#{a&nbsp;+&nbsp;1}
+&nbsp;&nbsp;&nbsp;&nbsp;THERE
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+Double&nbsp;quoted&nbsp;here&nbsp;document.
+Sum&nbsp;=&nbsp;124
+&nbsp;&nbsp;&nbsp;&nbsp;This&nbsp;is&nbsp;single&nbsp;quoted.
+&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;above&nbsp;used&nbsp;#{a&nbsp;+&nbsp;1}
+</pre></td></tr></table>
+
+<P></P>
+Adjacent single- and double-quoted strings in the input are
+concatenated to form a single <code>String</code> object.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>'Con'&nbsp;"cat"&nbsp;'en'&nbsp;"ate"</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"Concatenate"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Strings are stored as sequences of 8-bit bytes,<em>[For use
+  in Japan, the <code>jcode</code> library supports a set of operations of
+  strings written with EUC, SJIS, or UTF-8
+  encoding.  
+  The underlying string, however, is still accessed as a
+  series of bytes.]</em> and each byte may contain any of the 256 8-bit
+values, including null and newline.
+The substitution mechanisms in
+Table 18.2 on page 205 allow nonprinting characters to be
+inserted conveniently and portably.
+<P></P>
+Every time a string literal is used in an assignment or as a
+parameter, a new <code>String</code> object is created. 
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+for&nbsp;i&nbsp;in&nbsp;1..3
+&nbsp;&nbsp;print&nbsp;'hello'.id,&nbsp;"&nbsp;"
+end
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+537685230&nbsp;537685200&nbsp;537685170
+</pre></td></tr></table>
+
+<P></P>
+The documentation for class <code>String</code> starts on page 368.
+<h3>Ranges</h3>
+<P></P>
+Outside the context of a conditional expression, 
+<em>expr</em><code>..</code><em>expr</em> and <em>expr</em><code>...</code><em>expr</em>
+construct <code>Range</code> objects.
+The two-dot form is an inclusive range;
+the one with three dots is a range that excludes its last element.
+See the description of class <code>Range</code> on page 364 for
+details. Also see the description of conditional expressions
+on page 224 for other uses of ranges.
+<h3>Arrays</h3>
+<P></P>
+Literals of class <code>Array</code> are created by placing a comma-separated
+series of object references between square brackets. A trailing comma
+is ignored.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+arr&nbsp;=&nbsp;[&nbsp;fred,&nbsp;10,&nbsp;3.14,&nbsp;"This&nbsp;is&nbsp;a&nbsp;string",&nbsp;barney("pebbles"),&nbsp;]
+</pre></td></tr></table>
+
+<P></P>
+Arrays of strings can be constructed using a shortcut notation,
+<code>%w</code>,
+which extracts space-separated tokens into successive
+elements of the array. A space can be escaped with a backslash.
+This is a form of general delimited input,
+described on pages 202--203.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>arr&nbsp;=&nbsp;%w(&nbsp;fred&nbsp;wilma&nbsp;barney&nbsp;betty&nbsp;great\&nbsp;gazoo&nbsp;)</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>arr</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["fred",&nbsp;"wilma",&nbsp;"barney",&nbsp;"betty",&nbsp;"great&nbsp;gazoo"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<h3>Hashes</h3>
+<P></P>
+A literal Ruby <code>Hash</code> is created by placing a list of key/value
+pairs between braces, with either a comma or the sequence <code>=></code>
+between the key and the value. A trailing comma is ignored.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+colors&nbsp;=&nbsp;{&nbsp;"red"&nbsp;&nbsp;&nbsp;=>&nbsp;0xf00,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"green"&nbsp;=>&nbsp;0x0f0,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"blue"&nbsp;&nbsp;=>&nbsp;0x00f
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre></td></tr></table>
+
+<P></P>
+There is no requirement for the keys and/or values in a particular
+hash to have the same type.
+<h3>Requirements for a Hash Key</h3>
+<P></P>
+The only restriction for a hash key is that it must respond to the
+message <code>hash</code> with a hash value, and the hash value for a
+given key must not change.
+This means that certain classes (such as
+<code>Array</code> and <code>Hash</code>, as of this writing) can't conveniently be used
+as keys, because their hash values can change based on their contents.
+<P></P>
+If you keep an external reference to an object that is used as a key,
+and use that reference to alter the object and change its hash value,
+the hash lookup based on that key may not work.
+<P></P>
+Because strings are the most frequently used keys, and because string
+contents are often changed, Ruby treats string keys specially. If you
+use a <code>String</code> object as a hash key, the hash will duplicate the
+string internally and will use that copy as its key. Any changes
+subsequently made to the original string will not affect the hash.
+<P></P>
+If you write your own classes and use instances of them as hash keys, you
+need to make sure that either (a) the hashes of the key objects
+don't change once the objects have been created or (b) you remember
+to call the <a href="ref_c_hash.html#rehash"><code>Hash#rehash</code></a> method to reindex the hash whenever a
+key hash <em>is</em> changed.
+<h3>Symbols</h3>
+<P></P>
+A Ruby symbol is the internal representation of a name. You construct
+the symbol for a name by preceding the name with a colon. A particular 
+name will always generate the same symbol, regardless of how that name 
+is used within the program.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+:Object
+:myVariable
+</pre></td></tr></table>
+
+<P></P>
+Other languages call this process ``interning,'' and call symbols
+``atoms.''
+<h3>Regular Expressions</h3>
+<P></P>
+Regular expression literals are objects of type <code>Regexp</code>. They can
+be created by explicitly calling the <a href="ref_c_regexp.html#new"><code>Regexp::new</code></a> constructor, or
+by using the literal forms, /<em>pattern</em>/ and
+<code>%r{</code><em>pattern</em><code>}</code>. The <code>%r</code> construct is
+a form of general delimited input (described
+on pages 202--203).
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+/pattern/
+/pattern/<i>options</i>
+%r{pattern}
+%r{pattern}<i>options</i>
+Regexp.new( 'pattern' <i>[</i>, <i>options</i><i>]</i> )
+</pre></td></tr></table>
+<h3>Regular Expression Options</h3>
+<P></P>
+A regular expression may include one or more options that modify the
+way the pattern matches strings. If you're using literals to create
+the <code>Regexp</code> object, then the options comprise one or more characters placed
+immediately after the terminator. If you're using <code>Regexp.new</code>, the 
+options are constants used as the second parameter of the constructor.
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3">
+<tr>
+  <td valign="top"><code>i</code></td>
+  <td valign="top"><em>Case Insensitive</em>. The pattern match will ignore    
+  the case of letters in the pattern and string. Matches are also
+  case-insensitive if the global variable <code>$=</code> is set.</td>
+</tr>
+<tr>
+  <td valign="top"><code>o</code></td>
+  <td valign="top"><em>Substitute Once</em>. Any <code>#{...}</code> substitutions
+  in    
+  a particular regular expression literal will be performed just once,
+  the first time it is evaluated. Otherwise, the substitutions
+  will be performed every time the literal generates a <code>Regexp</code> object.</td>
+</tr>
+<tr>
+  <td valign="top"><code>m</code></td>
+  <td valign="top"><em>Multiline Mode</em>. Normally, ``.'' matches any    
+  character except a newline. With the <code>/m</code> option, ``.'' matches
+  any character.</td>
+</tr>
+<tr>
+  <td valign="top"><code>x</code></td>
+  <td valign="top"><em>Extended Mode</em>.
+  Complex regular expressions can be difficult to read. The `x'
+  option    
+  allows you to insert spaces, newlines, and comments in the pattern to
+  make it more readable.</td>
+</tr>
+</table>
+<P></P>
+<h3>Regular Expression Patterns</h3>
+<P></P>
+<dl>
+<dt><b><em>regular characters</em></b></dt><dd>    All characters except ., |, (, ), [, \, ^, {, +, $, *, and ? match
+    themselves. To match one of these characters, precede it with a
+    backslash.
+<P></P>
+</dd><dt><b><code>^</code></b></dt><dd>  Matches the beginning of a line.
+<P></P>
+</dd><dt><b><code>$</code></b></dt><dd>  Matches the end of a line.
+<P></P>
+</dd><dt><b><code>\A</code></b></dt><dd>  Matches the beginning of the string.
+<P></P>
+</dd><dt><b><code>\z</code></b></dt><dd>  Matches the end of the string.
+<P></P>
+</dd><dt><b><code>\Z</code></b></dt><dd>  Matches the end of the string <em>unless</em> the string
+  ends with a ``\n'', in
+  which case it matches just before the ``\n''.
+<P></P>
+</dd><dt><b><code>\b</code>, <code>\B</code></b></dt><dd>    Match word boundaries and nonword boundaries respectively.
+<P></P>
+</dd><dt><b><code>[</code><em>characters</em><code>]</code></b></dt><dd>  A character class  matches any single character between the
+  brackets.  The characters <code>|, (, ), [, ^, $, *,</code> and <code>?</code>,
+  which have special meanings elsewhere in patterns, lose their
+  special significance between brackets.  The sequences
+  <code>\</code><em>nnn</em>, <code>\x</code><em>nn</em>, <code>\c</code><em>x</em>, <code>\C-</code><em>x</em>, <code>\M-</code><em>x</em>, and <code>\M-\C-</code><em>x</em>
+  have the meanings shown in Table 18.2 on page 205.  The
+  sequences <code>\d</code>, <code>\D</code>, <code>\s</code>, <code>\S</code>, <code>\w</code>, and <code>\W</code> are abbreviations for groups of characters, as
+  shown in Table 5.1 on page 62.  The sequence c<sub>1</sub>-c<sub>2</sub>
+  represents all the characters between c<sub>1</sub> and c<sub>2</sub>, inclusive.
+  Literal <code>]</code> or <code>-</code> characters must appear immediately after
+  the opening bracket.  An uparrow (^) immediately following the
+  opening bracket negates the sense of the match---the pattern matches
+  any character that isn't in the character class.
+<P></P>
+</dd><dt><b><code>\d</code>, <code>\s</code>, <code>\w</code></b></dt><dd>      Are abbreviations for character classes that match digits, whitespace,
+  and word characters, respectively. \D, \S, and \W match
+  characters that are not digits, whitespace, or word
+  characters. These abbreviations are summarized in Table
+  5.1 on page 62.
+<P></P>
+</dd><dt><b><code>.</code> (period)</b></dt><dd>  Appearing outside brackets, matches any character except a newline.
+  (With the <code>/m</code> option, it matches newline, too).
+<P></P>
+</dd><dt><b><em>re</em><code>*</code></b></dt><dd>  Matches zero or more occurrences of <em>re</em>.
+<P></P>
+</dd><dt><b><em>re</em><code>+</code></b></dt><dd>  Matches one or more occurrences of <em>re</em>.
+<P></P>
+</dd><dt><b><em>re</em><code>{m,n}</code></b></dt><dd>  Matches at least ``m'' and at most ``n'' occurrences of <em>re</em>.
+<P></P>
+</dd><dt><b><em>re</em><code>?</code></b></dt><dd>  Matches zero or one occurrence of <em>re</em>.
+  The <code>*</code>, <code>+</code>, and <code>{m,n}</code> modifiers are greedy by
+  default. Append a question mark to make them minimal.
+<P></P>
+</dd><dt><b><em>re1</em><code>|</code><em>re2</em></b></dt><dd>  Matches either <em>re1</em> or <em>re2</em>.  <code>|</code> has a low
+  precedence.
+<P></P>
+</dd><dt><b><code>(...)</code></b></dt><dd>  Parentheses are used to group regular expressions. For example, the
+  pattern <code>/abc+/</code> matches a string containing an ``a,'' a ``b,''
+  and one or more ``c''s. <code>/(abc)+/</code> matches one or more sequences
+  of ``abc''.  Parentheses are also used to collect the results of
+  pattern matching. For each opening parenthesis, Ruby stores the
+  result of the partial match between it and the corresponding closing
+  parenthesis as successive groups. Within the same pattern,
+  <code>\1</code> refers to the match of the first group, <code>\2</code> the
+  second group, and so on.  Outside the pattern, the special variables
+  <code>$1</code>, <code>$2</code>, and so on, serve the same purpose.
+</dd></dl>
+<h3>Substitutions</h3>
+<P></P>
+<dl>
+<dt><b><code>#{...}</code></b></dt><dd>  Performs an expression substitution, as with strings. By default, the
+  substitution is performed each time a regular expression literal is
+  evaluated. With the <code>/o</code> option, it is performed just the first
+  time.
+<P></P>
+</dd><dt><b><code>\0, \1, \2, ... \9, \&amp;, \`, \', \+</code></b></dt><dd>    Substitutes the value matched by the <em>n</em>th grouped
+  subexpression, or by the entire match, pre- or postmatch, or the
+  highest group.
+</dd></dl>
+<h3>Extensions</h3>
+<P></P>
+In common with Perl and Python, Ruby regular expressions offer some
+extensions over traditional Unix regular expressions. All the extensions are
+entered between the characters <code>(?</code>&nbsp;and&nbsp;<code>)</code>. The parentheses
+that bracket these extensions are groups, but they do not generate
+backreferences: they do not set the values of <code>\1</code> and <code>$1</code>
+etc.
+<P></P>
+<dl>
+<dt><b><code>(?# <em>comment</em>)</code></b></dt><dd>  Inserts a comment into the pattern. The content is ignored during
+  pattern matching.
+<P></P>
+</dd><dt><b><code>(?:<em>re</em>)</code></b></dt><dd>
+  Makes <em>re</em> into a group without generating backreferences. This 
+  is often useful when you need to group a set of constructs but don't 
+  want the group to set the value of <code>$1</code> or whatever. In the
+  example that follows, both patterns match a date with either colons
+  or spaces between the month, day, and year. The first form stores
+  the separator character in <code>$2</code> and <code>$4</code>, while the second
+  pattern doesn't store the separator in an external variable.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>date&nbsp;=&nbsp;"12/25/01"</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>date&nbsp;=~&nbsp;%r{(\d+)(/|:)(\d+)(/|:)(\d+)}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>[$1,$2,$3,$4,$5]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["12",&nbsp;"/",&nbsp;"25",&nbsp;"/",&nbsp;"01"]</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>date&nbsp;=~&nbsp;%r{(\d+)(?:/|:)(\d+)(?:/|:)(\d+)}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>[$1,$2,$3]</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["12",&nbsp;"25",&nbsp;"01"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+</dd><dt><b><code>(?=<em>re</em>)</code></b></dt><dd>
+  Matches <em>re</em> at this point, but does not consume it (also known 
+  charmingly as ``zero-width positive lookahead''). This lets
+  you look forward for the context of a match without affecting
+  <code>$&amp;</code>. In this example, the <code>scan</code> method matches words
+  followed by a comma, but the commas are not included in the result.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>str&nbsp;=&nbsp;"red,&nbsp;white,&nbsp;and&nbsp;blue"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>str.scan(/[a-z]+(?=,)/)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>["red",&nbsp;"white"]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+</dd><dt><b><code>(?!<em>re</em>)</code></b></dt><dd>
+  Matches if <em>re</em> does not match at this point. Does not
+  consume the match (zero-width negative lookahead). For example,
+  <code>/hot(?!dog)(\w+)/</code> matches any word that contains the
+  letters ``hot'' that aren't followed by ``dog'', returning the end
+  of the word in <code>$1</code>.
+<P></P>
+</dd><dt><b><code>(?><em>re</em>)</code></b></dt><dd>
+  Nests an independent regular expression within the first regular
+  expression.  
+  This expression is anchored at the current match position. If it
+  consumes characters, these will no longer be available to the
+  higher-level regular expression. This construct therefore inhibits
+  backtracking, which can be a performance enhancement. For example,
+  the pattern <code>/a.*b.*a/</code> takes exponential time when matched
+  against a string containing an ``a'' followed by a number of ``b''s, 
+  but with no trailing ``a.'' However, this can be avoided by using a
+  nested regular expression <code>/a(?>.*b).*a/</code>. In this form, the
+  nested expression consumes all the the input string up to the last
+  possible ``b'' character. When the check for a trailing ``a'' then
+  fails, there is no need to backtrack, and the pattern match fails promptly.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+require&nbsp;"benchmark"
+include&nbsp;Benchmark
+str&nbsp;=&nbsp;"a"&nbsp;+&nbsp;("b"&nbsp;*&nbsp;5000)
+bm(8)&nbsp;do&nbsp;|test|
+&nbsp;&nbsp;test.report("Normal:")&nbsp;{&nbsp;str&nbsp;=~&nbsp;/a.*b.*a/&nbsp;}
+&nbsp;&nbsp;test.report("Nested:")&nbsp;{&nbsp;str&nbsp;=~&nbsp;/a(?>.*b).*a/&nbsp;}
+end
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;system&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;real
+Normal:&nbsp;&nbsp;&nbsp;2.620000&nbsp;&nbsp;&nbsp;0.000000&nbsp;&nbsp;&nbsp;2.620000&nbsp;(&nbsp;&nbsp;2.651591)
+Nested:&nbsp;&nbsp;&nbsp;0.000000&nbsp;&nbsp;&nbsp;0.000000&nbsp;&nbsp;&nbsp;0.000000&nbsp;(&nbsp;&nbsp;0.000883)
+</pre></td></tr></table>
+
+<P></P>
+</dd><dt><b><code>(?imx)</code></b></dt><dd>
+    Turns on the corresponding ``i,'' ``m,'' or ``x'' option. If used
+  inside a group, the effect is limited to that group.
+<P></P>
+</dd><dt><b><code>(?-imx)</code></b></dt><dd>
+  Turns off the ``i,'' ``m,'' or ``x'' option.
+<P></P>
+</dd><dt><b><code>(?imx:<em>re</em>)</code></b></dt><dd>
+  Turns on the ``i,'' ``m,'' or ``x'' option for <em>re</em>.
+<P></P>
+</dd><dt><b><code>(?-imx:<em>re</em>)</code></b></dt><dd>
+  Turns off the ``i,'' ``m,'' or ``x'' option for <em>re</em>.
+<P></P>
+</dd></dl>
+<h2>Names</h2>
+<P></P>
+Ruby names are used to refer to constants, variables, methods,
+classes, and modules. The first character of a name helps Ruby to
+distinguish its intended use.  Certain names, listed in Table
+18.3 on page 212, are reserved words and should not be used as
+variable, method, class, or module names.
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0"><tr><td>
+  <b>Reserved words</b>  
+    <table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3">
+<P></P>
+    <tr><td colspan="9" bgcolor="#ff9999" height="3"><img src="dot.gif" width="1" height="1"></td></tr><tr>
+  <td valign="top">__FILE__</td>
+  <td valign="top">and</td>
+  <td valign="top">def</td>
+  <td valign="top">end</td>
+  <td valign="top">in</td>
+  <td valign="top">or</td>
+  <td valign="top">self</td>
+  <td valign="top">unless</td>
+</tr>
+<tr>
+  <td valign="top">__LINE__</td>
+  <td valign="top">begin</td>
+  <td valign="top">defined?</td>
+  <td valign="top">ensure</td>
+  <td valign="top">module</td>
+  <td valign="top">redo</td>
+  <td valign="top">super</td>
+  <td valign="top">until</td>
+</tr>
+<tr>
+  <td valign="top">BEGIN</td>
+  <td valign="top">break</td>
+  <td valign="top">do</td>
+  <td valign="top">false</td>
+  <td valign="top">next</td>
+  <td valign="top">rescue</td>
+  <td valign="top">then</td>
+  <td valign="top">when</td>
+</tr>
+<tr>
+  <td valign="top">END</td>
+  <td valign="top">case</td>
+  <td valign="top">else</td>
+  <td valign="top">for</td>
+  <td valign="top">nil</td>
+  <td valign="top">retry</td>
+  <td valign="top">true</td>
+  <td valign="top">while</td>
+</tr>
+<tr>
+  <td valign="top">alias</td>
+  <td valign="top">class</td>
+  <td valign="top">elsif</td>
+  <td valign="top">if</td>
+  <td valign="top">not</td>
+  <td valign="top">return</td>
+  <td valign="top">undef</td>
+  <td valign="top">yield</td>
+</tr>
+<tr><td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td></tr></table>
+<P></P>
+</td></tr></table>
+<P></P>
+In these descriptions, <em>lowercase letter</em> means the characters
+``a'' though ``z'', as well as ``_'', the underscore. <em>Uppercase
+  letter</em> means ``A'' though ``Z,'' and <em>digit</em> means ``0''
+through ``9.'' <em>Name characters</em> means any combination of upper-
+and lowercase letters and digits.
+<P></P>
+A local variable name consists of a lowercase letter followed by name
+characters.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+fred&nbsp;&nbsp;anObject&nbsp;&nbsp;_x&nbsp;&nbsp;three_two_one
+</pre></td></tr></table>
+
+<P></P>
+An instance variable name starts with an ``at'' sign (``<code>@</code>'') followed by an
+upper- or lowercase letter, optionally followed by name 
+characters.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+@name&nbsp;&nbsp;@_&nbsp;&nbsp;@Size
+</pre></td></tr></table>
+
+<P></P>
+A class variable name starts with two ``at'' signs (``<code>@@</code>'')
+followed by an upper- or lowercase letter, optionally followed by name 
+characters.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+@@name&nbsp;&nbsp;@@_&nbsp;&nbsp;@@Size
+</pre></td></tr></table>
+
+<P></P>
+A constant name starts with an uppercase letter followed by name characters.
+Class names and module names are constants, and follow the constant
+naming conventions.  By convention, constant variables are normally
+spelled using uppercase letters and underscores throughout.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+module&nbsp;Math
+&nbsp;&nbsp;PI&nbsp;=&nbsp;3.1415926
+end
+class&nbsp;BigBlob
+</pre></td></tr></table>
+
+<P></P>
+Global variables, and some special system variables, start with a
+dollar sign (``<code>$</code>'') followed by name characters. In addition,
+there is a set of two-character variable names in which the second
+character is a punctuation character. These predefined variables are
+listed starting on page 216. Finally, a global variable name
+can be formed using ``<code>$-</code>'' followed by <em>any</em> single character.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+$params&nbsp;&nbsp;$PROGRAM&nbsp;&nbsp;$!&nbsp;&nbsp;$_&nbsp;&nbsp;$-a&nbsp;&nbsp;$-.
+</pre></td></tr></table>
+
+<P></P>
+Method names are described in the section beginning on page 227.
+<h3>Variable/Method Ambiguity</h3>
+<P></P>
+When Ruby sees a name such as ``a'' in an expression, it needs to
+determine if it is a local variable reference or a call to a method
+with no parameters.
+To decide which is the case, Ruby uses a
+heuristic.  As Ruby reads a source file, it keeps track of symbols
+that have been assigned to. It assumes that these symbols are variables. When it
+subsequently comes across a symbol that might be either a variable or
+a method call, it checks to see if it has seen a prior assignment to
+that symbol. If so, it treats the symbol as a variable; otherwise it
+treats it as a method call.  As a somewhat pathological case of this,
+consider the following code fragment, submitted by Clemens Hintze.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+def&nbsp;a
+&nbsp;&nbsp;print&nbsp;"Function&nbsp;'a'&nbsp;called\n"
+&nbsp;&nbsp;99
+end
+<P></P>
+for&nbsp;i&nbsp;in&nbsp;1..2
+&nbsp;&nbsp;if&nbsp;i&nbsp;==&nbsp;2
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"a=",&nbsp;a,&nbsp;"\n"
+&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;a&nbsp;=&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;print&nbsp;"a=",&nbsp;a,&nbsp;"\n"
+&nbsp;&nbsp;end
+end
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+a=1
+Function&nbsp;'a'&nbsp;called
+a=99
+</pre></td></tr></table>
+
+<P></P>
+During the parse, Ruby sees the use of ``a'' in the first print
+statement and, as it hasn't yet seen any assignment to ``a,'' assumes
+that it is a method call. By the time it gets to the second print
+statement, though, it <em>has</em> seen an assignment, and so treats
+``a'' as a variable.
+<P></P>
+Note that the assignment does not have to be executed---Ruby just has
+to have seen it. This program does not raise an error.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+a&nbsp;=&nbsp;1&nbsp;if&nbsp;false;&nbsp;a
+</pre></td></tr></table>
+
+<h2>Variables and Constants</h2>
+<P></P>
+Ruby variables and constants hold references to objects.
+Variables
+themselves do not have an intrinsic type.  Instead, the type of a
+variable is defined solely by the messages to which the object
+referenced by the
+variable responds.<em>[When we say that a variable
+  is not typed, we mean that any given variable can at different times
+  hold references to objects of many different types.]</em>
+<P></P>
+A Ruby <em>constant</em> is also a reference to an object.
+Constants are 
+created when they are first assigned to (normally in a class or module 
+definition).  Ruby, unlike less flexible languages, lets you alter the value
+of a constant, although this will generate a warning message.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+MY_CONST&nbsp;=&nbsp;1
+MY_CONST&nbsp;=&nbsp;2&nbsp;&nbsp;&nbsp;#&nbsp;generates&nbsp;a&nbsp;warning
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+prog.rb:2:&nbsp;warning:&nbsp;already&nbsp;initialized&nbsp;constant&nbsp;MY_CONST
+</pre></td></tr></table>
+
+<P></P>
+Note that although constants should not be changed, you can alter the
+internal states of the objects they reference.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>MY_CONST&nbsp;=&nbsp;"Tim"</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>MY_CONST[0]&nbsp;=&nbsp;"J"&nbsp;&nbsp;&nbsp;#&nbsp;alter&nbsp;string&nbsp;referenced&nbsp;by&nbsp;constant</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>MY_CONST</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"Jim"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Assignment potentially <em>aliases</em> objects,
+giving the same object different names.
+<h3>Scope of Constants and Variables</h3>
+<P></P>
+Constants defined within a class or module may be accessed unadorned
+anywhere within the class or module.
+Outside the class or module, they
+may be accessed using the scope operator, ``<code>::</code>'' prefixed by an
+expression that returns the appropriate class or module object.
+Constants defined outside any class or module may be accessed
+unadorned or by using the scope operator ``<code>::</code>'' with no prefix. Constants may not
+be defined in methods.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>OUTER_CONST&nbsp;=&nbsp;99</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>class&nbsp;Const</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;def&nbsp;getConst</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;&nbsp;&nbsp;CONST</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;CONST&nbsp;=&nbsp;OUTER_CONST&nbsp;+&nbsp;1</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Const.new.getConst</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>100</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Const::CONST</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>100</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>::OUTER_CONST</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>99</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Global variables are available throughout a program. Every reference
+to a particular global name returns the same object.  Referencing an
+uninitialized global variable returns <code>nil</code>.
+<P></P>
+Class variables are available throughout a class or module body. Class
+variables must be initialized before use.  A class variable is shared
+among all instances of a class and is available within the class
+itself.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+class&nbsp;Song
+&nbsp;&nbsp;@@count&nbsp;=&nbsp;0
+&nbsp;&nbsp;def&nbsp;initialize
+&nbsp;&nbsp;&nbsp;&nbsp;@@count&nbsp;+=&nbsp;1
+&nbsp;&nbsp;end
+&nbsp;&nbsp;def&nbsp;Song.getCount
+&nbsp;&nbsp;&nbsp;&nbsp;@@count
+&nbsp;&nbsp;end
+end
+</pre></td></tr></table>
+
+<P></P>
+Class variables belong to the innermost enclosing class or
+module. Class variables used at the top level are defined in
+<code>Object</code>, and behave like global variables. Class variables defined
+within singleton methods belong to the receiver if the receiver is a
+class or a module; otherwise, they belong to the class of the receiver.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+class&nbsp;Holder
+&nbsp;&nbsp;@@var&nbsp;=&nbsp;99
+&nbsp;&nbsp;def&nbsp;Holder.var=(val)
+&nbsp;&nbsp;&nbsp;&nbsp;@@var&nbsp;=&nbsp;val
+&nbsp;&nbsp;end
+end
+<P></P>
+a&nbsp;=&nbsp;Holder.new
+def&nbsp;a.var
+&nbsp;&nbsp;@@var
+end
+</pre></td></tr></table>
+
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>Holder.var&nbsp;=&nbsp;123</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a.var</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>123</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+Instance variables are available within instance methods throughout a
+class body. Referencing an uninitialized instance variable returns
+<code>nil</code>. Each instance of a class has a unique set of instance
+variables. Instance variables are not available to class methods.
+<P></P>
+Local variables are unique in that their scopes are statically determined
+but their existence is established dynamically.
+<P></P>
+A local variable is created dynamically when it is first assigned a value
+during program execution. However, the scope of a local variable is
+statically determined to be: the immediately enclosing block, method
+definition, class definition, module definition, or top-level
+program. Referencing a local variable that is in scope but that has
+not yet been created generates a <code>NameError</code> exception.
+<P></P>
+Local variables with the same name are different variables if they
+appear in disjoint scopes.
+<P></P>
+Method parameters are considered to be variables local to that method.
+<P></P>
+Block parameters are assigned values when the block is invoked.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+a&nbsp;=&nbsp;[&nbsp;1,&nbsp;2,&nbsp;3&nbsp;]
+a.each&nbsp;{&nbsp;|i|&nbsp;&nbsp;puts&nbsp;i&nbsp;&nbsp;}&nbsp;&nbsp;#&nbsp;i&nbsp;local&nbsp;to&nbsp;block
+a.each&nbsp;{&nbsp;|$i|&nbsp;puts&nbsp;$i&nbsp;}&nbsp;&nbsp;#&nbsp;assigns&nbsp;to&nbsp;global&nbsp;$i
+a.each&nbsp;{&nbsp;|@i|&nbsp;puts&nbsp;@i&nbsp;}&nbsp;&nbsp;#&nbsp;assigns&nbsp;to&nbsp;instance&nbsp;variable&nbsp;@i
+a.each&nbsp;{&nbsp;|I|&nbsp;&nbsp;puts&nbsp;I&nbsp;&nbsp;}&nbsp;&nbsp;#&nbsp;generates&nbsp;warning&nbsp;assigning&nbsp;to&nbsp;constant
+a.each&nbsp;{&nbsp;|b.meth|&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;invokes&nbsp;meth=&nbsp;in&nbsp;object&nbsp;b
+sum&nbsp;=&nbsp;0
+var&nbsp;=&nbsp;nil
+a.each&nbsp;{&nbsp;|var|&nbsp;sum&nbsp;+=&nbsp;var&nbsp;}&nbsp;&nbsp;#&nbsp;uses&nbsp;sum&nbsp;and&nbsp;var&nbsp;from&nbsp;enclosing&nbsp;scope
+</pre></td></tr></table>
+
+<P></P>
+If a local variable (including a block parameter) is first assigned in
+a block, it is local to the block. If instead a variable of the same
+name is already established at the time the block executes, the block
+will inherit that variable.
+<P></P>
+A block takes on the set of local variables in existence at the time
+that it is created. This forms part of its binding.
+Note that
+although the binding of the variables is fixed at this point, the
+block will have access to the <em>current</em> values of these variables
+when it executes. The binding preserves these variables even if the
+original enclosing scope is destroyed.
+<P></P>
+The bodies of <code>while</code>, <code>until</code>, and <code>for</code> loops are part of
+the scope that contains them; previously existing locals can be used
+in the loop, and any new locals created will be available outside the
+bodies afterward.
+<h3>Predefined Variables</h3>  Predefined Variables
+<P></P>
+The following variables are predefined in the Ruby interpreter. In
+these descriptions, the notation {<span class="sans"></span>} indicates that the variables
+are read-only; an error will be raised if a program attempts to modify
+a read-only variable.
+After all, you probably don't want to change the
+meaning of <code>true</code> halfway through your program (except perhaps
+if you're a politician).  Entries marked {<span class="sans"></span>} are thread local.
+<P></P>
+Many global variables look something like Snoopy swearing: <code>$_</code>,
+<code>$!</code>, <code>$&amp;</code>, and so on. This is for ``historical'' reasons,
+as most of these variable names come from Perl. If you find memorizing
+all this punctuation difficult, you might want to have a look at the
+library file called ``English,''
+documented
+on page 449, which gives the commonly used global variables
+more descriptive names.
+<P></P>
+In the tables of variables and constants that follow, we show the
+variable name, the type of the referenced object, and a description.
+<h3>Exception Information</h3>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$!</td><td width="60" align="top">Exception</td><td align="top">The exception object passed to <code>raise</code>.  
+  {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$@</td><td width="60" align="top">Array</td><td align="top">The stack backtrace generated by the last
+                    exception. See <a href="ref_m_kernel.html#caller"><code>Kernel#caller</code></a>
+                     on page 417 for details. {<span class="sans"></span>}</td></tr></table>
+<h3>Pattern Matching Variables</h3>
+<P></P>
+These variables (except <code>$=</code>) are set to <code>nil</code> after an
+unsuccessful pattern match.
+<P></P>
+<table border="0"><tr><td width="60" align="top">$&amp;</td><td width="60" align="top">String</td><td align="top">The string matched by the last successful pattern
+                   match. This variable is local to the current
+                   scope. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$+</td><td width="60" align="top">String</td><td align="top">The contents of the highest-numbered group matched
+                   in the last successful pattern match. Thus, in
+                   <code>"cat" =~/(c|a)(t|z)/</code>, <code>$+</code> will be set to 
+                   ``t''.  This variable is local to the current
+                   scope. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$`</td><td width="60" align="top">String</td><td align="top">The string preceding the match in the last
+                   successful pattern match. This variable is local to 
+                   the current scope. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$'</td><td width="60" align="top">String</td><td align="top">The string following the match in the last
+                   successful pattern match. This variable is local to 
+                   the current scope. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$=</td><td width="60" align="top">Object</td><td align="top">If set to any value apart from <code>nil</code> or
+                   <code>false</code>, all pattern matches will be case
+                   insensitive, string comparisons will ignore case,
+                   and string hash values will be case insensitive.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$1 to $9</td><td width="60" align="top">String</td><td align="top">                   The contents of successive groups matched in the
+                   last successful pattern match.  In
+                   <code>"cat" =~/(c|a)(t|z)/</code>, <code>$1</code> will be set to 
+                   ``a'' and <code>$2</code> to ``t''.  This variable is
+                   local to the current scope. {<span class="sans"></span>}</td></tr></table>
+<table border="0"><tr><td width="60" align="top">$~</td><td width="60" align="top">MatchData</td><td align="top">An object that encapsulates the results of a
+                   successful pattern match. The variables <code>$&amp;</code>,
+                   <code>$`</code>, <code>$'</code>, and <code>$1</code> to <code>$9</code> are all
+                   derived from <code>$~</code>. Assigning to <code>$~</code>
+                   changes the values of these derived
+                   variables.  This variable is local to the current
+                   scope. {<span class="sans"></span>}</td></tr></table>
+<h3>Input/Output Variables</h3>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$/</td><td width="60" align="top">String</td><td align="top">The input record separator (newline by
+                   default). This is the value that routines such as
+                   <a href="ref_m_kernel.html#gets"><code>Kernel#gets</code></a> use to determine record
+                   boundaries. If set to <code>nil</code>, <code>gets</code> will read 
+                   the entire file.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$-0</td><td width="60" align="top">String</td><td align="top">Synonym for <code>$/</code>.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$\</td><td width="60" align="top">String</td><td align="top">The string appended to the output of every call to methods such
+                   as <a href="ref_m_kernel.html#print"><code>Kernel#print</code></a> and <a href="ref_c_io.html#write"><code>IO#write</code></a>. The
+                   default value is <code>nil</code>.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$,</td><td width="60" align="top">String</td><td align="top">The separator string output between the parameters to
+                   methods such as <a href="ref_m_kernel.html#print"><code>Kernel#print</code></a> and
+                   <a href="ref_c_array.html#join"><code>Array#join</code></a>. Defaults to <code>nil</code>, which adds no text.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$.</td><td width="60" align="top">Fixnum</td><td align="top">The number of the last line read from the current
+                   input file.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$;</td><td width="60" align="top">String</td><td align="top">The default separator pattern used by <a href="ref_c_string.html#split"><code>String#split</code></a>.
+                   May be set from the command line using the
+                   <code>-F</code>                   
+                   flag.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$&lt;</td><td width="60" align="top">Object</td><td align="top">An object that provides access to the concatenation
+                   of the contents of all the files
+                   given as command-line arguments, or <code>$stdin</code>
+                   (in the case where there are no
+                   arguments). <code>$&lt;</code> supports methods similar to a 
+                   <code>File</code> object:
+                   <code>binmode</code>, <code>close</code>,
+                   <code>closed?</code>, <code>each</code>,
+                   <code>each_byte</code>, <code>each_line</code>,
+                   <code>eof</code>, <code>eof?</code>, <code>file</code>,
+                   <code>filename</code>, <code>fileno</code>,
+                   <code>getc</code>, <code>gets</code>, <code>lineno</code>,
+                   <code>lineno=</code>, <code>pos</code>, <code>pos=</code>,
+                   <code>read</code>, <code>readchar</code>,
+                   <code>readline</code>, <code>readlines</code>,
+                   <code>rewind</code>, <code>seek</code>, <code>skip</code>,
+                   <code>tell</code>, <code>to_a</code>, <code>to_i</code>,
+                   <code>to_io</code>, <code>to_s</code>, along with the
+                   methods in <code>Enumerable</code>. The method <code>file</code> 
+                   returns a <code>File</code> object for the file currently
+                   being read. This may change as <code>$&lt;</code> reads
+                   through the files on the command line. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$></td><td width="60" align="top">IO</td><td align="top">The destination of output for <a href="ref_m_kernel.html#print"><code>Kernel#print</code></a>
+                   and <a href="ref_m_kernel.html#printf"><code>Kernel#printf</code></a>. The default value is
+                   <code>$stdout</code>.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$_</td><td width="60" align="top">String</td><td align="top">The last line read by <a href="ref_m_kernel.html#gets"><code>Kernel#gets</code></a> or
+                   <a href="ref_m_kernel.html#readline"><code>Kernel#readline</code></a>. Many string-related
+                   functions in the <code>Kernel</code> module operate on <code>$_</code>
+                   by default. The variable is local to the current
+                   scope. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$defout</td><td width="60" align="top">IO</td><td align="top">Synonym for <code>$></code>.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$-F</td><td width="60" align="top">String</td><td align="top">Synonym for <code>$;</code>.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$stderr</td><td width="60" align="top">IO</td><td align="top">The current standard error output.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$stdin</td><td width="60" align="top">IO</td><td align="top">The current standard input.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$stdout</td><td width="60" align="top">IO</td><td align="top">The current standard output.</td></tr></table>
+<h3>Execution Environment Variables</h3>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$0</td><td width="60" align="top">String</td><td align="top">The name of the top-level Ruby program being
+                   executed.                   
+                   Typically this will be the program's
+                   filename. On some operating systems, assigning to
+                   this variable will change the name of the process
+                   reported (for example) by the <code>ps(1)</code> command.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$*</td><td width="60" align="top">Array</td><td align="top">An array of strings containing the command-line
+                   options from the invocation of the program. Options
+                   used by the Ruby interpreter will have been
+                   removed. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$"</td><td width="60" align="top">Array</td><td align="top">An array containing the filenames of modules
+                   loaded by
+                   <code>require</code>.
+                   {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$$</td><td width="60" align="top">Fixnum</td><td align="top">The process number of the program being
+                   executed. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$?</td><td width="60" align="top">Fixnum</td><td align="top">The exit status of the last child process to
+                   terminate. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$:</td><td width="60" align="top">Array</td><td align="top">An array of strings, where each string specifies a
+                   directory to be searched for Ruby scripts and
+                   binary extensions used by the <code>load</code> and
+                   <code>require</code> methods.                                      
+                   The initial value is the 
+                   value of the arguments passed via the <code>-I</code>                   
+                   command-line option, followed by an
+                   installation-defined standard library location, followed by the
+                   current directory (``.''). This variable may be set 
+                   from within a program to alter the default search
+                   path; typically, programs use <code>$:&nbsp;&lt;&lt;&nbsp;dir</code> to
+                   append <code>dir</code> to the path. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$-a</td><td width="60" align="top">Object</td><td align="top">True if the <code>-a</code> option is specified on the 
+                   command line. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$-d</td><td width="60" align="top">Object</td><td align="top">Synonym for <code>$DEBUG</code>.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$DEBUG</td><td width="60" align="top">Object</td><td align="top">Set to <code>true</code> if the <code>-d</code> command-line 
+                   option is specified.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">__FILE__</td><td width="60" align="top">String</td><td align="top">The name of the current source file. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$F</td><td width="60" align="top">Array</td><td align="top">The array that receives the split input line if the
+  <code>-a</code> command-line option is used.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$FILENAME</td><td width="60" align="top">String</td><td align="top">The name of the current input file. Equivalent to
+                   <code>$&lt;.filename</code>. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$-i</td><td width="60" align="top">String</td><td align="top">If in-place edit mode is enabled (perhaps using the 
+                   <code>-i</code>                   
+                   command-line option), <code>$-i</code> holds
+                   the extension used when creating the backup
+                   file. If you set a value into <code>$-i</code>, enables
+                   in-place edit mode. See page 138.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$-I</td><td width="60" align="top">Array</td><td align="top">Synonym for <code>$:</code>. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$-K</td><td width="60" align="top">String</td><td align="top">Sets the multibyte coding system for strings and
+                   regular expressions. Equivalent to the
+                   <code>-K</code>                   
+                   command-line option. See page
+                   139.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$-l</td><td width="60" align="top">Object</td><td align="top">Set to <code>true</code> if the <code>-l</code> option
+                   (which enables line-end processing) is present on
+                   the command line. See page
+                   139. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">__LINE__</td><td width="60" align="top">String</td><td align="top">The current line number in the source
+                          file. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$LOAD_PATH</td><td width="60" align="top">Array</td><td align="top">A synonym for <code>$:</code>. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$-p</td><td width="60" align="top">Object</td><td align="top">Set to <code>true</code> if the <code>-p</code> option
+                   (which puts an implicit <code>while&nbsp;gets</code> ...
+                   <code>end</code> loop around your program) is present on
+                   the command line. See page
+                   139. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$SAFE</td><td width="60" align="top">Fixnum</td><td align="top">The current safe level (see page
+                   258). This variable's value may
+                   never be reduced by assignment. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$VERBOSE</td><td width="60" align="top">Object</td><td align="top">                   Set to <code>true</code> if the <code>-v</code>,                   
+                   <code>--version</code>, or
+                   <code>-w</code>  option is
+                   specified on the command line. Setting this option
+                   to <code>true</code> causes the interpreter and some
+                   library routines to report additional
+                   information.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$-v</td><td width="60" align="top">Object</td><td align="top">Synonym for <code>$VERBOSE</code>.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">$-w</td><td width="60" align="top">Object</td><td align="top">Synonym for <code>$VERBOSE</code>.</td></tr></table>
+<h3>Standard Objects</h3>
+<P></P>
+<table border="0"><tr><td width="60" align="top">ARGF</td><td width="60" align="top">Object</td><td align="top">A synonym for <code>$&lt;</code>.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">ARGV</td><td width="60" align="top">Array</td><td align="top">A synonym for <code>$*</code>.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">ENV</td><td width="60" align="top">Object</td><td align="top">A hash-like object containing the program's
+  environment variables. An instance of class <code>Object</code>,
+  <code>ENV</code> implements the full set of <code>Hash</code> methods. Used 
+  to query and set the value of an environment variable, as in
+  <code>ENV["PATH"]</code> and <code>ENV['term']="ansi"</code>.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">false</td><td width="60" align="top">FalseClass</td><td align="top">Singleton instance of class <code>FalseClass</code>. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">nil</td><td width="60" align="top">NilClass</td><td align="top">The singleton instance of class
+  <code>NilClass</code>. The value of uninitialized
+  instance and global variables. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">self</td><td width="60" align="top">Object</td><td align="top">The receiver (object) of the current method. {<span class="sans"></span>}</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">true</td><td width="60" align="top">TrueClass</td><td align="top">Singleton instance of class <code>TrueClass</code>. {<span class="sans"></span>}</td></tr></table>
+<h3>Global Constants</h3>
+<P></P>
+The following constants are defined by the Ruby interpreter.
+<P></P>
+<table border="0"><tr><td width="60" align="top">DATA</td><td width="60" align="top">IO</td><td align="top">If the the main program file contains the directive
+  <code>__END__</code>,  
+  then the constant <code>DATA</code>
+  will be initialized so that reading from it will return lines
+  following <code>__END__</code> from the source file.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">FALSE</td><td width="60" align="top">FalseClass</td><td align="top">Synonym for <code>false</code>.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">NIL</td><td width="60" align="top">NilClass</td><td align="top">Synonym for <code>nil</code>.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">RUBY_PLATFORM</td><td width="60" align="top">String</td><td align="top">The identifier of the platform running
+  this program. This string is in the same form as the platform
+  identifier used by the GNU configure utility (which is not a
+  coincidence).</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">RUBY_RELEASE_DATE</td><td width="60" align="top">String</td><td align="top">The date of this release.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">RUBY_VERSION</td><td width="60" align="top">String</td><td align="top">The version number of the interpreter.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">STDERR</td><td width="60" align="top">IO</td><td align="top">The actual standard error stream for the program. The
+  initial value of <code>$stderr</code>.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">STDIN</td><td width="60" align="top">IO</td><td align="top">The actual standard input stream for the program. The
+  initial value of <code>$stdin</code>.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">STDOUT</td><td width="60" align="top">IO</td><td align="top">The actual standard output stream for the program. The
+  initial value of <code>$stdout</code>.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">TOPLEVEL_BINDING</td><td width="60" align="top">Binding</td><td align="top">A <code>Binding</code> object representing
+  the binding at Ruby's top level---the level where programs are
+  initially executed.</td></tr></table>
+<P></P>
+<table border="0"><tr><td width="60" align="top">TRUE</td><td width="60" align="top">TrueClass</td><td align="top">Synonym for <code>true</code>.</td></tr></table>
+<h2>Expressions</h2>
+<h3>Single Terms</h3>
+<P></P>
+Single terms in an expression may be any of the following.
+<P></P>
+<ul>
+<P></P>
+<li> <b>Literal</b>. Ruby literals are numbers, strings, arrays,
+  hashes, ranges, symbols, and regular expressions. There are
+  described starting on page 203.
+<P></P>
+</li><li> <b>Shell Command</b>.  A shell command is a string enclosed
+  in backquotes, or in a general delimited string (page
+  202) starting with
+  <code>%x</code>.  
+  The value of the string is the standard
+  output of running the command represented by the string under the
+  host operating system's standard shell. The execution also sets the
+  <code>$?</code> variable with the command's exit status.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+filter&nbsp;=&nbsp;"*.c"
+files&nbsp;=&nbsp;`ls&nbsp;#{filter}`
+files&nbsp;=&nbsp;%x{ls&nbsp;#{filter}}
+</pre></td></tr></table>
+
+<P></P>
+</li><li> <b>Symbol Generator</b>. A <code>Symbol</code> object is created by
+  prefixing an operator, variable, constant, method, class, or module
+  name with a colon.  
+  The symbol object will be unique for each
+  different name but does not refer to a particular instance of the
+  name, so the symbol for (say) <code>:fred</code> will be the same regardless
+  of context. A symbol is similar to the concept of atoms in other
+  high-level languages.
+<P></P>
+</li><li> <b>Variable Reference</b> or <b>Constant Reference</b>. A variable
+  is referenced by citing its name. Depending on scope (see page
+  214), a constant is referenced either by citing its
+  name or by qualifying the name, using the name of the class or
+  module containing the constant and the scope operator
+  (``<code>::</code>'').  
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+barney&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;variable&nbsp;reference
+APP_NAMR&nbsp;&nbsp;#&nbsp;constant&nbsp;reference
+Math::PI&nbsp;&nbsp;#&nbsp;qualified&nbsp;constant&nbsp;reference
+</pre></td></tr></table>
+
+<P></P>
+</li><li> <b>Method Invocation</b>. The various ways of invoking a
+  method are described starting on page 229.
+</li></ul>
+<h3>Operator Expressions</h3>
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0"><tr><td>
+      <b>Ruby operators (high to low
+    precedence)</b>  
+  <table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top"><b>Method</b></td>
+  <td valign="top"><b>Operator</b></td>
+  <td valign="top"><b>Description</b></td>
+</tr>
+<tr>
+  <td valign="top">Y</td>
+  <td valign="top"><code>[ ]</code>&nbsp;0<code>[ ]=</code></td>
+  <td valign="top">Element reference, element set</td>
+</tr>
+<tr>
+  <td valign="top">Y</td>
+  <td valign="top"><code>**</code></td>
+  <td valign="top">Exponentiation</td>
+</tr>
+<tr>
+  <td valign="top">Y</td>
+  <td valign="top"><code>!</code>&nbsp;0<code>~</code>&nbsp;0<code>+</code>&nbsp;0<code>--</code></td>
+  <td valign="top">Not, complement,
+     unary plus and minus (method names for the last two are
+     <code>+@</code> and <code>-@</code>)</td>
+</tr>
+<tr>
+  <td valign="top">Y</td>
+  <td valign="top"><code>*</code>&nbsp;0<code>/</code>&nbsp;0<code>%</code></td>
+  <td valign="top">Multiply, divide, and modulo</td>
+</tr>
+<tr>
+  <td valign="top">Y</td>
+  <td valign="top"><code>+</code>&nbsp;0<code>--</code></td>
+  <td valign="top">Plus and minus</td>
+</tr>
+<tr>
+  <td valign="top">Y</td>
+  <td valign="top"><code>>></code>&nbsp;0<code>&lt;&lt;</code></td>
+  <td valign="top">Right and left shift</td>
+</tr>
+<tr>
+  <td valign="top">Y</td>
+  <td valign="top"><code>&amp;</code></td>
+  <td valign="top">Bitwise `and'</td>
+</tr>
+<tr>
+  <td valign="top">Y</td>
+  <td valign="top"><code>^</code>&nbsp;0<code>|</code></td>
+  <td valign="top">Bitwise exclusive `or' and regular `or'</td>
+</tr>
+<tr>
+  <td valign="top">Y</td>
+  <td valign="top"><code>&lt;=</code>&nbsp;0<code>&lt;</code>&nbsp;0<code>></code>&nbsp;0<code>>=</code></td>
+  <td valign="top">Comparison operators</td>
+</tr>
+<tr>
+  <td valign="top">Y</td>
+  <td valign="top"><code>&lt;=></code>&nbsp;0<code>==</code>&nbsp;0<code>===</code>&nbsp;0<code>!=</code>&nbsp;0<code>=~</code>&nbsp;0<code>!~</code></td>
+  <td valign="top">Equality and pattern match operators (<code>!=</code> and
+           <code>!~</code> may not be defined as methods)</td>
+</tr>
+<tr>
+  <td valign="top"></td>
+  <td valign="top"><code>&amp;&amp;</code></td>
+  <td valign="top">Logical `and'</td>
+</tr>
+<tr>
+  <td valign="top"></td>
+  <td valign="top"><code>||</code></td>
+  <td valign="top">Logical `or'</td>
+</tr>
+<tr>
+  <td valign="top"></td>
+  <td valign="top"><code>..</code>&nbsp;0<code>...</code></td>
+  <td valign="top">Range (inclusive and exclusive)</td>
+</tr>
+<tr>
+  <td valign="top"></td>
+  <td valign="top"><code>? :</code></td>
+  <td valign="top">Ternary if-then-else</td>
+</tr>
+<tr>
+  <td valign="top"></td>
+  <td valign="top"><code>=</code>&nbsp;0<code>%=</code>&nbsp;0<code></code>{ <code>/=</code>&nbsp;0<code>--=</code>&nbsp;0<code>+=</code>&nbsp;0<code>|=</code> <code>&amp;=</code>&nbsp;0<code>>>=</code>&nbsp;0<code>&lt;&lt;=</code>&nbsp;0<code>*=</code>&nbsp;0<code>&amp;&amp;=</code>&nbsp;0<code>||=</code>&nbsp;0<code>**=</code></td>
+  <td valign="top">Assignment</td>
+</tr>
+<tr>
+  <td valign="top"></td>
+  <td valign="top"><code>defined?</code></td>
+  <td valign="top">Check if symbol defined</td>
+</tr>
+<tr>
+  <td valign="top"></td>
+  <td valign="top"><code>not</code></td>
+  <td valign="top">Logical negation</td>
+</tr>
+<tr>
+  <td valign="top"></td>
+  <td valign="top"><code>or</code>&nbsp;0<code>and</code></td>
+  <td valign="top">Logical composition</td>
+</tr>
+<tr>
+  <td valign="top"></td>
+  <td valign="top"><code>if</code>&nbsp;0<code>unless</code>&nbsp;0<code>while</code>&nbsp;0<code>until</code></td>
+  <td valign="top">Expression modifiers</td>
+</tr>
+<tr>
+  <td valign="top"></td>
+  <td valign="top"><code>begin/end</code></td>
+  <td valign="top">Block expression</td>
+</tr>
+<tr><td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td></tr></table>
+<P></P>
+</td></tr></table>
+<P></P>
+Expressions may be combined using operators.  Table
+18.4 on page 221 lists the Ruby operators in precedence order. The
+operators with a Y in the <em>method</em> column are implemented as
+methods, and may be overridden.
+<h3>More on Assignment</h3>
+<P></P>
+The assignment operator assigns one or more <em>rvalues</em> to one or
+more <em>lvalues</em>. What is meant by assignment depends on each
+individual lvalue.
+<P></P>
+If an lvalue is a variable or constant name, that variable or constant 
+receives a reference to the corresponding rvalue.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+a,&nbsp;b,&nbsp;c&nbsp;=&nbsp;1,&nbsp;"cat",&nbsp;[&nbsp;3,&nbsp;4,&nbsp;5&nbsp;]
+</pre></td></tr></table>
+
+<P></P>
+If the lvalue is an object attribute, the corresponding attribute
+setting method will be called in the receiver, passing as a parameter
+the rvalue.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+anObj&nbsp;=&nbsp;A.new
+anObj.value&nbsp;=&nbsp;"hello"&nbsp;&nbsp;&nbsp;#&nbsp;equivalent&nbsp;to&nbsp;anObj.value=("hello")
+</pre></td></tr></table>
+
+<P></P>
+If the lvalue is an array element reference, Ruby calls the element
+assignment operator (``<code>[]=</code>'') in the receiver, passing as
+parameters any indices that appear between the brackets followed by
+the rvalue.  This is illustrated in Table 18.5 on page 222.
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0"><tr><td>
+  <b>Mapping from element reference to method call</b>
+<center>
+<P></P>
+  <table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3">
+<tr bgcolor="#ff9999">
+  <td valign="top"><b>Element Reference</b></td>
+  <td valign="top"><b>Actual Method Call</b></td>
+</tr>
+<tr>
+  <td valign="top"><code>anObj[]  = "one"</code></td>
+  <td valign="top"><code>anObj.[]=("one")</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>anObj[1] = "two"</code></td>
+  <td valign="top"><code>anObj.[]=(1, "two")</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>anObj["a", /^cat/] = "three"</code></td>
+  <td valign="top"><code>anObj.[]=("a", /^cat/, "three")</code></td>
+</tr>
+<tr><td colspan="9" bgcolor="#ff9999" height="2"><img src="dot.gif" width="1" height="1"></td></tr></table>
+<P></P>
+</center>
+</td></tr></table>
+<P></P>
+<h3>Parallel Assignment</h3>
+<P></P>
+An assignment expression may have one or more lvalues and one or more 
+rvalues. This section explains how Ruby handles assignment with
+different combinations of arguments.
+<P></P>
+<ol>
+<li> If the last rvalue is prefixed with an asterisk and is
+  an object of class <code>Array</code>, the rvalue is replaced
+  with the elements of the array, with each element forming its own
+  rvalue.
+</li><li> If the assignment contains multiple lvalues and one rvalue, the
+  rvalue is converted into an <code>Array</code>, and this array is expanded into a
+  set of rvalues as described in (1).
+</li><li> Successive rvalues are assigned to the lvalues. This assignment
+  effectively happens in parallel, so that (for example) <code>a,b=b,a</code>
+  swaps the values in ``a'' and ``b.''
+</li><li> If there are more lvalues than rvalues, the excess will have
+  <code>nil</code> assigned to them.
+</li><li> If there are more rvalues that lvalues, the excess will be
+  ignored.
+</li><li> These rules are modified slightly if the last lvalue is preceded
+  with an asterisk. This lvalue will always receive an array during
+  the assignment. The array will consist of whatever rvalue would
+  normally have been assigned to this lvalue, followed by the excess
+  rvalues (if any).
+</li><li> If an lvalue is a parenthesized list, it is treated as a nested
+  assignment statement, and the list is assigned from the
+  corresponding rvalue as described by these rules.
+</li></ol>
+<P></P>
+The tutorial has examples starting on page 77.
+<h3>Block Expressions</h3>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+begin
+  <i>body</i>
+end
+</pre></td></tr></table>
+<P></P>
+Expressions may be grouped between <code>begin</code> and <code>end</code>.
+The value of the block expression is the value of the last expression
+executed.
+<P></P>
+Block expressions also play a role in exception handling, which is discussed
+starting on page 237.
+<h3>Boolean Expressions</h3>  Boolean Expressions
+<P></P>
+Boolean expressions evaluate to a truth value. Some Ruby constructs
+(particularly ranges) behave differently when evaluated in a boolean
+expression.
+<h3>Truth Values</h3>
+<P></P>
+Ruby predefines the globals <code>false</code> and <code>nil</code>. Both of these
+values are treated as being false in a boolean context. All other
+values are treated as being true.
+<h3>And, Or, Not, and Defined?</h3>
+<P></P>
+The <code>and</code> and <code>&amp;&amp;</code> operators evaluate their first operand. If
+false, the expression returns false; otherwise, the expression returns
+the value of the second operand.
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+<i>expr1</i>  and  <i>expr2</i>
+<i>expr1</i>  &amp;&amp;   <i>expr2</i>
+</pre></td></tr></table>
+<P></P>
+The <code>or</code> and <code>||</code> operators evaluate their first operand. If
+true, the expression returns true; otherwise, the expression returns
+the value of the second operand.
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+<i>expr1</i>  or  <i>expr2</i>
+<i>expr1</i>  ||  <i>expr2</i>
+</pre></td></tr></table>
+<P></P>
+The <code>not</code> and <code>!</code> operators evaluate their operand. If true, the 
+expression returns false. If false, the expression returns true.
+<P></P>
+The word forms of these operators (<code>and</code>, <code>or</code>, and <code>not</code>) have
+a lower precedence than the corresponding symbol forms (<code>&amp;&amp;</code>,
+<code>||</code>, and <code>!</code>). See Table 18.4 on page 221 for details.
+<P></P>
+The <code>defined?</code> operator returns <code>nil</code> if its argument,
+which can
+be an arbitrary expression, is not defined. Otherwise, it returns a
+description of that argument. For examples, see page
+80 in the tutorial.
+<h3>Comparison Operators</h3>
+<P></P>
+The Ruby syntax defines the comparison operators <code>==</code>, <code>===</code>,
+<code>&lt;=></code>, <code>&lt;</code>, <code>&lt;=</code>, <code>></code>, <code>>=</code>, <code>=~</code>, and the standard 
+methods <code>eql?</code> and
+<code>equal?</code> (see Table 7.1 on page 81). All of these operators
+are implemented as methods. 
+Although the operators have intuitive meaning,
+it is up to the classes that implement them to produce meaningful
+comparison semantics. The library reference starting
+on page 279 describes the comparison semantics for the
+built-in classes. The module <code>Comparable</code> provides support for
+implementing the operators <code>==</code>, 
+<code>&lt;</code>, <code>&lt;=</code>, <code>></code>, <code>>=</code>, and the method <code>between?</code> in terms of <code>&lt;=></code>.
+The operator <code>===</code> is used in <code>case</code> expressions, described
+on page 225. 
+<P></P>
+Both <code>==</code> and <code>=~</code> have negated forms, <code>!=</code> and
+<code>!~</code>. Ruby converts these during syntax analysis:
+<code>a!=b</code> is mapped to <code>!(a==b)</code>, and <code>a!~b</code>
+is mapped to <code>!(a&nbsp;=~b)</code>. There are no methods corresponding to
+<code>!=</code> and <code>!~</code>.
+<h3>Ranges in Boolean Expressions</h3>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+if  <i>expr1</i> .. <i>expr2</i>
+while  <i>expr1</i> ... <i>expr2</i>
+</pre></td></tr></table>
+<P></P>
+A range used in a boolean expression acts as a flip-flop.
+It has two
+states, set and unset, and is initially unset. On each call, the range
+cycles through the state machine shown in Figure 18.1 on page 225.
+The range returns <code>true</code> if it is in the set state at the end of
+the call, and <code>false</code> otherwise.
+<P></P>
+The two-dot form of a range behaves slightly differently than the
+three-dot form. When the two-dot form first makes the transition from
+unset to set, it immediately evaluates the end condition and makes
+the transition accordingly. This means that if <em>expr1</em> and
+<em>expr2</em> both evaluate to <code>true</code> on the same call, the
+two-dot form will finish the call in the unset state. However, it
+still returns <code>true</code> for this call.
+<P></P>
+The difference is illustrated by the following code:
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;(11..20).collect&nbsp;{|i|&nbsp;(i%4&nbsp;==&nbsp;0)..(i%3&nbsp;==&nbsp;0)&nbsp;?&nbsp;i&nbsp;:&nbsp;nil}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[nil,&nbsp;12,&nbsp;nil,&nbsp;nil,&nbsp;nil,&nbsp;16,&nbsp;17,&nbsp;18,&nbsp;nil,&nbsp;20]</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code></code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>a&nbsp;=&nbsp;(11..20).collect&nbsp;{|i|&nbsp;(i%4&nbsp;==&nbsp;0)...(i%3&nbsp;==&nbsp;0)&nbsp;?&nbsp;i&nbsp;:&nbsp;nil}</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>a</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[nil,&nbsp;12,&nbsp;13,&nbsp;14,&nbsp;15,&nbsp;16,&nbsp;17,&nbsp;18,&nbsp;nil,&nbsp;20]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+<table border="2" width="500" bgcolor="#ffe0e0"><tr><td>Figure not available...</td></tr></table>
+<P></P>
+<h3>Regular Expressions in Boolean Expressions</h3>
+<P></P>
+If a single regular expression appears as a boolean expression, it is
+matched against the current value of the variable <code>$_</code>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+if&nbsp;/re/&nbsp;...
+</pre></td></tr></table>
+
+is equivalent to
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+if&nbsp;$_&nbsp;=~&nbsp;/re/&nbsp;...
+</pre></td></tr></table>
+
+<h3>If and Unless Expressions</h3>  <code>if</code> and <code>unless</code> Expressions
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+if <i>boolean-expression</i> <i>[</i>then<i>]</i>
+  <i>body</i>
+elsif <i>boolean-expression</i> <i>[</i>then<i>]</i>
+  <i>body</i>
+else
+  <i>body</i>
+end
+</pre></td></tr></table>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+unless <i>boolean-expression</i> <i>[</i>then<i>]</i>
+  <i>body</i>
+else
+  <i>body</i>
+end
+</pre></td></tr></table>
+<P></P>
+The <code>then</code>  keyword separates the body from the condition.
+It is
+not required if the body starts on a new line.
+The value of an <code>if</code> or <code>unless</code> expression is the value of the
+last expression evaluated in whichever body is executed.
+<h3>If and Unless Modifiers</h3>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+<i>expression</i> if     <i>boolean-expression</i>
+<i>expression</i> unless <i>boolean-expression</i>
+</pre></td></tr></table>
+<P></P>
+evaluates <em>expression</em> only if <em>boolean-expression</em> is
+<code>true</code> (<code>false</code> for <code>unless</code>).
+<h3>Ternary Operator</h3>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+<i>boolean-expression</i> ? <i>expr1</i> : <i>expr2</i>
+</pre></td></tr></table>
+<P></P>
+returns <em>expr1</em> if <em>boolean expression</em> is true and
+<em>expr2</em> otherwise.
+<h3>Case Expressions</h3>  <code>case</code> Expressions
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+case <i>target</i>
+  when <i>[</i><i>comparison</i><i>]<sup>+</sup></i> <i>[</i>then<i>]</i>
+    <i>body</i>
+  when <i>[</i><i>comparison</i><i>]<sup>+</sup></i> <i>[</i>then<i>]</i>
+    <i>body</i>
+  ...
+<i>[</i> else
+    <i>body</i> <i>]</i>
+ end
+</pre></td></tr></table>
+<P></P>
+A case expression
+searches for a match by starting at the first (top left) comparison,
+performing <em>comparison</em>&nbsp;<code>===</code>&nbsp;<em>target</em>.
+When a comparison
+returns true, the search stops, and the body associated with the
+comparison is executed. <code>case</code> then returns the value of the last
+expression executed.  If no <em>comparison</em> matches: if an <code>else</code>
+clause is present, its body will be executed; otherwise, <code>case</code>
+silently returns <code>nil</code>.
+<P></P>
+The <code>then</code> keyword separates the <code>when</code> comparisons from the
+bodies, and is not needed if the body starts on a new line.
+<h3>Loops</h3>  Loop Constructs
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+while <i>boolean-expression</i> <i>[</i>do<i>]</i>
+  <i>body</i>
+end
+</pre></td></tr></table>
+<P></P>
+executes <em>body</em> zero or more times as long as
+<em>boolean-expression</em> is true.
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+until <i>boolean-expression</i> <i>[</i>do<i>]</i>
+  <i>body</i>
+end
+</pre></td></tr></table>
+<P></P>
+executes <em>body</em> zero or more times as long as
+<em>boolean-expression</em> is false.
+<P></P>
+In both forms, the <code>do</code> separates <em>boolean-expression</em> from
+the <em>body</em>, and may be omitted when the body starts on a new
+line.
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+for <i>[</i><i>name</i><i>]<sup>+</sup></i> in <i>expression</i> <i>[</i>do<i>]</i>
+  <i>body</i>
+end
+</pre></td></tr></table>
+<P></P>
+The <code>for</code> loop is executed as if it were the following
+<code>each</code> loop, except that local variables defined in the body of 
+the <code>for</code> loop will be available outside the loop, while those
+defined within an iterator block will not.
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+<i>expression</i>.each do | <i>[</i><i>name</i><i>]<sup>+</sup></i> |
+  <i>body</i>
+end
+</pre></td></tr></table>
+<P></P>
+<code>loop</code>,
+which iterates its associated block, is not
+a language construct---it is a method in module <code>Kernel</code>.
+<h3>While and Until Modifiers</h3>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+<i>expression</i> while <i>boolean-expression</i>
+<i>expression</i> until <i>boolean-expression</i>
+</pre></td></tr></table>
+<P></P>
+If <em>expression</em> is anything other than a <code>begin/end</code> block,
+executes <em>expression</em> zero or more times while <em>boolean-expression</em>
+is <code>true</code> (<code>false</code> for <code>until</code>).
+<P></P>
+If <em>expression</em> is a <code>begin/end</code> block, the block will always
+be executed at least one time.
+<h3>Break, Redo, Next, and Retry</h3>
+<P></P>
+<code>break</code>, <code>redo</code>, <code>next</code>, and
+<code>retry</code> alter the normal flow through a <code>while</code>, <code>until</code>,
+<code>for</code>, or iterator controlled loop.
+<P></P>
+<code>break</code> terminates the immediately enclosing loop---control
+resumes at the statement following the block.  <code>redo</code> repeats the
+loop from the start, but without reevaluating the condition or
+fetching the next element (in an iterator).  <code>next</code> skips to the
+end of the loop, effectively starting the next iteration.
+<code>retry</code> restarts the loop, reevaluating the condition.
+<P></P>
+<h2>Method Definition</h2>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+  def <i>defname</i> <i>[</i>( <i>[</i><i>arg</i> <i>[</i>=<i>val</i><i>]</i><i>]<sup>*</sup></i> <i>[</i>, *<i>vararg</i><i>]</i> <i>[</i>, &amp;<i>blockarg</i><i>]</i> )<i>]</i>
+    <i>body</i>
+  end
+</pre></td></tr></table>
+<P></P>
+<i>defname</i> is both the name of the method and optionally the
+context in which it is valid.
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3">
+<tr><td valign="top">
+<i>defname</i> </td><td valign="top"> &lt;-</td><td valign="top"> <i>methodname</i> </td></tr><tr><td valign="top"></td><td valign="top">        </td><td valign="top"> <i>expr</i>.<i>methodname</i>
+</td></tr></table>
+</pre></td></tr></table>
+<P></P>
+A <i>methodname</i> is either a redefinable operator (see Table
+18.4 on page 221) or a name.
+If <i>methodname</i> is a name, it
+should start with a lowercase letter (or underscore) optionally
+followed by upper- and lowercase letters, underscores, and digits. A
+<i>methodname</i> may optionally end with a question mark (``<code>?</code>''),
+exclamation point (``<code>!</code>''), or equals sign (``<code>=</code>''). The
+question mark and exclamation point are simply part of the name. The
+equals sign is also part of the name but additionally signals that
+this method is an attribute setter (described
+on page 25).
+<P></P>
+A method definition using an unadorned method name within a class or
+module definition creates an instance method. An instance method may
+be invoked only by sending its name to a receiver that is an
+instance of the class that defined it (or one of that class's subclasses).
+<P></P>
+Outside a class or module definition, a definition with an unadorned
+method name is added as a private method to class <code>Object</code>, and
+hence may be called in any context without an explicit receiver.
+<P></P>
+A definition using a method name of the form <i>expr</i>.<i>methodname</i>
+creates a method associated with the object that is the value
+of the expression; the method will be callable only by supplying the
+object referenced by the expression as a receiver. Other Ruby
+documentation calls these methods <em>singleton methods</em>.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+class&nbsp;MyClass
+&nbsp;&nbsp;def&nbsp;MyClass.method&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;definition
+&nbsp;&nbsp;end
+end
+</pre></td></tr></table>
+
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+MyClass.method&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;call
+<P></P>
+anObject&nbsp;=&nbsp;Object.new
+def&nbsp;anObject.method&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;definition
+end
+anObject.method&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;call
+<P></P>
+def&nbsp;(1.class).fred&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;receiver&nbsp;may&nbsp;be&nbsp;an&nbsp;expression
+end
+Fixnum.fred&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;call
+</pre></td></tr></table>
+
+<P></P>
+Method definitions may not contain class, module, or instance method
+definitions. They may contain nested
+singleton method definitions.
+The body of a method acts as if it were
+a <code>begin</code>/<code>end</code> block, in that it may contain exception handling
+statements (<code>rescue</code>, <code>else</code>, and <code>ensure</code>).
+<h3>Method Arguments</h3>
+<P></P>
+A method definition may have zero or more regular arguments, an
+optional array argument, and an optional block argument. Arguments are 
+separated by commas, and the argument list may be enclosed in parentheses.
+<P></P>
+A regular argument is a local variable name, optionally followed by an 
+equals sign and an expression giving a default value.
+The expression
+is evaluated at the time the method is called. The expressions are
+evaluated from left to right. An expression may reference a parameter that
+precedes it in the argument list.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>def&nbsp;options(a=99,&nbsp;b=a+1)</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;[&nbsp;a,&nbsp;b&nbsp;]</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>options</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[99,&nbsp;100]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>options&nbsp;1</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;2]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>options&nbsp;2,&nbsp;4</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[2,&nbsp;4]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+The optional array argument must follow any regular arguments and may 
+not have a default.
+<P></P>
+When the method is invoked, Ruby sets the array
+argument to reference a new
+object of class <code>Array</code>. If the method call specifies any
+parameters in excess of the regular argument count, all these extra
+parameters will be collected into this newly created array.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>def&nbsp;varargs(a,&nbsp;*b)</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;[&nbsp;a,&nbsp;b&nbsp;]</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>varargs&nbsp;1</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;[]]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>varargs&nbsp;1,&nbsp;2</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;[2]]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>varargs&nbsp;1,&nbsp;2,&nbsp;3</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;[2,&nbsp;3]]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+If an array argument follows arguments with default values, parameters 
+will first be used to override the defaults. The remainder will then
+be used to populate the array.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>def&nbsp;mixed(a,&nbsp;b=99,&nbsp;*c)</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;[&nbsp;a,&nbsp;b,&nbsp;c]</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>mixed&nbsp;1</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;99,&nbsp;[]]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>mixed&nbsp;1,&nbsp;2</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;2,&nbsp;[]]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>mixed&nbsp;1,&nbsp;2,&nbsp;3</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;2,&nbsp;[3]]</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>mixed&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;4</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>[1,&nbsp;2,&nbsp;[3,&nbsp;4]]</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+The optional block argument must be the last in the list.
+Whenever the method is called, Ruby checks for an associated block.
+If a block is present,
+it is converted to an object of class <code>Proc</code> and assigned
+to the block argument. If no block is present, the argument is set to
+<code>nil</code>.
+<h2>Invoking a Method</h2>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+  <table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3">
+<tr><td valign="top">
+  <i>[</i><i>receiver</i>. <i>]</i> <i>name</i>  <i>[</i> <i>parameters</i> <i>]</i> <i>[</i> <i>block</i> <i>]</i></td></tr><tr><td valign="top"><i>[</i><i>receiver</i>::<i>]</i> <i>name</i> <i>[</i> <i>parameters</i> <i>]</i> <i>[</i> <i>block</i> <i>]</i></td></tr><tr><td valign="top"></td></tr><tr><td valign="top"><i>parameters</i> </td><td valign="top"> &lt;-</td><td valign="top"> ( <i>[</i><i>param</i><i>]<sup>*</sup></i> <i>[</i>, <i>hashlist</i><i>]</i> <i>[</i>*<i>array</i><i>]</i> <i>[</i>&amp;<i>aProc</i><i>]</i> ) </td></tr><tr><td valign="top"></td></tr><tr><td valign="top"><i>block</i> </td><td valign="top"> &lt;-</td><td valign="top"> { <i>blockbody</i> }     </td></tr><tr><td valign="top"></td><td valign="top">        </td><td valign="top"> do <i>blockbody</i> end
+  </td></tr></table>                      
+</pre></td></tr></table>
+<P></P>
+Initial parameters are assigned to the actual arguments of the
+method.
+Following these parameters may be a list of
+<em>key</em>&nbsp;<code>=></code>&nbsp;<em>value</em> pairs. These pairs are collected into a
+single new <code>Hash</code> object and passed as a single parameter.
+<P></P>
+Following these parameters may be a single parameter prefixed with an
+asterisk.
+If this parameter is an array,
+Ruby replaces it with zero 
+or more parameters corresponding to the elements of the array.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+def&nbsp;regular(a,&nbsp;b,&nbsp;*c)
+&nbsp;&nbsp;#&nbsp;..
+end
+regular&nbsp;1,&nbsp;2,&nbsp;3,&nbsp;4
+regular(1,&nbsp;2,&nbsp;3,&nbsp;4)
+regular(1,&nbsp;*[2,&nbsp;3,&nbsp;4])
+</pre></td></tr></table>
+
+<P></P>
+A block may be associated with a method call using either a literal
+block (which must start on the same source line as the last line of
+the method call) or a parameter containing a reference to a <code>Proc</code>
+or <code>Method</code> object prefixed with an ampersand character.
+Regardless
+of the presence of a block argument, Ruby arranges for the value of
+the global function <a href="ref_m_kernel.html#block_given_qm"><code>Kernel::block_given?</code></a>  to reflect the
+availability of a block associated with the call.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+<P></P>
+aProc&nbsp;&nbsp;&nbsp;=&nbsp;proc&nbsp;{&nbsp;99&nbsp;}
+anArray&nbsp;=&nbsp;[&nbsp;98,&nbsp;97,&nbsp;96&nbsp;]
+<P></P>
+def&nbsp;block
+&nbsp;&nbsp;yield
+end
+block&nbsp;{&nbsp;}
+block&nbsp;do
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;end
+block(&amp;aProc)
+<P></P>
+def&nbsp;all(a,&nbsp;b,&nbsp;c,&nbsp;*d,&nbsp;&amp;e)
+&nbsp;&nbsp;puts&nbsp;"a&nbsp;=&nbsp;#{a}"
+&nbsp;&nbsp;puts&nbsp;"b&nbsp;=&nbsp;#{b}"
+&nbsp;&nbsp;puts&nbsp;"c&nbsp;=&nbsp;#{c}"
+&nbsp;&nbsp;puts&nbsp;"d&nbsp;=&nbsp;#{d}"
+&nbsp;&nbsp;puts&nbsp;"block&nbsp;=&nbsp;#{yield(e)}"
+end
+<P></P>
+all('test',&nbsp;1&nbsp;=>&nbsp;'cat',&nbsp;2&nbsp;=>&nbsp;'dog',&nbsp;*anArray,&nbsp;&amp;aProc)
+</pre></td></tr></table>
+
+<em>produces:</em>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+a&nbsp;=&nbsp;test
+b&nbsp;=&nbsp;{1=>"cat",&nbsp;2=>"dog"}
+c&nbsp;=&nbsp;98
+d&nbsp;=&nbsp;[97,&nbsp;96]
+block&nbsp;=&nbsp;99
+</pre></td></tr></table>
+
+<P></P>
+A method is called by passing its name to a receiver. If no receiver
+is specified, <code>self</code> is assumed.
+<P></P>
+The receiver checks for the
+method definition in its own class and then sequentially in its
+ancestor classes. The instance methods of included modules act as if
+they were in anonymous superclasses of the class that includes them.
+If the method is not found, Ruby invokes the method
+<code>method_missing</code> in the receiver. The default behavior
+defined in <a href="ref_m_kernel.html#method_missing"><code>Kernel::method_missing</code></a> is to report an error and
+terminate the program.
+<P></P>
+When a receiver is explicitly specified in a method invocation, it may
+be separated from the method name using either a period ``<code>.</code>'' or
+two colons ``<code>::</code>''.
+The only difference between these two forms
+occurs if the method name starts with an uppercase letter. In this
+case, Ruby will assume that a <code>receiver::Thing</code> method call is
+actually an attempt to access a constant called <code>Thing</code> in the
+receiver <em>unless</em> the method invocation has a parameter list between
+parentheses.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+Foo.Bar()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;method&nbsp;call
+Foo.Bar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;method&nbsp;call
+Foo::Bar()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;method&nbsp;call
+Foo::Bar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;&nbsp;constant&nbsp;access
+</pre></td></tr></table>
+
+<P></P>
+The return value of a method is the value of the last expression
+executed.
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+return <i>[</i><i>expr</i><i>]<sup>*</sup></i>
+</pre></td></tr></table>
+<P></P>
+A <code>return</code> expression immediately exits a method. The value of a
+<code>return</code> is <code>nil</code> if it is called with no parameters, the value of
+its parameter if it is called with one parameter, or an array containing all of
+its parameters if it is called with more than one parameter.
+<h3>super</h3>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+super  <i>[</i> ( <i>[</i><i>param</i><i>]<sup>*</sup></i> <i>[</i>*<i>array</i><i>]</i> ) <i>]</i>  <i>[</i><i>block</i><i>]</i>
+</pre></td></tr></table>
+<P></P>
+Within the body of a method, a call to <code>super</code>
+acts just like a
+call to that original method, except that the search for a method body
+starts in the superclass of the object that was found to contain the
+original method. If no parameters (and no parentheses) are passed to
+<code>super</code>, the original method's parameters will be passed; otherwise,
+the parameters to <code>super</code> will be passed.
+<h3>Operator Methods</h3>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+<i>expr1</i> <i>operator</i>
+<i>operator</i> <i>expr1</i>
+<i>expr1</i> <i>operator</i> <i>expr2</i>
+</pre></td></tr></table>
+<P></P>
+If the operator in an operator expression corresponds to a redefinable
+method (see the Table 18.4 on page 221), Ruby will execute the 
+operator expression as if it had been written
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+(<i>expr1</i>).<i>operator</i>(<i>expr2</i>)
+</pre></td></tr></table>
+<h3>Attribute Assignment</h3>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+<i>receiver</i>.<i>attrname</i> = <i>rvalue</i>
+</pre></td></tr></table>
+<P></P>
+When the form <i>receiver</i>.<i>attrname</i> appears as an lvalue, Ruby
+invokes a method named <i>attrname=</i> in the receiver, passing <i>rvalue</i> 
+as a single parameter.
+<h3>Element Reference Operator</h3>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+<i>receiver <i>[</i><i>expr</i><i>]<sup>+</sup></i> </i>
+<i>receiver <i>[</i><i>expr</i><i>]<sup>+</sup></i> </i> = <i>rvalue</i>
+</pre></td></tr></table>
+<P></P>
+When used as an rvalue, element reference invokes the method <code>[]</code>
+in the receiver, passing as parameters the expressions between
+the brackets.
+<P></P>
+When used as an lvalue, element reference invokes the method <code>[]=</code> in
+the receiver, passing as parameters the expressions between
+the brackets, followed by the <i>rvalue</i> being assigned.
+<h2>Aliasing</h2>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+alias <i>newName</i> <i>oldName</i>
+</pre></td></tr></table>
+<P></P>
+creates a new name that refers to an existing method,
+operator, global variable, or regular expression backreference
+(<code>$&amp;</code>, <code>$'</code>, <code>$'</code>, and <code>$+</code>). Local variables,
+instance variables, class variables, and constants may not be
+aliased. The parameters to <code>alias</code> may be names or symbols.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>class&nbsp;Fixnum</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;alias&nbsp;plus&nbsp;+</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>1.plus(3)</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>4</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code></code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>alias&nbsp;$prematch&nbsp;$`</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>"string"&nbsp;=~&nbsp;/i/</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>3</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>$prematch</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"str"</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code></code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>alias&nbsp;:cmd&nbsp;:`</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>cmd&nbsp;"date"</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"Sun&nbsp;Mar&nbsp;&nbsp;4&nbsp;23:24:32&nbsp;CST&nbsp;2001\n"</code></td>
+</tr>
+</table>
+<P></P>
+
+<P></P>
+When a method is aliased, the new name refers to a copy of the
+original method's body.
+If the method is subsequently
+redefined, the aliased name will still invoke the original
+implementation.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+<td colspan="3" valign="top"><code>def&nbsp;meth</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;"original&nbsp;method"</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code></code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>alias&nbsp;original&nbsp;meth</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code></code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>def&nbsp;meth</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>&nbsp;&nbsp;"new&nbsp;and&nbsp;improved"</code></td>
+</tr>
+<tr>
+<td colspan="3" valign="top"><code>end</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>meth</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"new&nbsp;and&nbsp;improved"</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>original</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>"original&nbsp;method"</code></td>
+</tr>
+</table>
+<P></P>
+
+<h2>Class Definition</h2>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+class <i>classname</i>  <i>[</i>&lt; <i>superexpr</i><i>]</i>
+  <i>body</i>
+end
+<P></P>
+class &lt;&lt; <i>anObject</i>
+  <i>body</i>
+end
+</pre></td></tr></table>
+<P></P>
+A Ruby class definition creates or extends an object of class
+<code>Class</code> by executing the code in <i>body</i>.
+In the first form, a
+named class is created or extended. The resulting <code>Class</code> object is
+assigned to a global constant named <i>classname</i>. This name should
+start with an uppercase letter.  In the second form, an anonymous
+(singleton) class is associated with the specific object.
+<P></P>
+If present, <i>superexpr</i> should be an expression that evaluates to a
+<code>Class</code> object that will be installed as the superclass of the class
+being defined. If omitted, it defaults to class <code>Object</code>.
+<P></P>
+Within <i>body</i>, most Ruby expressions are simply executed as the
+definition is read. However:
+<P></P>
+<ul>
+<li> Method definitions will register the methods in a table in
+  the class object.
+</li><li> Nested class and module definitions will be stored in constants
+  within the class, not as global constants. These nested classes and
+  modules can be accessed from outside the defining class using
+  ``<code>::</code>'' to qualify their names.  
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+module&nbsp;NameSpace
+&nbsp;&nbsp;class&nbsp;Example
+&nbsp;&nbsp;&nbsp;&nbsp;CONST&nbsp;=&nbsp;123
+&nbsp;&nbsp;end
+end
+obj&nbsp;=&nbsp;NameSpace::Example.new
+a&nbsp;=&nbsp;NameSpace::Example::CONST
+</pre></td></tr></table>
+
+<P></P>
+</li><li> The <a href="ref_c_module.html#include"><code>Module#include</code></a> method will add the named modules as
+  anonymous superclasses of the class being defined.
+</li></ul>
+<P></P>
+It is worth emphasizing that a class definition is executable code.
+Many of the directives used in class definition (such as <code>attr</code>
+and <code>include</code>) are actually simply private instance methods of
+class <code>Module</code> (documented starting on page 348).
+<P></P>
+Chapter 19, which begins
+on page 241, describes in more detail how
+<code>Class</code> objects interact with the rest of the environment.
+<h3>Creating Objects from Classes</h3>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+<i>obj</i> = <i>classexpr</i>.new <i>[</i> ( <i>[</i><i>args</i><i>]<sup>*</sup></i> ) <i>]</i>
+</pre></td></tr></table>
+<P></P>
+Class <code>Class</code> defines the instance method <a href="ref_c_class.html#new"><code>Class#new</code></a>, which:
+<P></P>
+<ul>
+<li> Creates an object of the class of the receiver (<i>classexpr</i>
+  in the syntax example).
+</li><li> Sets that object's type to be the receiver.
+</li><li> Invokes the instance method <code>initialize</code> in the newly created
+  object, passing it any arguments originally passed to <code>new</code>.
+</li></ul>
+<P></P>
+If a class definition overrides the class method <code>new</code> without
+calling <code>super</code>, no objects of that class can be created.
+<h3>Class Attribute Declarations</h3>
+<P></P>
+Class attribute declarations are technically not part of the Ruby
+language: they are simply methods defined in class <code>Module</code> that
+create accessor methods automatically.
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+class <i>name</i>
+  attr <i>attribute</i>  <i>[</i>, <i>writable</i><i>]</i>
+  attr_reader     <i>[</i><i>attribute</i><i>]<sup>+</sup></i>
+  attr_writer     <i>[</i><i>attribute</i><i>]<sup>+</sup></i>
+  attr_accessor   <i>[</i><i>attribute</i><i>]<sup>+</sup></i>
+end
+</pre></td></tr></table>
+<h2>Module Definitions</h2>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+module <i>name</i>
+  <i>body</i>
+end
+</pre></td></tr></table>
+<P></P>
+A module is basically a class that cannot be instantiated. Like a
+class, its body is executed during definition and the resulting
+<code>Module</code> object is stored in a constant. A module may contain
+class and instance methods and may define constants and class
+variables. As with classes, module methods are invoked using the
+<code>Module</code> object as a receiver, and constants are accessed using the
+``<code>::</code>'' scope resolution operator.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+module&nbsp;Mod
+&nbsp;&nbsp;CONST&nbsp;=&nbsp;1
+&nbsp;&nbsp;def&nbsp;Mod.method1&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;module&nbsp;method
+&nbsp;&nbsp;&nbsp;&nbsp;CONST&nbsp;+&nbsp;1
+&nbsp;&nbsp;end
+end
+</pre></td></tr></table>
+
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500">
+<tr>
+  <td valign="top"><code>Mod::CONST</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>1</code></td>
+</tr>
+<tr>
+  <td valign="top"><code>Mod.method1</code></td>
+  <td valign="top">»</td>
+  <td valign="top"><code>2</code></td>
+</tr>
+</table>
+<P></P>
+
+<h3>Mixins---Including Modules</h3>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+class|module <i>name</i>
+  include <i>expr</i>
+end
+</pre></td></tr></table>
+<P></P>
+A module may be included within the definition of another module or
+class using the <code>include</code> method. The module or class definition
+containing the <code>include</code> gains access to the constants, class
+variables, and instance methods of the module it includes.
+<P></P>
+If a module is included within a class definition, the module's
+constants, class variables, and instance methods are effectively
+bundled into an anonymous (and inaccessible) superclass for that
+class. In particular, objects of the class will respond to messages
+sent to the module's instance methods.
+<P></P>
+A module may also be included at the top level, in which case the
+module's constants, class variables, and instance methods become
+available at the top level.
+<h3>Module Functions</h3>
+<P></P>
+Although <code>include</code> is useful for providing mixin functionality, 
+it is also a way of bringing the constants, class variables, and
+instance methods of a module into another namespace. However,
+functionality defined in an instance method will not be available as a 
+module method.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+module&nbsp;Math
+&nbsp;&nbsp;def&nbsp;sin(x)
+&nbsp;&nbsp;&nbsp;&nbsp;#
+&nbsp;&nbsp;end
+end
+<P></P>
+#&nbsp;Only&nbsp;way&nbsp;to&nbsp;access&nbsp;Math.sin&nbsp;is...
+include&nbsp;Math
+sin(1)
+</pre></td></tr></table>
+
+<P></P>
+The method <a href="ref_c_module.html#module_function"><code>Module#module_function</code></a> solves this problem by taking one or 
+more module instance methods and copying their definitions into
+corresponding module methods.
+<P></P>
+
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="400"><tr><td><pre>
+module&nbsp;Math
+&nbsp;&nbsp;def&nbsp;sin(x)
+&nbsp;&nbsp;&nbsp;&nbsp;#
+&nbsp;&nbsp;end
+&nbsp;&nbsp;module_function&nbsp;:sin
+end
+<P></P>
+Math.sin(1)
+include&nbsp;Math
+sin(1)
+</pre></td></tr></table>
+
+<P></P>
+The instance method and module method are two different
+methods: the method definition is copied by <code>module_function</code>, 
+not aliased.
+<h2>Access Control</h2>
+<P></P>
+Ruby defines three levels of protection for module and class constants
+and methods:
+<P></P>
+<ul>
+<li> <b>Public</b>. Accessible to anyone.
+</li><li> <b>Protected</b>. Can be invoked only by objects of the defining
+  class and its subclasses.
+</li><li> <b>Private</b>. Can be called only in functional form
+  (that is, with an implicit <code>self</code> as the receiver). Private methods 
+  therefore can be called only in the defining class and by direct
+  descendents within the same object.
+</li></ul>
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+private    <i>[</i><i>aSymbol</i><i>]<sup>*</sup></i>
+protected  <i>[</i><i>aSymbol</i><i>]<sup>*</sup></i>
+public     <i>[</i><i>aSymbol</i><i>]<sup>*</sup></i>
+</pre></td></tr></table>
+<P></P>
+Each function can be used in two different ways.
+<ol>
+<li> If used with no arguments, the three functions set the default
+  access control of subsequently defined methods.
+</li><li> With arguments, the functions set the access control of the
+  named methods and constants.
+</li></ol>
+<P></P>
+Access control is enforced when a method is invoked.
+<h2>Blocks, Closures, and Proc Objects</h2>
+<P></P>
+A code block is a set of Ruby statements and expressions between braces
+or a <code>do</code>/<code>end</code> pair. The block may start with an argument list
+between vertical bars. A code block may appear only immediately after a 
+method invocation. The start of the block must be on the same logical
+line as the end of the invocation.
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+<i>invocation</i>  do  | a1, a2, ... |
+end
+<P></P>
+<i>invocation</i>  {   | a1, a2, ... |
+}
+</pre></td></tr></table>
+<P></P>
+Braces have a high precedence; <code>do</code> has a low
+precedence.  If the method invocation has parameters that are not
+enclosed in parentheses, the brace form of a block will bind to the
+last parameter, not to the overall invocation. The <code>do</code> form will
+bind to the invocation.
+<P></P>
+Within the body of the invoked method, the code block may be called
+using the <code>yield</code> method.
+Parameters passed to the
+<code>yield</code> will be assigned to arguments in the block using the
+rules of parallel assignment described starting on page 222.
+The return value of the <code>yield</code> is the value of the last
+expression evaluated in the block.
+<P></P>
+A code block remembers the environment in which it was defined, and it
+uses that environment whenever it is called.
+<h3>Proc Objects</h3>
+<P></P>
+Code blocks are converted into objects of class <code>Proc</code> using the
+methods <a href="ref_c_proc.html#new"><code>Proc::new</code></a> and <a href="ref_m_kernel.html#proc"><code>Kernel#proc</code></a>, or by associating the block
+with a method's block argument.
+<P></P>
+The <code>Proc</code> constructor takes an associated block and wraps it with
+enough context to be able to re-create the block's environment when it
+is subsequently called. The <a href="ref_c_proc.html#call"><code>Proc#call</code></a> instance method then
+allows you to invoke the original block, optionally passing in
+parameters. The code in the block (and the associated closure) 
+remains available for the lifetime of the <code>Proc</code> object.
+<P></P>
+If the last argument in a method's argument list is prefixed with an
+ampersand (``<code>&amp;</code>''), any block associated with calls to that method
+will be converted to a <code>Proc</code> object and assigned to that parameter.
+<h2>Exceptions</h2>
+<P></P>
+Ruby exceptions are objects of class <code>Exception</code> and its
+descendents (a full list of the built-in exceptions is given in Figure 
+22.1 on page 303).
+<h3>Raising Exceptions</h3>
+<P></P>
+The <a href="ref_m_kernel.html#raise"><code>Kernel::raise</code></a> method raises an exception.
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+raise
+raise <i>aString</i>
+raise <i>thing</i> <i>[</i>, <i>aString</i> <i>[</i><i>aStackTrace</i><i>]</i><i>]</i>
+</pre></td></tr></table>
+<P></P>
+The first form reraises the exception in <code>$!</code> or a new
+<code>RuntimeError</code> if <code>$!</code> is <code>nil</code>.
+The second form creates a new <code>RuntimeError</code> exception, setting its 
+message to the given string.
+The third form creates an exception object by invoking the method
+<code>exception</code> on its first argument. It then sets this
+exception's message and backtrace to its second and third arguments.
+Class <code>Exception</code> and objects of class <code>Exception</code> contain factory 
+methods called <code>exception</code>, so an exception class name or
+instance can be used as the first parameter to <code>raise</code>.
+<P></P>
+When an exception is raised, Ruby places a reference to the
+<code>Exception</code> object in the global variable <code>$!</code>.
+<h3>Handling Exceptions</h3>
+<P></P>
+Exceptions may be handled within the scope of a <code>begin</code>/<code>end</code>
+block.
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+  begin
+    <i>code...</i>
+    <i>code...</i>
+<i>[</i>rescue  <i>[</i>parm<i>]<sup>*</sup></i> <i>[</i>=> <i>var</i><i>]</i> <i>[</i>then<i>]</i>
+    <i>error handling code...</i> <i>]<sup>*</sup></i>
+<i>[</i>else
+    <i>no exception code...</i><i>]</i>
+<i>[</i>ensure
+    <i>always executed code...</i><i>]</i>
+  end
+</pre></td></tr></table>
+<P></P>
+A block may have multiple <code>rescue</code> clauses, and each <code>rescue</code>
+clause may specify zero or more parameters. A <code>rescue</code> clause with
+no parameter is treated as if it had a parameter of
+<code>StandardError</code>.
+<P></P>
+When an exception is raised, Ruby scans up the call stack until it
+finds an enclosing <code>begin</code>/<code>end</code> block.  For each <code>rescue</code>
+clause in that block, Ruby compares the raised exception against each
+of the rescue clause's parameters in turn; each parameter is tested using
+<code>$!.kind_of?(<em>parameter</em>)</code>.  If the raised exception matches
+a <code>rescue</code> parameter, Ruby executes the body of the <code>rescue</code> and
+stops looking.  If a matching <code>rescue</code> clause ends with <code>=></code> and
+a variable name, the variable is set to <code>$!</code>.
+<P></P>
+Although the parameters to the <code>rescue</code> clause are typically the
+names of <code>Exception</code> classes, they can actually be arbitrary
+expressions (including method calls) that return an appropriate class.
+<P></P>
+If no rescue clause matches the raised exception, Ruby moves up the stack
+frame looking for a higher-level <code>begin</code>/<code>end</code> block that
+matches. If an exception propagates to the top level without being
+rescued, the program terminates with a message.
+<P></P>
+If an <code>else</code> clause is present,
+its body is executed if no
+exceptions were raised in <em>initial code</em>.
+Exceptions raised during the execution of the <code>else</code> clause are not
+captured by <code>rescue</code> clauses in the same block as the <code>else</code>.
+<P></P>
+If an <code>ensure</code> clause is present,
+its body is always executed
+as the block is exited (even if an uncaught exception is in the
+process of being propagated).
+<h3>Retrying a Block</h3>
+<P></P>
+The <code>retry</code>
+statement can be used within a <code>rescue</code> 
+clause to restart the enclosing <code>begin</code>/<code>end</code> block from the beginning.
+<h2>Catch and Throw</h2>
+<P></P>
+The method <a href="ref_m_kernel.html#catch"><code>Kernel::catch</code></a> executes its associated block.
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+catch ( <i>aSymbol</i> | <i>aString</i> )  do
+  <i>block...</i>
+end
+</pre></td></tr></table>
+<P></P>
+The method <a href="ref_m_kernel.html#throw"><code>Kernel::throw</code></a> interrupts the normal processing of
+statements.
+<P></P>
+<table bgcolor="#fff0f0" cellspacing="0" border="0" cellpadding="3" width="500"><tr><td><pre>
+throw( <i>aSymbol</i> | <i>aString</i> <i>[</i>, <i>anObject</i><i>]</i> )
+</pre></td></tr></table>
+<P></P>
+When a <code>throw</code> is executed, Ruby searches up the call stack for the 
+first <code>catch</code> block with a matching symbol or string. If it is found,
+the search stops, and execution resumes past the end of the <code>catch</code>'s
+block. If the <code>throw</code> was passed a second parameter, that value 
+is returned as the value of the <code>catch</code>. Ruby honors the
+<code>ensure</code> clauses of any block expressions it traverses while
+looking for a corresponding <code>catch</code>.
+<P></P>
+If no <code>catch</code> block matches the <code>throw</code>, Ruby raises a <code>NameError</code>
+exception at the location of the <code>throw</code>.
+
+<p></p><hr><table bgcolor="#a03030" cellpadding="10" border="0" cellspacing="0"><tr><td width="33%" align="left"><a class="subheader" href="ext_ruby.html">Previous &lt;</a></td><td width="33%" align="center" valign="middle"><a class="subheader" href="index.html">Contents ^</a><br></td><td width="33%" align="right"><a class="subheader" href="classes.html">Next ></a><br></td></tr></table><p></p><font size="-1">Extracted from the book "Programming Ruby -
+     The Pragmatic Programmer's Guide"</font><br><font size="-3">
+      Copyright
+      &#169;
+      2000 Addison Wesley Longman, Inc. Released under the terms of the
+      <a href="http://www.opencontent.org/openpub/">Open Publication License</a> V1.0.
+        <br>
+      This reference is available for
+        <a href="http://www.pragmaticprogrammer.com/ruby/downloads/book.html">download</a>.
+   </font></body></html>

@@ -1,0 +1,23 @@
+rubybook for Debian
+-------------------
+
+This package contains the HTML edition of the book "Programming Ruby",
+written by David Thomas and Andrew Hunt <rubybook@pragmaticprogrammer.com>
+and published by Addison-Wesley, Oct 2000 (ISBN: 0201710897)
+It can also be read online at http://www.rubycentral.com/book/index.html
+
+Once you've convinced yourself the book is really worth of your attention
+please proceed to buy one :)
+
+Ruby's webpage is at http://www.ruby-lang.org/
+The authors' is at http://www.pragmaticprogrammer.com/ruby/
+
+This package contains revision 0.2 of the online edition of the book.
+Newer revisions are available for download above, but the license has
+tightened to not allow "Substantive modification" and distribution in
+"any standard (paper) book form" is prohibited, making the work "non-free"
+in the context of the Debian Free Software Guideline. For this reason, newer
+revisions will not be packaged, but the substance of the book has not changed
+and this revision can still be considered useful.
+
+ -- Oliver M. Bolzer <oliver@debian.org>, Thu, 22 Feb 2001 11:47:08 +0100
